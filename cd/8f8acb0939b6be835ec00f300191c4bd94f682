@@ -1,0 +1,25 @@
+.roadmap/config.json
+  s_2e6037d119eca3::t_cf431ae0bed2df 4,15-23
+  s_2e6037d119eca3::t_fd981450f9f3c3 24
+ROADMAP.md
+  s_2e6037d119eca3::t_cf431ae0bed2df 14-16
+.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md
+  s_2e6037d119eca3::t_6171047b78462f 13-14,16-20,23-30,33-59
+  s_2e6037d119eca3::t_cf431ae0bed2df 1-12,15,21-22,31-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "cd8f8acb0939b6be835ec00f300191c4bd94f682",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

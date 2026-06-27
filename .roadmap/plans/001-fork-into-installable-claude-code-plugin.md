@@ -49,16 +49,16 @@ created: 2026-06-27
 - [x] Step 3: Create `skills/audit/SKILL.md` from old SKILL.md, trimmed to cross-cutting layer (core principle, audit process, severity model, output format, tooling) + dispatch instructions to `vibe-security:<domain>` skills -> target: no detection patterns duplicated from domain skills; references all 13 domains
 
 ### Phase C — Migrate existing domain skills (flat frontmatter + When to Use)
-- [ ] Step 4: `skills/framework-versions/SKILL.md` from `framework-versions.md` -> target: builds, trigger-rich description, When-to-Use section
-- [ ] Step 5: `skills/secrets/SKILL.md` from `secrets-and-env.md` -> target: same shape
-- [ ] Step 6: `skills/database/SKILL.md` from `database-security.md` minus Convex -> target: Convex content removed, Supabase/Firebase/SQL/ORM retained
-- [ ] Step 7: `skills/auth/SKILL.md` from `authentication.md` -> target: same shape; cross-links rate-limiting
-- [ ] Step 8: `skills/rate-limiting/SKILL.md` from `rate-limiting.md` -> target: same shape
-- [ ] Step 9: `skills/payments/SKILL.md` from `payments.md` -> target: same shape
-- [ ] Step 10: `skills/supply-chain/SKILL.md` from `supply-chain.md` -> target: same shape
-- [ ] Step 11: `skills/ai-integration/SKILL.md` from `ai-integration.md` -> target: same shape
-- [ ] Step 12: `skills/deployment/SKILL.md` from `deployment.md` -> target: same shape
-- [ ] Step 13: `skills/data-access/SKILL.md` from `data-access.md` -> target: same shape
+- [x] Step 4: `skills/framework-versions/SKILL.md` from `framework-versions.md` -> target: builds, trigger-rich description, When-to-Use section
+- [x] Step 5: `skills/secrets/SKILL.md` from `secrets-and-env.md` -> target: same shape
+- [x] Step 6: `skills/database/SKILL.md` from `database-security.md` minus Convex -> target: Convex content removed, Supabase/Firebase/SQL/ORM retained
+- [x] Step 7: `skills/auth/SKILL.md` from `authentication.md` -> target: same shape; cross-links rate-limiting
+- [x] Step 8: `skills/rate-limiting/SKILL.md` from `rate-limiting.md` -> target: same shape
+- [x] Step 9: `skills/payments/SKILL.md` from `payments.md` -> target: same shape
+- [x] Step 10: `skills/supply-chain/SKILL.md` from `supply-chain.md` -> target: same shape
+- [x] Step 11: `skills/ai-integration/SKILL.md` from `ai-integration.md` -> target: same shape
+- [x] Step 12: `skills/deployment/SKILL.md` from `deployment.md` -> target: same shape
+- [x] Step 13: `skills/data-access/SKILL.md` from `data-access.md` -> target: same shape
 
 ### Phase D — New & split skills
 - [ ] Step 14: `skills/convex-security/SKILL.md` (NEW) — public vs internal fns, arg validators, ctx.auth not args, cron/httpAction, file storage, convex-helpers/eslint -> target: covers the 10 findings from spec
@@ -75,4 +75,4 @@ created: 2026-06-27
 - [ ] Step 21: Delete `vibe-security/` folder -> target: `git status` shows removal; no references to old path remain
 - [ ] Step 22: Update `README.md` (plugin install instructions, full skill list, v3 breaking-change note) -> target: install command documented
 - [ ] Step 23: Bump version to 3.0.0 across plugin.json and any skill frontmatter -> target: consistent version everywhere
-- [ ] Step 24: Final pass — grep for em dashes (repo convention), verify every SKILL.md has valid frontmatter and a When-to-Use section -> target: clean
+- [ ] Step 24: Final pass — verify README is em-dash-free (repo convention applies to user-facing copy only), every SKILL.md has valid frontmatter + When-to-Use section, and `claude plugin validate` passes -> target: clean

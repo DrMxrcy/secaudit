@@ -216,7 +216,10 @@ Within the conventions above, each domain skill's body follows a consistent shap
 4. **Fix** — before/after code with file-path comments.
 5. **Tooling** — automated checks specific to this domain.
 
-Voice matches the existing skill; **no em dashes** (per repo convention).
+Voice matches the existing skill (which uses em dashes freely in technical content). The
+**no-em-dashes convention applies only to user-facing README / marketing copy** — verified: the
+"remove em dashes" commit touched `README.md` only. Keep the README em-dash-free; skill content
+follows the source style.
 
 ## Migration plan (high level)
 

@@ -1,0 +1,44 @@
+docs/superpowers/specs/2026-06-27-vibe-security-plugin-design.md
+  s_2e6037d119eca3::t_95f278a452fc39 219-222
+.roadmap/plans/001-fork-into-installable-claude-code-plugin.md
+  s_2e6037d119eca3::t_670778a817c2c7 78
+  s_2e6037d119eca3::t_53a08ed445fd8a 52-61
+skills/supply-chain/SKILL.md
+  s_2e6037d119eca3::t_320098aca94e5d 1-133
+skills/deployment/SKILL.md
+  s_2e6037d119eca3::t_b220eadde9c6fe 1-92
+skills/framework-versions/SKILL.md
+  s_2e6037d119eca3::t_b9e99940954775 1-90
+skills/secrets/SKILL.md
+  s_2e6037d119eca3::t_dc5392f1a42e6f 1-99
+skills/rate-limiting/SKILL.md
+  s_2e6037d119eca3::t_eaad23fbae5832 1-71
+skills/payments/SKILL.md
+  s_2e6037d119eca3::t_998f990901217f 1-82
+skills/auth/SKILL.md
+  s_2e6037d119eca3::t_3ed752979dd086 1-95
+skills/database/SKILL.md
+  s_2e6037d119eca3::t_4a73c1621fafaf 1-223
+skills/ai-integration/SKILL.md
+  s_2e6037d119eca3::t_0952a74505df29 1-140
+skills/data-access/SKILL.md
+  s_2e6037d119eca3::t_6e7f99ac75b5de 1-97
+ROADMAP.md
+  s_2e6037d119eca3::t_5d28b4c2ad7102 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "4212a283ee690de9b4f676b8c3daa31f50478fd8",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

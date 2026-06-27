@@ -61,15 +61,15 @@ created: 2026-06-27
 - [x] Step 13: `skills/data-access/SKILL.md` from `data-access.md` -> target: same shape
 
 ### Phase D — New & split skills
-- [ ] Step 14: `skills/convex-security/SKILL.md` (NEW) — public vs internal fns, arg validators, ctx.auth not args, cron/httpAction, file storage, convex-helpers/eslint -> target: covers the 10 findings from spec
-- [ ] Step 15: `skills/react-native-security/SKILL.md` refocused from `mobile.md` — keychain, bundle secrets, deep links, WebView, ATS, native bridge -> target: no Expo/EAS-specific content
-- [ ] Step 16: `skills/expo-security/SKILL.md` (NEW) — EXPO_PUBLIC_ inlining, EAS secrets, expo-secure-store, OTA code signing, app config, config plugins, +api proxy -> target: covers the 9 Expo findings from spec
+- [x] Step 14: `skills/convex-security/SKILL.md` (NEW) — public vs internal fns, arg validators, ctx.auth not args, cron/httpAction, file storage, convex-helpers/eslint -> target: covers the 10 findings from spec
+- [x] Step 15: `skills/react-native-security/SKILL.md` refocused from `mobile.md` — keychain, bundle secrets, deep links, WebView, ATS, native bridge -> target: no Expo/EAS-specific content
+- [x] Step 16: `skills/expo-security/SKILL.md` (NEW) — EXPO_PUBLIC_ inlining, EAS secrets, expo-secure-store, OTA code signing, app config, config plugins, +api proxy -> target: covers the 9 Expo findings from spec
 
 ### Phase E — Research-verified content updates
-- [ ] Step 17: Fix CVE in framework-versions: CVE-2025-66478 (rejected) -> canonical CVE-2025-55182 (React2Shell, CVSS 10.0); add CVE-2025-29927 (Next.js middleware bypass) cross-linked to auth -> target: no rejected CVE cited as primary
-- [ ] Step 18: Update secrets/database with Supabase publishable/secret key model (legacy anon/service_role deprecation) -> target: new key formats documented
-- [ ] Step 19: Update supply-chain with slopsquatting stats (USENIX 2025) and verify-before-install workflow -> target: cited stat + workflow present
-- [ ] Step 20: Update ai-integration with OWASP LLM Top 10 2025 + MCP risks (tool poisoning, over-permissioned scopes, token passthrough) -> target: MCP section present
+- [x] Step 17: Fix CVE in framework-versions: CVE-2025-66478 (rejected) -> canonical CVE-2025-55182 (React2Shell, CVSS 10.0); add CVE-2025-29927 (Next.js middleware bypass) cross-linked to auth -> target: no rejected CVE cited as primary
+- [x] Step 18: Update secrets/database with Supabase publishable/secret key model (legacy anon/service_role deprecation) -> target: new key formats documented
+- [x] Step 19: Update supply-chain with slopsquatting stats (USENIX 2025) and verify-before-install workflow -> target: cited stat + workflow present
+- [x] Step 20: Update ai-integration with OWASP LLM Top 10 2025 + MCP risks (tool poisoning, over-permissioned scopes, token passthrough) -> target: MCP section present
 
 ### Phase F — Retire old structure & release
 - [ ] Step 21: Delete `vibe-security/` folder -> target: `git status` shows removal; no references to old path remain

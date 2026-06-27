@@ -1,0 +1,34 @@
+.roadmap/config.json
+  s_2e6037d119eca3::t_839c43d87832a6 4-16
+  s_2e6037d119eca3::t_9ba8e2963eabb4 1-3,17-21
+ROADMAP.md
+  s_2e6037d119eca3::t_9ba8e2963eabb4 1-9,14
+  s_2e6037d119eca3::t_839c43d87832a6 10-13
+CHANGELOG.md
+  s_2e6037d119eca3::t_9ba8e2963eabb4 1
+  s_2e6037d119eca3::t_839c43d87832a6 2-6
+CLAUDE.md
+  s_2e6037d119eca3::t_9ba8e2963eabb4 1-10
+CHANGELOG.internal.md
+  s_2e6037d119eca3::t_839c43d87832a6 4-8
+  s_2e6037d119eca3::t_9ba8e2963eabb4 1-3
+.roadmap/plans/001-fork-into-installable-claude-code-plugin.md
+  s_2e6037d119eca3::t_839c43d87832a6 1-12,15,24-26,41-42
+  s_2e6037d119eca3::t_e8a2830bab364f 13-14,16-23,27-40,43-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ef6bea98070c32f7a6480f45c37f000da862da35",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

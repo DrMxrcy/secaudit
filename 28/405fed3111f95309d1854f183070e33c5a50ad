@@ -1,0 +1,19 @@
+docs/superpowers/specs/2026-06-27-vibe-security-v3.1-comprehensive-sourced-design.md
+  s_2e6037d119eca3::t_bb4770381f965f 1-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "28405fed3111f95309d1854f183070e33c5a50ad",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

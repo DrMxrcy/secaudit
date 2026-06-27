@@ -46,7 +46,7 @@ created: 2026-06-27
 - [x] Step 2: Create `.claude-plugin/marketplace.json` referencing the plugin -> target: installable layout valid against Claude Code plugin schema
 
 ### Phase B — Orchestrator
-- [ ] Step 3: Create `skills/audit/SKILL.md` from old SKILL.md, trimmed to cross-cutting layer (core principle, audit process, severity model, output format, tooling) + dispatch instructions to `vibe-security:<domain>` skills -> target: no detection patterns duplicated from domain skills; references all 13 domains
+- [x] Step 3: Create `skills/audit/SKILL.md` from old SKILL.md, trimmed to cross-cutting layer (core principle, audit process, severity model, output format, tooling) + dispatch instructions to `vibe-security:<domain>` skills -> target: no detection patterns duplicated from domain skills; references all 13 domains
 
 ### Phase C — Migrate existing domain skills (flat frontmatter + When to Use)
 - [ ] Step 4: `skills/framework-versions/SKILL.md` from `framework-versions.md` -> target: builds, trigger-rich description, When-to-Use section

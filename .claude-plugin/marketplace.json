@@ -1,0 +1,29 @@
+{
+  "name": "vibe-security",
+  "owner": {
+    "name": "DrMxrcy"
+  },
+  "description": "Security auditing skills for AI-assisted (\"vibe-coded\") applications.",
+  "plugins": [
+    {
+      "name": "vibe-security",
+      "source": "./",
+      "description": "Audits codebases for security vulnerabilities common in vibe-coded apps and guides secure code generation. Orchestrator skill plus focused per-domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more).",
+      "version": "3.0.0",
+      "author": {
+        "name": "DrMxrcy"
+      },
+      "homepage": "https://github.com/DrMxrcy/vibe-security-skill",
+      "license": "MIT",
+      "keywords": [
+        "security",
+        "audit",
+        "vibe-coding",
+        "supabase",
+        "convex",
+        "expo",
+        "react-native"
+      ]
+    }
+  ]
+}

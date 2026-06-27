@@ -3,7 +3,7 @@ id: 1
 title: Fork into installable Claude Code plugin
 type: feature
 version: 3.0.0
-status: planned
+status: active
 created: 2026-06-27
 ---
 
@@ -42,8 +42,8 @@ created: 2026-06-27
 ## 🚶 Step-by-Step Checklist
 
 ### Phase A — Plugin scaffold
-- [ ] Step 1: Create `.claude-plugin/plugin.json` (name "vibe-security", version 3.0.0, author, description) -> target: valid JSON, `name`/`version` present
-- [ ] Step 2: Create `.claude-plugin/marketplace.json` referencing the plugin -> target: installable layout valid against Claude Code plugin schema
+- [x] Step 1: Create `.claude-plugin/plugin.json` (name "vibe-security", version 3.0.0, author, description) -> target: valid JSON, `name`/`version` present
+- [x] Step 2: Create `.claude-plugin/marketplace.json` referencing the plugin -> target: installable layout valid against Claude Code plugin schema
 
 ### Phase B — Orchestrator
 - [ ] Step 3: Create `skills/audit/SKILL.md` from old SKILL.md, trimmed to cross-cutting layer (core principle, audit process, severity model, output format, tooling) + dispatch instructions to `vibe-security:<domain>` skills -> target: no detection patterns duplicated from domain skills; references all 13 domains

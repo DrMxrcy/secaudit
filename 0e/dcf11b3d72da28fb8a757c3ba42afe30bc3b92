@@ -1,0 +1,25 @@
+.claude-plugin/marketplace.json
+  s_2e6037d119eca3::t_4ea26c591240db 1-30
+.claude-plugin/plugin.json
+  s_2e6037d119eca3::t_77014f7a600eca 1-24
+.roadmap/plans/001-fork-into-installable-claude-code-plugin.md
+  s_2e6037d119eca3::t_fa90ab8a2b71e5 6,45-46
+ROADMAP.md
+  s_2e6037d119eca3::t_ab0f0f9c1f8a79 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "0edcf11b3d72da28fb8a757c3ba42afe30bc3b92",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

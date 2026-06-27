@@ -3,7 +3,7 @@ id: 1
 title: Fork into installable Claude Code plugin
 type: feature
 version: 3.0.0
-status: active
+status: done
 created: 2026-06-27
 ---
 
@@ -72,7 +72,7 @@ created: 2026-06-27
 - [x] Step 20: Update ai-integration with OWASP LLM Top 10 2025 + MCP risks (tool poisoning, over-permissioned scopes, token passthrough) -> target: MCP section present
 
 ### Phase F — Retire old structure & release
-- [ ] Step 21: Delete `vibe-security/` folder -> target: `git status` shows removal; no references to old path remain
-- [ ] Step 22: Update `README.md` (plugin install instructions, full skill list, v3 breaking-change note) -> target: install command documented
-- [ ] Step 23: Bump version to 3.0.0 across plugin.json and any skill frontmatter -> target: consistent version everywhere
-- [ ] Step 24: Final pass — verify README is em-dash-free (repo convention applies to user-facing copy only), every SKILL.md has valid frontmatter + When-to-Use section, and `claude plugin validate` passes -> target: clean
+- [x] Step 21: Delete `vibe-security/` folder -> target: `git status` shows removal; no references to old path remain
+- [x] Step 22: Update `README.md` (plugin install instructions, full skill list, v3 breaking-change note) -> target: install command documented
+- [x] Step 23: Bump version to 3.0.0 across plugin.json and any skill frontmatter -> target: consistent version everywhere
+- [x] Step 24: Final pass — verify README is em-dash-free (repo convention applies to user-facing copy only), every SKILL.md has valid frontmatter + When-to-Use section, and `claude plugin validate` passes -> target: clean

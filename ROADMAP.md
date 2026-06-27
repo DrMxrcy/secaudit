@@ -9,6 +9,6 @@
 
 ## 📊 Versions
 
-### [ ] v3.0.0 — 83%
-- [ ] **#1 Fork into installable Claude Code plugin** `feature` — 83% ([plan](.roadmap/plans/001-fork-into-installable-claude-code-plugin.md))
+### [x] v3.0.0 — 100%
+- [x] **#1 Fork into installable Claude Code plugin** `feature` — 100% ([plan](.roadmap/plans/001-fork-into-installable-claude-code-plugin.md))
 <!-- roadmap:auto:end -->

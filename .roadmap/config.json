@@ -17,5 +17,8 @@
   "settings": {
     "autoCommit": true,
     "gitTagOnRelease": false
+  },
+  "versionDates": {
+    "3.0.0": "2026-06-27"
   }
 }

@@ -1,0 +1,29 @@
+README.md
+  s_2e6037d119eca3::t_462e4ef6b4e4c1 1,3,5,7,9,11-14,16,20,22-24,27,29,31,33-35,37,39,41-56,58,60,62,66-68,72
+.roadmap/config.json
+  s_2e6037d119eca3::t_d9d21a5b6d1d18 20-22
+.roadmap/plans/001-fork-into-installable-claude-code-plugin.md
+  s_2e6037d119eca3::t_9372dac3db34e2 6,75-78
+CHANGELOG.internal.md
+  s_2e6037d119eca3::t_91f31143423390 5,8
+CHANGELOG.md
+  s_2e6037d119eca3::t_fff1923881dcda 3,6
+ROADMAP.md
+  s_2e6037d119eca3::t_3f572062f84480 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "f5f616b04ee80d564a09b8a0261d578d1c89f8c7",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

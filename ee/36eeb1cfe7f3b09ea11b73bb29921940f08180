@@ -1,0 +1,26 @@
+skills/audit/SKILL.md
+  s_2e6037d119eca3::t_cabdabe4de2263 163
+  s_2e6037d119eca3::t_c9eb52851d1707 1-162,164-174
+skills/audit/references/tooling.md
+  s_2e6037d119eca3::t_d55bfb08141451 1-70
+.roadmap/plans/001-fork-into-installable-claude-code-plugin.md
+  s_2e6037d119eca3::t_3c55ee9573bf3d 49
+ROADMAP.md
+  s_2e6037d119eca3::t_ce5f257b3857ce 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ee36eeb1cfe7f3b09ea11b73bb29921940f08180",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

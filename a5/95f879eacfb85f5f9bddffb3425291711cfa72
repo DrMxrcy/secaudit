@@ -1,0 +1,20 @@
+docs/superpowers/specs/2026-06-27-vibe-security-plugin-design.md
+  s_2e6037d119eca3::t_d75481fe856bad 1-185,209-210,212,218-243
+  s_2e6037d119eca3::t_944ac742ceb22f 186-208,211,213-217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "a595f879eacfb85f5f9bddffb3425291711cfa72",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

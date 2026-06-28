@@ -1,0 +1,56 @@
+skills/ai-integration/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 28,42,110
+.claude-plugin/marketplace.json
+  s_2e6037d119eca3::t_63ce108d50d389 2,9,16
+skills/supply-chain/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 122
+skills/auth/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 3,14,44,86
+skills/audit/SKILL.md
+  s_2e6037d119eca3::t_b9369e3b1d9fc6 3
+  s_2e6037d119eca3::t_63ce108d50d389 40,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71
+README.md
+  s_2e6037d119eca3::t_63ce108d50d389 1,16,23-24,33-35,43-59
+skills/logging-monitoring/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 62,134
+SOURCES.md
+  s_2e6037d119eca3::t_63ce108d50d389 3
+skills/rate-limiting/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 22
+skills/secrets/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 83,99
+.claude-plugin/plugin.json
+  s_2e6037d119eca3::t_63ce108d50d389 2,8-9
+skills/web-vulns/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 161-162,169-170
+skills/cryptography/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 15,113,120
+ROADMAP.md
+  s_2e6037d119eca3::t_63ce108d50d389 1
+skills/database/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 3,17,205,215
+.roadmap/config.json
+  s_2e6037d119eca3::t_63ce108d50d389 2,13
+skills/expo-security/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 3,10,19
+skills/framework-versions/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 49,90
+skills/react-native-security/SKILL.md
+  s_2e6037d119eca3::t_63ce108d50d389 3,10,17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1f40f90a7657f7f923c6587814dd159733df677c",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

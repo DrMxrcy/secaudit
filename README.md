@@ -1,6 +1,6 @@
 # Secaudit v3.1 - Installable Claude Code Plugin
 
-> Fork of [fartiacht/vibe-security-skill](https://github.com/fartiacht/vibe-security-skill), itself a fork of the original by [Chris Raroque](https://github.com/raroque). v3.x restructures the project into an installable Claude Code plugin with focused, fully-sourced per-domain skills.
+> An installable Claude Code plugin that audits AI-assisted apps for security vulnerabilities, organized as one orchestrator plus focused, fully-sourced per-domain skills. Builds on earlier open-source work (see Credits).
 
 A security plugin that audits "vibe-coded" apps (projects built rapidly with AI assistance) for the vulnerabilities AI coding assistants consistently introduce: exposed secrets, broken database access control, missing auth, client-side trust, insecure payments, dependency supply-chain risks, web vulnerabilities, cryptographic failures, and mobile/backend platform issues.
 

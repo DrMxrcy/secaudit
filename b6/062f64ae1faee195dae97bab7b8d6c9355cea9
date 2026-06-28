@@ -1,0 +1,63 @@
+skills/payments/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 83-88
+skills/rate-limiting/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 72-77
+skills/logging-monitoring/SKILL.md
+  s_2e6037d119eca3::t_98ff2213766cf7 1-144
+skills/deployment/SKILL.md
+  s_2e6037d119eca3::t_74f9be8ffe641e 78-90
+  s_2e6037d119eca3::t_6bd5096116c937 106-113
+skills/cryptography/SKILL.md
+  s_2e6037d119eca3::t_1126beb240c8ab 1-128
+skills/ai-integration/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 141-147
+skills/supply-chain/SKILL.md
+  s_2e6037d119eca3::t_088cb1a6c199ca 27-30
+  s_2e6037d119eca3::t_6bd5096116c937 135-143
+skills/framework-versions/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 91-99
+skills/database/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 224-232
+skills/data-access/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 98-104
+skills/auth/SKILL.md
+  s_2e6037d119eca3::t_f1d53d38edabbd 96-215
+skills/secrets/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 100-106
+CHANGELOG.internal.md
+  s_2e6037d119eca3::t_cf431ae0bed2df 5-9
+skills/audit/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 175-180
+CHANGELOG.md
+  s_2e6037d119eca3::t_cf431ae0bed2df 3-7
+skills/expo-security/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 205-212
+skills/react-native-security/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 164-171
+skills/web-vulns/SKILL.md
+  s_2e6037d119eca3::t_862b6d48cd6de8 1-182
+skills/convex-security/SKILL.md
+  s_2e6037d119eca3::t_6bd5096116c937 220-229
+SOURCES.md
+  s_2e6037d119eca3::t_f3ad907435d8d7 1-131
+.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md
+  s_2e6037d119eca3::t_3cd9654fd7ca72 6,35-36,39-40,43-44,47,50,53-54
+ROADMAP.md
+  s_2e6037d119eca3::t_010b2bbf196547 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "b6062f64ae1faee195dae97bab7b8d6c9355cea9",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

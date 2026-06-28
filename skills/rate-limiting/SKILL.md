@@ -19,7 +19,7 @@ Every one of these endpoints needs rate limiting. AI assistants almost never add
 - **Auth endpoints** — login, register, password reset, OTP verification, magic link. Without
   limits, attackers can brute-force passwords or enumerate accounts.
 - **AI API calls** — Any endpoint that calls OpenAI, Anthropic, or similar. A single user can
-  drain your entire monthly budget in minutes. (See `vibe-security:ai-integration`.)
+  drain your entire monthly budget in minutes. (See `secaudit:ai-integration`.)
 - **Email / SMS sending** — Attackers can use your app as a spam relay.
 - **File processing** — Upload, resize, convert. CPU-intensive operations without limits enable
   denial-of-service.

@@ -1,6 +1,6 @@
 ---
 name: database
-description: Audits database access control — Supabase Row-Level Security (RLS), Firebase Security Rules, storage bucket policies, Supabase Edge Functions, and the new Supabase key model. This is the #1 source of critical vulnerabilities in vibe-coded apps. Use whenever the project uses Supabase or Firebase, when writing or reviewing RLS policies / security rules / SQL migrations, or when auditing who can read or write which rows. For Convex backends use vibe-security:convex-security instead.
+description: Audits database access control — Supabase Row-Level Security (RLS), Firebase Security Rules, storage bucket policies, Supabase Edge Functions, and the new Supabase key model. This is the #1 source of critical vulnerabilities in vibe-coded apps. Use whenever the project uses Supabase or Firebase, when writing or reviewing RLS policies / security rules / SQL migrations, or when auditing who can read or write which rows. For Convex backends use secaudit:convex-security instead.
 license: MIT
 ---
 
@@ -14,7 +14,7 @@ generate database schemas without proper access control, leaving entire tables e
 - The project uses Supabase or Firebase (Firestore / Realtime DB / Storage).
 - Writing or reviewing RLS policies, Firebase Security Rules, or SQL migrations.
 - Auditing row/field ownership, storage bucket access, or Edge Function auth.
-- (For Convex backends, use `vibe-security:convex-security` — Convex has no RLS.)
+- (For Convex backends, use `secaudit:convex-security` — Convex has no RLS.)
 
 ## Supabase Row-Level Security (RLS)
 
@@ -202,7 +202,7 @@ connector. Mitigations:
 - Use read-only database connections where possible
 - Never give MCP connectors write access to production databases
 
-(See `vibe-security:ai-integration` for the broader MCP threat model.)
+(See `secaudit:ai-integration` for the broader MCP threat model.)
 
 ## New API Key Model (2025+)
 
@@ -212,7 +212,7 @@ Supabase replaced the legacy `anon`/`service_role` keys with publishable + secre
   and auto-detected if leaked to public GitHub repos.
 
 A secret/`service_role` key in a client bundle = full database compromise (it bypasses every RLS
-policy). See `vibe-security:secrets` for key-handling details.
+policy). See `secaudit:secrets` for key-handling details.
 
 ## GoTrue Auth Vulnerabilities
 

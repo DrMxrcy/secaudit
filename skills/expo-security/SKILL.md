@@ -1,13 +1,13 @@
 ---
 name: expo-security
-description: Audits Expo and EAS-specific mobile security — EXPO_PUBLIC_ env vars inlined into the bundle, the misconception that EAS "Secret" vars are safe in the app, expo-secure-store vs AsyncStorage, EAS Update / OTA code signing, app.json/app.config.js extra exposure, config plugins running arbitrary build code, deep links in Expo Router, and the +api.ts backend-proxy pattern. Use when the project uses Expo or EAS (app.json/app.config, eas.json, expo-updates, Expo Router). For framework-agnostic React Native, use vibe-security:react-native-security.
+description: Audits Expo and EAS-specific mobile security — EXPO_PUBLIC_ env vars inlined into the bundle, the misconception that EAS "Secret" vars are safe in the app, expo-secure-store vs AsyncStorage, EAS Update / OTA code signing, app.json/app.config.js extra exposure, config plugins running arbitrary build code, deep links in Expo Router, and the +api.ts backend-proxy pattern. Use when the project uses Expo or EAS (app.json/app.config, eas.json, expo-updates, Expo Router). For framework-agnostic React Native, use secaudit:react-native-security.
 license: MIT
 ---
 
 # Expo + EAS Security
 
 Expo/EAS-specific concerns. For framework-agnostic React Native (Keychain, WebView, native bridge,
-ATS), use `vibe-security:react-native-security`. The mental model to repeat throughout:
+ATS), use `secaudit:react-native-security`. The mental model to repeat throughout:
 **everything shipped in the JS bundle, the app binary, or `app.json` is public and trivially
 extractable from a downloaded app.**
 
@@ -16,7 +16,7 @@ extractable from a downloaded app.**
 - The project uses Expo or EAS (`app.json` / `app.config.js`, `eas.json`, `expo-updates`,
   Expo Router, `expo-secure-store`).
 - Reviewing environment variables, OTA updates, deep links, or app config in an Expo app.
-- (For bare React Native concerns, use `vibe-security:react-native-security`.)
+- (For bare React Native concerns, use `secaudit:react-native-security`.)
 
 ## 1. `EXPO_PUBLIC_` Vars Holding Secrets
 

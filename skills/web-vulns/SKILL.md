@@ -158,16 +158,16 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 }
 ```
 
-See also `vibe-security:auth` (authorization), `vibe-security:database` (RLS as a second layer), and
-`vibe-security:deployment` (CSP and security headers).
+See also `secaudit:auth` (authorization), `secaudit:database` (RLS as a second layer), and
+`secaudit:deployment` (CSP and security headers).
 
 ## Open Redirects (cross-cutting)
 
 A `redirect`/`next`/`returnTo` parameter taken from the request and followed without validation lets an
 attacker send users to a phishing page under your domain's trust. Allowlist internal paths: accept only
 values starting with a single `/` (reject `//host` and absolute URLs), or match against a known-safe
-list. This also appears in `vibe-security:database` (Supabase GoTrue `redirectTo`),
-`vibe-security:react-native-security`, and `vibe-security:expo-security` (deep links).
+list. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
+`secaudit:react-native-security`, and `secaudit:expo-security` (deep links).
 
 ## Sources
 

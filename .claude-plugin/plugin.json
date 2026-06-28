@@ -1,12 +1,12 @@
 {
-  "name": "vibe-security",
+  "name": "secaudit",
   "version": "3.1.0",
   "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex), missing auth, client-side trust, insecure payments, supply-chain risks (slopsquatting), and Expo / React Native / Convex specific issues. One orchestrator skill plus focused per-domain skills.",
   "author": {
     "name": "DrMxrcy"
   },
-  "homepage": "https://github.com/DrMxrcy/vibe-security-skill",
-  "repository": "https://github.com/DrMxrcy/vibe-security-skill",
+  "homepage": "https://github.com/DrMxrcy/secaudit",
+  "repository": "https://github.com/DrMxrcy/secaudit",
   "license": "MIT",
   "keywords": [
     "security",

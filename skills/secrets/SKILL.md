@@ -80,7 +80,7 @@ Common offenders:
 - JWT secrets: `"secret"`, `"jwt-secret"`, `"your-secret-key"`, `"supersecret"`, `"changeme"`
 
 If any of these are present in production code or seed data that runs in production, flag as
-**High** severity. See also `vibe-security:supply-chain` for the full default-credentials list.
+**High** severity. See also `secaudit:supply-chain` for the full default-credentials list.
 
 ## Supabase New Key Model (2025+)
 
@@ -96,7 +96,7 @@ after that date no longer get `anon`/`service_role`; legacy keys deprecated by e
 Supabase now rejects secret keys sent from a browser User-Agent and auto-revokes secret keys found
 in public GitHub repos — but neither stops an attacker using a leaked key via curl. Same rule
 stands: publishable keys go client-side, secret keys stay server-side only. See
-`vibe-security:database`.
+`secaudit:database`.
 
 ## Sources
 

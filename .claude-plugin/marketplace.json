@@ -1,19 +1,19 @@
 {
-  "name": "vibe-security",
+  "name": "secaudit",
   "owner": {
     "name": "DrMxrcy"
   },
   "description": "Security auditing skills for AI-assisted (\"vibe-coded\") applications.",
   "plugins": [
     {
-      "name": "vibe-security",
+      "name": "secaudit",
       "source": "./",
       "description": "Audits codebases for security vulnerabilities common in vibe-coded apps and guides secure code generation. Orchestrator skill plus focused per-domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more).",
       "version": "3.1.0",
       "author": {
         "name": "DrMxrcy"
       },
-      "homepage": "https://github.com/DrMxrcy/vibe-security-skill",
+      "homepage": "https://github.com/DrMxrcy/secaudit",
       "license": "MIT",
       "keywords": [
         "security",

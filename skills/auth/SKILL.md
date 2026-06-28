@@ -1,6 +1,6 @@
 ---
 name: auth
-description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints, session management, and the auth-vs-authorization distinction. Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see vibe-security:rate-limiting.
+description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints, session management, and the auth-vs-authorization distinction. Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see secaudit:rate-limiting.
 license: MIT
 ---
 
@@ -11,7 +11,7 @@ license: MIT
 - Writing or reviewing login, registration, sessions, or JWT handling.
 - Protecting routes, Server Actions, Route Handlers, or RPC endpoints.
 - Auditing whether the app authenticates AND authorizes (verifies ownership, not just login).
-- (For throttling auth endpoints, see `vibe-security:rate-limiting`.)
+- (For throttling auth endpoints, see `secaudit:rate-limiting`.)
 
 ## JWT Handling
 
@@ -41,7 +41,7 @@ Next.js middleware runs at the edge and is convenient for auth checks, but it is
 
 - **CVE-2025-29927 (CVSS 9.1):** Middleware completely bypassed via a spoofed
   `x-middleware-subrequest` header. Affected versions 11.1.4 through 15.2.2 (fixed in 12.3.5 /
-  13.5.9 / 14.2.25 / 15.2.3). See `vibe-security:framework-versions`.
+  13.5.9 / 14.2.25 / 15.2.3). See `secaudit:framework-versions`.
 - **CVE-2025-55182 (React2Shell, CVSS 10.0):** React Server Components RCE — unrelated to
   middleware, but reinforces that framework-level protections have limits.
 
@@ -83,7 +83,7 @@ export async function deleteItem(input: unknown) {
 ```
 
 Every Server Action needs three things at the top:
-1. **Input validation** (Zod or similar runtime schema — see `vibe-security:data-access`)
+1. **Input validation** (Zod or similar runtime schema — see `secaudit:data-access`)
 2. **Authentication** (verify the user is logged in)
 3. **Authorization** (verify the user owns the resource)
 

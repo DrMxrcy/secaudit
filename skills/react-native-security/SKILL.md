@@ -1,20 +1,20 @@
 ---
 name: react-native-security
-description: Audits React Native (framework-agnostic) mobile security — secrets in the JS bundle, secure token storage with react-native-keychain vs AsyncStorage, deep link / URL scheme validation, WebView risks (onMessage, injectedJavaScript, file access), native bridge trust, network security (ATS, cleartext, SSL pinning), OAuth PKCE, and logging leaks. Use when building or reviewing a React Native app's storage, networking, deep links, WebViews, or native modules. For Expo/EAS-specific concerns (EXPO_PUBLIC_, EAS secrets, OTA updates), use vibe-security:expo-security.
+description: Audits React Native (framework-agnostic) mobile security — secrets in the JS bundle, secure token storage with react-native-keychain vs AsyncStorage, deep link / URL scheme validation, WebView risks (onMessage, injectedJavaScript, file access), native bridge trust, network security (ATS, cleartext, SSL pinning), OAuth PKCE, and logging leaks. Use when building or reviewing a React Native app's storage, networking, deep links, WebViews, or native modules. For Expo/EAS-specific concerns (EXPO_PUBLIC_, EAS secrets, OTA updates), use secaudit:expo-security.
 license: MIT
 ---
 
 # React Native Security (Core)
 
 Framework-agnostic React Native. For Expo/EAS-specific items (`EXPO_PUBLIC_`, EAS secrets,
-`expo-secure-store`, OTA/EAS Update), use `vibe-security:expo-security`. Maps to the OWASP Mobile
+`expo-secure-store`, OTA/EAS Update), use `secaudit:expo-security`. Maps to the OWASP Mobile
 Top 10 (2024).
 
 ## When to Use
 
 - Building or reviewing a bare/framework-agnostic React Native app.
 - Auditing token storage, networking, deep links, WebViews, or custom native modules.
-- (For Expo/EAS toolchain concerns, use `vibe-security:expo-security`.)
+- (For Expo/EAS toolchain concerns, use `secaudit:expo-security`.)
 
 ## 1. Secrets / API Keys in the JS Bundle
 

@@ -25,7 +25,7 @@ unlimited API usage at your expense. A leaked key can drain thousands of dollars
 - No API keys in client-side JavaScript
 
 All AI API calls go through your backend. The client sends the user's message to your server; your
-server calls the AI API. (See `vibe-security:secrets`.)
+server calls the AI API. (See `secaudit:secrets`.)
 
 ## Unbounded Consumption / Spending Caps (OWASP LLM10)
 
@@ -39,7 +39,7 @@ to denial-of-wallet:
 - Track token usage per user in your database
 - Set daily/monthly caps per user or per tier
 - Return a clear error when limits are exceeded
-- Pair with rate limiting (see `vibe-security:rate-limiting`)
+- Pair with rate limiting (see `secaudit:rate-limiting`)
 
 ## Prompt Injection (OWASP LLM01 — the #1 risk)
 
@@ -107,7 +107,7 @@ scopes — never omnibus scopes.
 If your MCP connector uses the Supabase `service_role`/secret key, the agent bypasses ALL
 Row-Level Security. A prompt injection hidden in a code comment, README, or package description the
 agent reads can instruct it to exfiltrate data. Use read-only credentials, never give production
-write access, and review every operation before approving it. (See `vibe-security:database`.)
+write access, and review every operation before approving it. (See `secaudit:database`.)
 
 ### Protocol-level footguns
 

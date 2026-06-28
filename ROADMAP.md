@@ -1,4 +1,4 @@
-# 🗺️ Roadmap: Vibe Security
+# 🗺️ Roadmap: Secaudit
 
 ## 💡 Idea Incubator
 <!-- Free-form. Drop loose ideas here; scripts never touch this region. -->

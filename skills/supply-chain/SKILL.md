@@ -119,7 +119,7 @@ grep -rn "password123\|admin123\|@example\.com\|@test\.com\|@admin\.com" --inclu
 ```
 
 If found in seed data that runs in production, or in auth logic, flag as **High** severity.
-(See also `vibe-security:secrets`.)
+(See also `secaudit:secrets`.)
 
 ## JWT Signing Secrets
 

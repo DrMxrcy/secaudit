@@ -12,7 +12,7 @@ license: MIT
 - Generating tokens, password-reset links, session IDs, API keys, or OTPs.
 - Encrypting data at rest or choosing a cipher/mode.
 - Storing or rotating encryption keys.
-- Configuring JWT verification (cross-links `vibe-security:auth`).
+- Configuring JWT verification (cross-links `secaudit:auth`).
 
 ## 1. Password Storage
 
@@ -110,14 +110,14 @@ as the HMAC secret) to forge tokens.
 jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 ```
 
-Full token-lifecycle guidance lives in `vibe-security:auth`.
+Full token-lifecycle guidance lives in `secaudit:auth`.
 
 ## 5. Encryption at Rest + Key Management
 
 Store keys outside the codebase (env injected at runtime, or KMS/Vault); never commit them or bake them
 into images. Use distinct keys per environment, tag ciphertext with a key ID, and have a rotation
 procedure before you need it (rotate on suspected compromise or cryptoperiod expiry). Prefer envelope
-encryption (separate data-encryption and key-encryption keys). See `vibe-security:secrets`.
+encryption (separate data-encryption and key-encryption keys). See `secaudit:secrets`.
 
 ## Sources
 

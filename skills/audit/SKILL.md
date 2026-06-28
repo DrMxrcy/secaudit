@@ -1,6 +1,6 @@
 ---
 name: audit
-description: Runs a full security audit of a codebase for the vulnerabilities AI coding assistants commonly introduce in "vibe-coded" apps. Orchestrates the focused vibe-security domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more). Use whenever the user asks for a security review or audit, says "is this safe?", "check my code", "review for vulnerabilities", "can someone hack this?", mentions "vibe coding", or wants a whole-app security sweep before shipping.
+description: Runs a full security audit of a codebase for the vulnerabilities AI coding assistants commonly introduce in "vibe-coded" apps. Orchestrates the focused secaudit domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more). Use whenever the user asks for a security review or audit, says "is this safe?", "check my code", "review for vulnerabilities", "can someone hack this?", mentions "vibe coding", or wants a whole-app security sweep before shipping.
 license: MIT
 ---
 
@@ -37,38 +37,38 @@ codebase uses that technology or pattern** — skip areas that aren't relevant. 
 carries the concrete detection patterns and before/after fixes.
 
 1. **Framework versions** — known-vulnerable framework versions / CVEs in `package.json` and lock
-   files. → `vibe-security:framework-versions`
+   files. → `secaudit:framework-versions`
 2. **Secrets & environment variables** — hardcoded keys, client-exposed env prefixes
    (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`), default credentials, `.gitignore` hygiene.
-   → `vibe-security:secrets`
+   → `secaudit:secrets`
 3. **Database access control** — Supabase RLS, Firebase Security Rules, SQL/ORM exposure. The #1
-   source of critical vulnerabilities in vibe-coded apps. → `vibe-security:database`
+   source of critical vulnerabilities in vibe-coded apps. → `secaudit:database`
 4. **Convex** — if the project uses Convex (`convex/` functions, schema). Convex has no row-level
-   security; access control lives in function bodies. → `vibe-security:convex-security`
+   security; access control lives in function bodies. → `secaudit:convex-security`
 5. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
-   Server Action protection, session management. → `vibe-security:auth`
+   Server Action protection, session management. → `secaudit:auth`
 6. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
-   proof counters. → `vibe-security:rate-limiting`
+   proof counters. → `secaudit:rate-limiting`
 7. **Payments** — client-side price manipulation, webhook signature verification, subscription
-   status validation. → `vibe-security:payments`
+   status validation. → `secaudit:payments`
 8. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
-   versions, lock file hygiene. → `vibe-security:supply-chain`
+   versions, lock file hygiene. → `secaudit:supply-chain`
 9. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
-   native bridge, network/ATS. → `vibe-security:react-native-security`
+   native bridge, network/ATS. → `secaudit:react-native-security`
 10. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
-    code signing, config plugins, deep links. → `vibe-security:expo-security`
+    code signing, config plugins, deep links. → `secaudit:expo-security`
 11. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
-    unsafe output rendering. → `vibe-security:ai-integration`
+    unsafe output rendering. → `secaudit:ai-integration`
 12. **Deployment configuration** — production settings, security headers, source maps, preview
-    deployment isolation, environment separation. → `vibe-security:deployment`
+    deployment isolation, environment separation. → `secaudit:deployment`
 13. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
-    validation. → `vibe-security:data-access`
+    validation. → `secaudit:data-access`
 14. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
-    authorization). → `vibe-security:web-vulns`
+    authorization). → `secaudit:web-vulns`
 15. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
-    keys/IVs, JWT algorithm confusion. → `vibe-security:cryptography`
+    keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
 16. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
-    audit logging, insecure deserialization, command injection. → `vibe-security:logging-monitoring`
+    audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
 
 For a partial review or when generating code in a specific area, dispatch only the relevant
 domain skill(s).

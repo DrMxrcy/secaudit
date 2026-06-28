@@ -46,7 +46,7 @@ Adding the `x-middleware-subrequest` header bypasses all middleware logic, inclu
 - **Affected:** 11.1.4–12.3.4, 13.0.0–13.5.8, 14.0.0–14.2.24, 15.0.0–15.2.2.
 - **Fixed in:** 12.3.5, 13.5.9, 14.2.25, 15.2.3.
 - **Action:** Upgrade AND stop relying on middleware as the sole auth layer (see
-  `vibe-security:auth`). Vercel-hosted apps were not affected; self-hosted deployments were.
+  `secaudit:auth`). Vercel-hosted apps were not affected; self-hosted deployments were.
 
 ### CVE-2025-49826 — Next.js cache poisoning DoS (15.1.x)
 
@@ -87,7 +87,7 @@ duplicated in:
 - Database-level policies (RLS)
 
 Think of middleware as a building's front door: it directs traffic and does a first pass, but
-every room inside must still have its own lock. See `vibe-security:auth`.
+every room inside must still have its own lock. See `secaudit:auth`.
 
 ## Sources
 

@@ -1,6 +1,6 @@
 # Sources
 
-Every claim in the vibe-security skills is backed by a primary source: official documentation,
+Every claim in the secaudit skills is backed by a primary source: official documentation,
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 

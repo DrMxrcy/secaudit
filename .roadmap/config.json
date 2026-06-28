@@ -1,5 +1,5 @@
 {
-  "project": "Vibe Security",
+  "project": "Secaudit",
   "currentVersion": "0.0.1",
   "nextId": 3,
   "items": [
@@ -10,7 +10,7 @@
       "type": "feature",
       "version": "3.0.0",
       "file": "plans/001-fork-into-installable-claude-code-plugin.md",
-      "note": "Vibe Security is now a one-step installable plugin with sharper, more focused security checks and new coverage for Expo, React Native, and Convex apps.",
+      "note": "Secaudit is now a one-step installable plugin with sharper, more focused security checks and new coverage for Expo, React Native, and Convex apps.",
       "audience": "public"
     },
     {

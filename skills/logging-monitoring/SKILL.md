@@ -59,7 +59,7 @@ export const logger = pino({
 // Also configure the crash reporter's scrubbing to strip body + auth headers.
 ```
 
-See `vibe-security:secrets` and `vibe-security:react-native-security` (mobile log/crash leaks).
+See `secaudit:secrets` and `secaudit:react-native-security` (mobile log/crash leaks).
 
 ## 3. Missing Audit Logging + Alerting
 
@@ -131,7 +131,7 @@ execFile("convert", [String(req.query.file), "out.png"], { shell: false }, cb);
 ```
 
 For dynamic logic, never eval user input - use a lookup map or a sandboxed expression library with an
-allowlist. Run with least privilege. See `vibe-security:data-access` for SQL/ORM injection.
+allowlist. Run with least privilege. See `secaudit:data-access` for SQL/ORM injection.
 
 ## Sources
 

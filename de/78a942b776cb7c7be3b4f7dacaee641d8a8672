@@ -1,0 +1,37 @@
+.claude-plugin/marketplace.json
+  s_2e6037d119eca3::t_bb5c43f8d7fcab 12
+README.md
+  s_2e6037d119eca3::t_e27a31f6a66c51 55,57-59
+  s_2e6037d119eca3::t_172f85acaced90 1,3,5,7,9,13-14
+skills/audit/SKILL.md
+  s_2e6037d119eca3::t_2afc6e29f1540f 66-71,76-93
+  s_2e6037d119eca3::t_9e92b026fd7982 94
+.claude-plugin/plugin.json
+  s_2e6037d119eca3::t_bb5c43f8d7fcab 3
+.roadmap/config.json
+  s_2e6037d119eca3::t_4e808cdbc943eb 32-33
+.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md
+  s_2e6037d119eca3::t_9d8a1105619063 6,57-59
+CHANGELOG.internal.md
+  s_2e6037d119eca3::t_6c5f0899f8bef2 5,8
+CHANGELOG.md
+  s_2e6037d119eca3::t_0f000ca37a4707 3,6
+ROADMAP.md
+  s_2e6037d119eca3::t_c8fe5866346203 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "de78a942b776cb7c7be3b4f7dacaee641d8a8672",
+  "prompts": {},
+  "sessions": {
+    "s_2e6037d119eca3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c38b795e-317b-488f-a01a-bfcd7919871e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

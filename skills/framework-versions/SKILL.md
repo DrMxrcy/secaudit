@@ -88,3 +88,12 @@ duplicated in:
 
 Think of middleware as a building's front door: it directs traffic and does a first pass, but
 every room inside must still have its own lock. See `vibe-security:auth`.
+
+## Sources
+
+- https://nvd.nist.gov/vuln/detail/CVE-2025-55182 -- React2Shell RSC RCE (CVSS 10.0)
+- https://nvd.nist.gov/vuln/detail/CVE-2025-66478 -- confirms the Next.js-side ID is a rejected duplicate
+- https://www.cisa.gov/known-exploited-vulnerabilities-catalog -- CISA KEV (React2Shell actively exploited)
+- https://github.com/advisories/GHSA-f82v-jwr5-mffw -- CVE-2025-29927 middleware bypass advisory
+- https://github.com/advisories/GHSA-67rr-84xm-4c7r -- CVE-2025-49826 cache-poisoning DoS advisory
+- https://nextjs.org/blog -- official Next.js security releases

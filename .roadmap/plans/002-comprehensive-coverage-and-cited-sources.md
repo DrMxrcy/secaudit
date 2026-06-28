@@ -3,7 +3,7 @@ id: 2
 title: Comprehensive coverage and cited sources
 type: feature
 version: 3.1.0
-status: planned
+status: active
 created: 2026-06-27
 ---
 
@@ -32,26 +32,26 @@ created: 2026-06-27
 ## 🚶 Step-by-Step Checklist
 
 ### Phase A — Verification pass (fact-check existing skills)
-- [ ] Step 1: Research-verify the 9 fresh-researched skills' claims still current (framework-versions CVEs, Supabase keys, Convex, Expo, RN, supply-chain, ai-integration) -> target: verification log; fixes applied
-- [ ] Step 2: Independently verify the 5 carried-over skills (auth, payments, rate-limiting, deployment, data-access) against current primary sources -> target: verification log; fixes applied
+- [x] Step 1: Research-verify the 9 fresh-researched skills' claims still current (framework-versions CVEs, Supabase keys, Convex, Expo, RN, supply-chain, ai-integration) -> target: verification log; fixes applied
+- [x] Step 2: Independently verify the 5 carried-over skills (auth, payments, rate-limiting, deployment, data-access) against current primary sources -> target: verification log; fixes applied
 
 ### Phase B — Sourcing
-- [ ] Step 3: Add a `## Sources` section to all 14 existing skills with primary-source URLs -> target: every existing SKILL.md has Sources
-- [ ] Step 4: Create root `SOURCES.md` index grouping all cited sources by skill/topic -> target: file exists, links resolve
+- [x] Step 3: Add a `## Sources` section to all 14 existing skills with primary-source URLs -> target: every existing SKILL.md has Sources
+- [x] Step 4: Create root `SOURCES.md` index grouping all cited sources by skill/topic -> target: file exists, links resolve
 
 ### Phase C — New skill: web-vulns
-- [ ] Step 5: `skills/web-vulns/SKILL.md` — XSS, SSRF, file upload + path traversal, IDOR, with When-to-Use, before/after fixes, and Sources -> target: covers all four, cited
-- [ ] Step 6: Consolidate open-redirect cross-references into web-vulns and link from database/auth/expo/rn -> target: single canonical treatment
+- [x] Step 5: `skills/web-vulns/SKILL.md` — XSS, SSRF, file upload + path traversal, IDOR, with When-to-Use, before/after fixes, and Sources -> target: covers all four, cited
+- [x] Step 6: Consolidate open-redirect cross-references into web-vulns and link from database/auth/expo/rn -> target: single canonical treatment
 
 ### Phase D — New skill: cryptography
-- [ ] Step 7: `skills/cryptography/SKILL.md` — password hashing, CSPRNG, weak algorithms, JWT alg confusion (cross-link auth), encryption-at-rest, with Sources -> target: covers A02, cited
+- [x] Step 7: `skills/cryptography/SKILL.md` — password hashing, CSPRNG, weak algorithms, JWT alg confusion (cross-link auth), encryption-at-rest, with Sources -> target: covers A02, cited
 
 ### Phase E — New skill: logging-monitoring
-- [ ] Step 8: `skills/logging-monitoring/SKILL.md` — error info disclosure, secrets/PII in logs, audit logging, insecure deserialization + command injection, with Sources -> target: covers A09/A08/A03, cited
+- [x] Step 8: `skills/logging-monitoring/SKILL.md` — error info disclosure, secrets/PII in logs, audit logging, insecure deserialization + command injection, with Sources -> target: covers A09/A08/A03, cited
 
 ### Phase F — auth hardening + deployment fold-in
-- [ ] Step 9: Expand `skills/auth/SKILL.md` — cookie flags, CSRF (incl. Server Actions), passkeys/WebAuthn, session fixation, account enumeration, with Sources -> target: A07 fully covered
-- [ ] Step 10: Add clickjacking (X-Frame-Options / CSP frame-ancestors) to `skills/deployment/SKILL.md` -> target: clickjacking covered
+- [x] Step 9: Expand `skills/auth/SKILL.md` — cookie flags, CSRF (incl. Server Actions), passkeys/WebAuthn, session fixation, account enumeration, with Sources -> target: A07 fully covered
+- [x] Step 10: Add clickjacking (X-Frame-Options / CSP frame-ancestors) to `skills/deployment/SKILL.md` -> target: clickjacking covered
 
 ### Phase G — Orchestrator + release
 - [ ] Step 11: Update `skills/audit/SKILL.md` — add web-vulns/cryptography/logging-monitoring to dispatch + embed OWASP Top 10 mapping -> target: all 16 domains referenced

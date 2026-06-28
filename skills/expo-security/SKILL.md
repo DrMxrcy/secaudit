@@ -202,3 +202,11 @@ official plugins, review source, and scope EAS build secrets to least privilege.
 - `extra:` in `app.config.*` containing key/secret/token values
 - `.env`, `*.pem`, `*.keystore`, `*.p8`, `credentials.json` tracked by git (`git ls-files`)
 - custom `scheme` used as OAuth/magic-link redirect with no hosted AASA / `assetlinks.json`
+
+## Sources
+
+- https://docs.expo.dev/guides/environment-variables/ -- EXPO_PUBLIC_ visible in the compiled app
+- https://docs.expo.dev/eas/environment-variables/ -- EAS visibility levels do not secure embedded values
+- https://docs.expo.dev/versions/latest/sdk/securestore/ -- expo-secure-store (Keychain/Keystore)
+- https://docs.expo.dev/eas-update/code-signing/ -- OTA code signing verified on-client
+- https://docs.expo.dev/config-plugins/introduction/ -- config plugins run during prebuild

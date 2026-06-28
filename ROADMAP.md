@@ -12,6 +12,6 @@
 ### [x] v3.0.0 — 100%
 - [x] **#1 Fork into installable Claude Code plugin** `feature` — 100% ([plan](.roadmap/plans/001-fork-into-installable-claude-code-plugin.md))
 
-### [ ] v3.1.0 — 0%
-- [ ] **#2 Comprehensive coverage and cited sources** `feature` — 0% ([plan](.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md))
+### [ ] v3.1.0 — 77%
+- [ ] **#2 Comprehensive coverage and cited sources** `feature` — 77% ([plan](.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md))
 <!-- roadmap:auto:end -->

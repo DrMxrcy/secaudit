@@ -221,3 +221,12 @@ Supabase uses GoTrue for authentication. Watch for:
   Authentication → URL Configuration
 - **Email confirmation disabled** — AI assistants often disable email confirmation for convenience
   during development and forget to re-enable it
+
+## Sources
+
+- https://supabase.com/docs/guides/database/postgres/row-level-security -- RLS must be enabled on exposed tables
+- https://supabase.com/docs/guides/api/api-keys -- publishable vs secret keys (BYPASSRLS)
+- https://supabase.com/docs/guides/functions/auth -- Edge Functions JWT verification
+- https://supabase.com/docs/guides/auth -- Supabase Auth (formerly GoTrue)
+- https://firebase.google.com/docs/rules -- Firebase Security Rules
+- https://firebase.google.com/docs/firestore/quickstart -- locked vs test mode (default-deny)

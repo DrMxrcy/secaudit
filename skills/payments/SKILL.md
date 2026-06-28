@@ -80,3 +80,9 @@ webhooks) is the source of truth.
 Validate that checkout session metadata (user ID, plan, etc.) was set **server-side** when
 creating the session, not passed from the client. If metadata comes from the client, an attacker
 can claim to be a different user or select a different plan.
+
+## Sources
+
+- https://docs.stripe.com/webhooks/signature -- signature verification requires the raw body
+- https://docs.stripe.com/webhooks -- constructEvent, endpoint secret, event handling
+- https://docs.stripe.com/payments/checkout/price-options -- server-side Price IDs, not client amounts

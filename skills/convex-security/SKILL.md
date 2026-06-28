@@ -217,3 +217,13 @@ export const generateUploadUrl = mutation({
 - Unindexed `.filter()` over full tables = DoS via table scan (enforce with
   `@convex-dev/no-filter-in-query`).
 - No built-in rate limiting — abuse-sensitive endpoints need a manual limiter.
+
+## Sources
+
+- https://docs.convex.dev/functions/internal-functions -- public vs internal functions
+- https://docs.convex.dev/functions/validation -- argument validators
+- https://docs.convex.dev/auth/functions-auth -- ctx.auth.getUserIdentity()
+- https://docs.convex.dev/understanding/best-practices/ -- don't use a spoofable arg for access control
+- https://docs.convex.dev/functions/http-actions -- httpAction is public, manual auth required
+- https://docs.convex.dev/file-storage -- file URLs are unauthenticated
+- https://stack.convex.dev/row-level-security -- no built-in RLS; wrapDatabaseReader/Writer

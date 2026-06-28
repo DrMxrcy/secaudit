@@ -95,3 +95,10 @@ await db.users.update({ where: { id }, data: req.body });
 const { name, email } = validated.data;
 await db.users.update({ where: { id }, data: { name, email } });
 ```
+
+## Sources
+
+- https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html -- parameterized queries
+- https://www.prisma.io/docs/orm/prisma-client/queries/raw-database-access/raw-queries -- $queryRaw vs $queryRawUnsafe
+- https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html -- allow-list fields
+- https://zod.dev/ -- runtime schema validation at boundaries

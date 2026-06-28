@@ -172,3 +172,9 @@ vulnerability in the first place. Prevention is better than detection.
 
 - `./references/tooling.md` -- Recommended automated security scanning tools, organized by stack,
   and when to run each.
+
+## Sources
+
+- https://owasp.org/Top10/ -- OWASP Top 10 (2021), the backbone this audit maps to
+- https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
+- https://owasp.org/www-project-mobile-top-10/ -- OWASP Mobile Top 10

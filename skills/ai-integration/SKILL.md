@@ -138,3 +138,10 @@ Beyond per-provider spending caps, implement application-level controls:
   calls and alert
 - **Separate API keys** for development and production — a dev key leak shouldn't drain your
   production budget
+
+## Sources
+
+- https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
+- https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/ -- official 2025 list/PDF
+- https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices -- MCP security best practices
+- https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization -- MCP token-audience binding (no passthrough)

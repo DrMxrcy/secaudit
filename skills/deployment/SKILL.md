@@ -75,6 +75,19 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 Adjust `Content-Security-Policy` based on your app's needs (e.g., if you use inline styles or load
 scripts from CDNs), but start restrictive and loosen as needed — not the other way around.
 
+### Clickjacking
+
+Without frame-busting headers, an attacker can embed your site in a transparent `<iframe>` over a
+decoy page and trick a logged-in user into clicking real buttons (UI redress). Defend with both
+`X-Frame-Options: DENY` (legacy) and the modern CSP directive `frame-ancestors 'none'` (or an
+explicit allowlist if you intentionally embed your app). `frame-ancestors` supersedes
+`X-Frame-Options` in browsers that support it; set both for coverage.
+
+```
+Content-Security-Policy: frame-ancestors 'none'
+X-Frame-Options: DENY
+```
+
 ## Pre-Ship Checks
 
 Before deploying:
@@ -90,3 +103,11 @@ Before deploying:
 - Whitelist only your own domains
 - Be careful with `Access-Control-Allow-Credentials: true` — it must be paired with specific
   origins, not wildcards
+
+## Sources
+
+- https://owasp.org/www-project-secure-headers/ -- CSP, HSTS, X-Frame-Options, frame-ancestors, etc.
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy -- CSP reference
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security -- HSTS reference
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS -- CORS (no wildcard with credentials)
+- https://vercel.com/docs/deployment-protection -- preview deployments public by default

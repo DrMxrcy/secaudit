@@ -24,9 +24,10 @@ don't exist** — commercial models averaged ~5.2%, open-source models ~21.7%. C
 hallucinated names recurred across repeated runs of the same prompt**, making them predictable and
 easy to pre-register.
 
-This is not theoretical: a researcher-registered hallucinated package (`huggingface-cli`) drew
-**30,000+ real downloads in three months**. Unlike typosquatting (betting on human typos),
-slopsquatting bets on the AI being predictably wrong.
+This is not theoretical: a hallucinated package (`huggingface-cli`), registered as a proof of
+concept by researcher Bar Lanyado at Lasso Security, drew **30,000+ real downloads in three
+months**. Unlike typosquatting (betting on human typos), slopsquatting bets on the AI being
+predictably wrong.
 
 ### What to Check
 
@@ -131,3 +132,12 @@ These are trivially guessable, allowing token forgery. Search for:
 ```bash
 grep -rn "secret\|changeme\|keyboard.cat\|supersecret" --include="*.ts" --include="*.js" --include="*.env*"
 ```
+
+## Sources
+
+- https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen -- USENIX 2025 package-hallucination study (19.7% / 43% stats)
+- https://arxiv.org/abs/2406.10279 -- preprint of the same study
+- https://www.lasso.security/blog/ai-package-hallucinations -- Lasso Security: the huggingface-cli proof of concept
+- https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks -- Socket research on slopsquatting
+- https://snyk.io/articles/slopsquatting-mitigation-strategies/ -- mitigation guidance
+- https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json -- lockfiles pin versions + integrity hashes

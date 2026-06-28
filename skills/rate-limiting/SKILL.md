@@ -69,3 +69,9 @@ export async function POST(request: Request) {
   // ... handle request
 }
 ```
+
+## Sources
+
+- https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html -- rate limiting / resource exhaustion
+- https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html -- throttling brute-force endpoints
+- https://upstash.com/docs/redis/sdks/ratelimit-ts/overview -- @upstash/ratelimit sliding window

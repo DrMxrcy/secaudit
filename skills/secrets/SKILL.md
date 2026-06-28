@@ -97,3 +97,10 @@ Supabase now rejects secret keys sent from a browser User-Agent and auto-revokes
 in public GitHub repos — but neither stops an attacker using a leaked key via curl. Same rule
 stands: publishable keys go client-side, secret keys stay server-side only. See
 `vibe-security:database`.
+
+## Sources
+
+- https://nextjs.org/docs/app/guides/environment-variables -- NEXT_PUBLIC_ inlined into the client bundle
+- https://vite.dev/guide/env-and-mode -- VITE_ vars bundled at build time
+- https://docs.expo.dev/guides/environment-variables/ -- EXPO_PUBLIC_ embedded in plain text
+- https://supabase.com/docs/guides/api/api-keys -- Supabase publishable vs secret key model

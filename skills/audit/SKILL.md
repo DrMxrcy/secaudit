@@ -63,9 +63,34 @@ carries the concrete detection patterns and before/after fixes.
     deployment isolation, environment separation. → `vibe-security:deployment`
 13. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
     validation. → `vibe-security:data-access`
+14. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
+    authorization). → `vibe-security:web-vulns`
+15. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+    keys/IVs, JWT algorithm confusion. → `vibe-security:cryptography`
+16. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+    audit logging, insecure deserialization, command injection. → `vibe-security:logging-monitoring`
 
 For a partial review or when generating code in a specific area, dispatch only the relevant
 domain skill(s).
+
+## OWASP Coverage Map
+
+A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 10s:
+
+| OWASP 2021 | Domain skill(s) |
+|---|---|
+| A01 Broken Access Control | `database`, `auth`, `convex-security`, `web-vulns` (IDOR) |
+| A02 Cryptographic Failures | `cryptography` |
+| A03 Injection | `data-access`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
+| A04 Insecure Design | `rate-limiting`, `payments` (partial) |
+| A05 Security Misconfiguration | `deployment`, `secrets` |
+| A06 Vulnerable Components | `framework-versions`, `supply-chain` |
+| A07 Auth Failures | `auth` |
+| A08 Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
+| A09 Logging & Monitoring Failures | `logging-monitoring` |
+| A10 SSRF | `web-vulns` |
+| OWASP LLM Top 10 | `ai-integration` |
+| OWASP Mobile Top 10 | `react-native-security`, `expo-security` |
 
 ## Core Instructions
 

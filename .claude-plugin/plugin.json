@@ -1,6 +1,6 @@
 {
   "name": "vibe-security",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex), missing auth, client-side trust, insecure payments, supply-chain risks (slopsquatting), and Expo / React Native / Convex specific issues. One orchestrator skill plus focused per-domain skills.",
   "author": {
     "name": "DrMxrcy"

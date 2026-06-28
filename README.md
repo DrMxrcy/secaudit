@@ -1,17 +1,17 @@
-# Vibe Security v3.0 - Installable Claude Code Plugin
+# Vibe Security v3.1 - Installable Claude Code Plugin
 
-> Fork of [fartiacht/vibe-security-skill](https://github.com/fartiacht/vibe-security-skill), itself a fork of the original by [Chris Raroque](https://github.com/raroque). v3.0 restructures the project into an installable Claude Code plugin with focused per-domain skills.
+> Fork of [fartiacht/vibe-security-skill](https://github.com/fartiacht/vibe-security-skill), itself a fork of the original by [Chris Raroque](https://github.com/raroque). v3.x restructures the project into an installable Claude Code plugin with focused, fully-sourced per-domain skills.
 
-A security plugin that audits "vibe-coded" apps (projects built rapidly with AI assistance) for the vulnerabilities AI coding assistants consistently introduce: exposed secrets, broken database access control, missing auth, client-side trust, insecure payments, dependency supply-chain risks, and mobile/backend platform issues.
+A security plugin that audits "vibe-coded" apps (projects built rapidly with AI assistance) for the vulnerabilities AI coding assistants consistently introduce: exposed secrets, broken database access control, missing auth, client-side trust, insecure payments, dependency supply-chain risks, web vulnerabilities, cryptographic failures, and mobile/backend platform issues.
 
-## What changed in v3.0
+## What changed
 
-v2.0 was a single monolithic skill. v3.0 is a proper plugin: **one orchestrator skill plus 13 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
+v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 16 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
 
 - **Installable as a plugin** via `/plugin marketplace add` (no more copying a folder).
 - **Focused skills** that trigger independently: ask "check my Supabase RLS" and only the database skill loads.
-- **New dedicated coverage** for Convex, Expo/EAS, and React Native security.
-- **Research-verified content** (mid-2026): corrected CVE references, the new Supabase publishable/secret key model, current slopsquatting data, and the OWASP LLM Top 10 / MCP threat model.
+- **Comprehensive coverage**: the full OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 10s. Dedicated skills for Convex, Expo/EAS, and React Native.
+- **Every claim is sourced.** Each skill cites primary sources (official docs, NVD/GitHub advisories, OWASP); see [`SOURCES.md`](SOURCES.md). Content was research-verified in mid-2026 (which caught and corrected a rejected CVE reference).
 
 > **Breaking change:** the old top-level `vibe-security/` skill folder is gone. If you installed v2.0 by copying that folder, re-install as a plugin (below). Skills are now namespaced as `vibe-security:<name>`.
 
@@ -52,8 +52,11 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `vibe-security:react-native-security` | RN core: secure storage, deep links, WebView, native bridge, network/ATS, PKCE |
 | `vibe-security:expo-security` | Expo/EAS: `EXPO_PUBLIC_` inlining, EAS secrets, secure-store, OTA code signing, config plugins |
 | `vibe-security:ai-integration` | AI key exposure, usage caps, prompt injection, MCP threat model, output sanitization |
-| `vibe-security:deployment` | Production config, security headers, source maps, preview-deployment isolation |
+| `vibe-security:deployment` | Production config, security headers, source maps, preview-deployment isolation, clickjacking |
 | `vibe-security:data-access` | SQL injection, ORM operator injection, runtime input validation, mass assignment |
+| `vibe-security:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
+| `vibe-security:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion |
+| `vibe-security:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
 
 ## Why a security plugin for AI-generated code
 

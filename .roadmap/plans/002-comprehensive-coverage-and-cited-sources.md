@@ -3,7 +3,7 @@ id: 2
 title: Comprehensive coverage and cited sources
 type: feature
 version: 3.1.0
-status: active
+status: done
 created: 2026-06-27
 ---
 
@@ -54,6 +54,6 @@ created: 2026-06-27
 - [x] Step 10: Add clickjacking (X-Frame-Options / CSP frame-ancestors) to `skills/deployment/SKILL.md` -> target: clickjacking covered
 
 ### Phase G — Orchestrator + release
-- [ ] Step 11: Update `skills/audit/SKILL.md` — add web-vulns/cryptography/logging-monitoring to dispatch + embed OWASP Top 10 mapping -> target: all 16 domains referenced
-- [ ] Step 12: Update README (skill list 14 -> 17, OWASP coverage note) and bump manifests to 3.1.0 -> target: consistent version, accurate list
-- [ ] Step 13: Final pass — `claude plugin validate` passes, every SKILL.md has frontmatter + When-to-Use + Sources, README em-dash-free -> target: clean
+- [x] Step 11: Update `skills/audit/SKILL.md` — add web-vulns/cryptography/logging-monitoring to dispatch + embed OWASP Top 10 mapping -> target: all 16 domains referenced
+- [x] Step 12: Update README (skill list 14 -> 17, OWASP coverage note) and bump manifests to 3.1.0 -> target: consistent version, accurate list
+- [x] Step 13: Final pass — `claude plugin validate` passes, every SKILL.md has frontmatter + When-to-Use + Sources, README em-dash-free -> target: clean

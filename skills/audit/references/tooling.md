@@ -15,9 +15,16 @@ After a manual audit, recommend these tools based on the project's stack. Priori
 | Tool | What it does | How to access |
 |------|-------------|--------------|
 | Security Advisor | Scans for RLS misconfigurations, weak policies | Supabase Dashboard → Security Advisor |
-| Supabase MCP | Run security advisor from Claude Code | Via Supabase MCP connector |
+| Supabase MCP | Run security advisor from Claude Code | Via Supabase MCP connector (read-only where possible) |
 | SupaExplorer | Free RLS audit via OAuth | supaexplorer.com |
 | `supabase db lint` | Lint database for common issues | Supabase CLI |
+
+## Convex Projects
+
+| Tool | What it does | How to run |
+|------|-------------|------------|
+| `@convex-dev/eslint-plugin` | Flags missing argument validators and unindexed `.filter()` table scans | Enable `require-argument-validators` and `no-filter-in-query` rules |
+| Manual function audit | Confirm every public `query`/`mutation`/`action`/`httpAction` has auth + validators | `grep -rn "mutation(\|query(\|action(\|httpAction(" convex/` |
 
 ## Next.js Projects
 
@@ -26,6 +33,14 @@ After a manual audit, recommend these tools based on the project's stack. Priori
 | `/security-review` | Built-in Claude Code security audit | Run in Claude Code from project root |
 | `npx next info` | Shows Next.js version and environment | Check version against known CVEs |
 | Security headers check | Verify CSP, HSTS, X-Frame-Options | securityheaders.com or `curl -I your-site.com` |
+
+## Expo / React Native Projects
+
+| Check | What to verify | How |
+|-------|---------------|-----|
+| Bundle secret scan | No secrets in the JS bundle | Search source/`.env` for `EXPO_PUBLIC_*(KEY\|SECRET\|TOKEN)`, `sk_live`, `sk-` |
+| Secure storage | Tokens in Keychain/Keystore, not AsyncStorage | `grep -rn "AsyncStorage.setItem" --include="*.ts*"` |
+| OTA code signing | Updates are signed | `updates` block in app config includes `codeSigningCertificate` |
 
 ## Vercel-Deployed Projects
 

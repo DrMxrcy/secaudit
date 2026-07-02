@@ -1,0 +1,35 @@
+{
+  "project": "Secaudit",
+  "currentVersion": "0.0.1",
+  "nextId": 3,
+  "items": [
+    {
+      "id": 1,
+      "slug": "fork-into-installable-claude-code-plugin",
+      "title": "Fork into installable Claude Code plugin",
+      "type": "feature",
+      "version": "3.0.0",
+      "file": "plans/001-fork-into-installable-claude-code-plugin.md",
+      "note": "Secaudit is now a one-step installable plugin with sharper, more focused security checks and new coverage for Expo, React Native, and Convex apps.",
+      "audience": "public"
+    },
+    {
+      "id": 2,
+      "slug": "comprehensive-coverage-and-cited-sources",
+      "title": "Comprehensive coverage and cited sources",
+      "type": "feature",
+      "version": "3.1.0",
+      "file": "plans/002-comprehensive-coverage-and-cited-sources.md",
+      "note": "Every security check is now backed by cited sources, and the audit covers the full OWASP Top 10 with new checks for cryptography, web vulnerabilities (XSS, SSRF, file uploads), and security logging.",
+      "audience": "public"
+    }
+  ],
+  "settings": {
+    "autoCommit": true,
+    "gitTagOnRelease": false
+  },
+  "versionDates": {
+    "3.0.0": "2026-06-27",
+    "3.1.0": "2026-06-28"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "0.0.1",
-  "nextId": 3,
+  "nextId": 6,
   "items": [
     {
       "id": 1,
@@ -22,6 +22,33 @@
       "file": "plans/002-comprehensive-coverage-and-cited-sources.md",
       "note": "Every security check is now backed by cited sources, and the audit covers the full OWASP Top 10 with new checks for cryptography, web vulnerabilities (XSS, SSRF, file uploads), and security logging.",
       "audience": "public"
+    },
+    {
+      "id": 3,
+      "slug": "live-cve-and-advisory-lookup",
+      "title": "Live CVE and advisory lookup",
+      "type": "feature",
+      "version": "3.2.0",
+      "file": "plans/003-live-cve-and-advisory-lookup.md",
+      "note": "Version and dependency checks now pull the latest published vulnerability advisories at audit time, so you're warned about newly disclosed issues instead of only a fixed built-in list."
+    },
+    {
+      "id": 4,
+      "slug": "dynamic-verification-against-the-running-app",
+      "title": "Dynamic verification against the running app",
+      "type": "feature",
+      "version": "3.2.0",
+      "file": "plans/004-dynamic-verification-against-the-running-app.md",
+      "note": "The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms."
+    },
+    {
+      "id": 5,
+      "slug": "risk-ranked-scoping-finding-verification-and-admin-surface-review",
+      "title": "Risk-ranked scoping, finding verification, and admin-surface review",
+      "type": "feature",
+      "version": "3.2.0",
+      "file": "plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md",
+      "note": "Audits now start with your highest-risk areas, can focus on a specific surface such as the admin panel, double-check each finding before reporting it, and add a dedicated check for privilege-escalation gaps."
     }
   ],
   "settings": {

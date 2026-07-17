@@ -1,0 +1,37 @@
+SOURCES.md
+  s_3b6998ac74d80b::t_d37161ea7a05a6 56-62
+README.md
+  s_3b6998ac74d80b::t_628ec68c1ed8d5 49
+.roadmap/config.json
+  s_3b6998ac74d80b::t_784249d5366db4 62
+skills/audit/SKILL.md
+  s_3b6998ac74d80b::t_cc173db016a6c7 33,35-36,38-58,61-62,69-70,73-81,86-89,91,93-98
+  s_3b6998ac74d80b::t_65a65f53545bc5 156-157
+  s_3b6998ac74d80b::t_b9b04a50b5ebfc 109
+  s_3b6998ac74d80b::t_1a029c0f90c468 133-149
+.roadmap/plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md
+  s_3b6998ac74d80b::t_784249d5366db4 6,53,55,57,59,61,63
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_784249d5366db4 10
+skills/privilege-escalation/SKILL.md
+  s_3b6998ac74d80b::t_cde48508d62c85 105-107,109-111
+  s_3b6998ac74d80b::t_872cf33edbfd8c 1-104,108,112-163
+ROADMAP.md
+  s_3b6998ac74d80b::t_784249d5366db4 18,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7eaa86de066deb22903ee24050e671003db39c14",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

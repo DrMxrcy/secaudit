@@ -1,0 +1,50 @@
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_a07837194a07b2 8
+skills/framework-versions/references/live-advisory-lookup.md
+  s_3b6998ac74d80b::t_9cda42d37f8436 88
+  s_3b6998ac74d80b::t_13aed7bc8ace7a 1-15,17-87,89
+  s_3b6998ac74d80b::t_00eebeeecb08ae 16
+SOURCES.md
+  s_3b6998ac74d80b::t_c4edea8edc245a 20
+  s_3b6998ac74d80b::t_5f35adb5b13d91 16-19
+skills/audit/references/tooling.md
+  s_3b6998ac74d80b::t_66befad1324640 10
+  s_3b6998ac74d80b::t_fb509efcad882e 11
+skills/supply-chain/SKILL.md
+  s_3b6998ac74d80b::t_8b3219b6a0a352 87-95
+ROADMAP.md
+  s_3b6998ac74d80b::t_a07837194a07b2 18-19
+skills/framework-versions/SKILL.md
+  s_3b6998ac74d80b::t_a8f6cd28b3a60a 22-29,31-37
+  s_3b6998ac74d80b::t_fc556517b69678 84,89-93
+  s_3b6998ac74d80b::t_b85c1d300d6433 86
+  s_44277f9322a351::t_d2b2c7a1d4d164 94
+.roadmap/config.json
+  s_3b6998ac74d80b::t_a07837194a07b2 61-62
+.roadmap/plans/003-live-cve-and-advisory-lookup.md
+  s_3b6998ac74d80b::t_a07837194a07b2 6,45,47,49-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ad3a205bbd85ac6b0818877a8ba45faa2ca6c6bc",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    },
+    "s_44277f9322a351": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e52e9be-52d4-4e77-8341-6c75f3a40c28",
+        "model": "claude-fable-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

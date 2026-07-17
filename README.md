@@ -46,6 +46,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:database` | Supabase RLS, Firebase Security Rules, storage policies, Edge Functions, the new key model |
 | `secaudit:convex-security` | Convex: public vs internal functions, validators, auth in handlers, file-storage access |
 | `secaudit:auth` | JWT verification, why middleware is not a security boundary, Server Actions, sessions |
+| `secaudit:privilege-escalation` | Admin-surface review: unprotected admin routes/actions, roles trusted from the client, broken function-level authorization, role mass-assignment |
 | `secaudit:rate-limiting` | Where limits are required, tamper-proof counters, billing and spend caps |
 | `secaudit:payments` | Client-side price manipulation, webhook signature verification, subscription validation |
 | `secaudit:supply-chain` | Slopsquatting / hallucinated packages, lock-file hygiene, weak default secrets |

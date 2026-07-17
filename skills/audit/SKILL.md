@@ -30,45 +30,72 @@ Never trust the client. Every price, user ID, role, subscription status, feature
 limit counter must be validated or enforced server-side. If it exists only in the browser, mobile
 bundle, or request body, an attacker controls it.
 
-## Audit Process
+## Scope Control
 
-Examine the codebase systematically. For each area, apply the matching domain skill **only if the
-codebase uses that technology or pattern** — skip areas that aren't relevant. Each domain skill
-carries the concrete detection patterns and before/after fixes.
+Match the effort to what was asked — don't blanket-dispatch every domain when the request is
+narrow.
 
-1. **Framework versions** — known-vulnerable framework versions / CVEs in `package.json` and lock
-   files. → `secaudit:framework-versions`
-2. **Secrets & environment variables** — hardcoded keys, client-exposed env prefixes
+- **Whole app** (default): run the full risk-ranked sweep below, skipping only areas whose
+  technology the project doesn't use.
+- **A named surface** (e.g. "audit the admin panel", "just the checkout flow", "the auth"):
+  scope to the files/routes for that surface and dispatch only the domains that apply to it. For
+  an admin panel that's `privilege-escalation`, `auth`, `database`/`convex-security`, `web-vulns`
+  (IDOR), and `logging-monitoring` — not payments, mobile, or supply chain.
+- **A single domain** (e.g. "check my Supabase RLS"): dispatch only that domain skill.
+- **A path/subset**: restrict reading to those files and run the relevant domains against them.
+
+State the chosen scope in one line before you start, so the user can widen or narrow it.
+
+## Audit Process (risk-ranked)
+
+Examine the codebase systematically. Work **highest-risk areas first** so criticals surface early,
+but for a whole-app sweep still cover every applicable tier. For each area, apply the matching
+domain skill **only if the codebase uses that technology or pattern** — skip areas that aren't
+relevant. Each domain skill carries the concrete detection patterns and before/after fixes.
+
+**Tier 1 — highest impact, always first.** These produce most critical findings in vibe-coded apps.
+
+1. **Secrets & environment variables** — hardcoded keys, client-exposed env prefixes
    (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`), default credentials, `.gitignore` hygiene.
    → `secaudit:secrets`
+2. **Framework versions** — known-vulnerable framework versions / CVEs in `package.json` and lock
+   files (live advisory lookup). → `secaudit:framework-versions`
 3. **Database access control** — Supabase RLS, Firebase Security Rules, SQL/ORM exposure. The #1
    source of critical vulnerabilities in vibe-coded apps. → `secaudit:database`
 4. **Convex** — if the project uses Convex (`convex/` functions, schema). Convex has no row-level
    security; access control lives in function bodies. → `secaudit:convex-security`
 5. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
    Server Action protection, session management. → `secaudit:auth`
-6. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
-   proof counters. → `secaudit:rate-limiting`
+6. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
+   the client, broken function-level authorization, role mass-assignment. → `secaudit:privilege-escalation`
 7. **Payments** — client-side price manipulation, webhook signature verification, subscription
    status validation. → `secaudit:payments`
-8. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
-   versions, lock file hygiene. → `secaudit:supply-chain`
-9. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
-   native bridge, network/ATS. → `secaudit:react-native-security`
-10. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
-    code signing, config plugins, deep links. → `secaudit:expo-security`
+
+**Tier 2 — common, high-frequency web attack surface.**
+
+8. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
+   proof counters. → `secaudit:rate-limiting`
+9. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
+   authorization). → `secaudit:web-vulns`
+10. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
+    validation. → `secaudit:data-access`
 11. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
     unsafe output rendering. → `secaudit:ai-integration`
 12. **Deployment configuration** — production settings, security headers, source maps, preview
     deployment isolation, environment separation. → `secaudit:deployment`
-13. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
-    validation. → `secaudit:data-access`
-14. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
-    authorization). → `secaudit:web-vulns`
-15. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+
+**Tier 3 — still covered on a full sweep; often lower or conditional impact.**
+
+13. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-16. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+14. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
+15. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+    versions, lock file hygiene. → `secaudit:supply-chain`
+16. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+    native bridge, network/ATS. → `secaudit:react-native-security`
+17. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+    code signing, config plugins, deep links. → `secaudit:expo-security`
 
 For a partial review or when generating code in a specific area, dispatch only the relevant
 domain skill(s).
@@ -79,7 +106,7 @@ A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2021 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `convex-security`, `web-vulns` (IDOR) |
+| A01 Broken Access Control | `database`, `auth`, `privilege-escalation`, `convex-security`, `web-vulns` (IDOR) |
 | A02 Cryptographic Failures | `cryptography` |
 | A03 Injection | `data-access`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
 | A04 Insecure Design | `rate-limiting`, `payments` (partial) |
@@ -103,13 +130,31 @@ A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 1
   version), flag it immediately at the top of your response — don't bury it in a long list.
 - After the audit, recommend specific automated tools the developer should run (see Next Steps).
 
+### Verification pass (before reporting)
+
+Static reading produces *candidate* findings; some aren't real. Before a finding reaches the user,
+challenge it adversarially and drop or downgrade the ones that don't survive:
+
+1. **Reachable?** Is the vulnerable code reachable from an entry point (route, action, handler,
+   event), or is it dead/unused code?
+2. **Attacker-controlled?** Does untrusted input actually flow to the sink, or is the value fixed,
+   server-derived, or already constrained upstream?
+3. **Compensating control?** Is there an existing guard (RLS, a middleware+handler check, framework
+   auto-escaping, a validator) that already neutralizes it?
+
+Label each reported finding **Confirmed** (a concrete exploit path holds) or **Needs verification**
+(plausible but you could not confirm reachability/controllability from the code alone — say what
+would confirm it). Don't pad the report with issues you couldn't stand behind. For findings that
+warrant runtime proof, hand off to `secaudit:dynamic-verification` when a running app is available.
+
 ## Output Format
 
 Organize findings by severity: **Critical** → **High** → **Medium** → **Low**.
 
 For each issue:
 1. State the file and relevant line(s).
-2. Name the vulnerability.
+2. Name the vulnerability, and tag it **[Confirmed]** or **[Needs verification]** (see the
+   Verification pass above).
 3. Explain what an attacker could do (concrete impact, not abstract risk).
 4. Show a before/after code fix.
 

@@ -3,7 +3,7 @@ id: 5
 title: Risk-ranked scoping, finding verification, and admin-surface review
 type: feature
 version: 3.2.0
-status: planned
+status: done
 created: 2026-07-17
 ---
 
@@ -50,15 +50,15 @@ created: 2026-07-17
   skills unchanged.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add a **Scope Control** section to the orchestrator — interpret "admin surface" /
+- [x] Step 1: Add a **Scope Control** section to the orchestrator — interpret "admin surface" /
   a path subset / a single domain and narrow dispatch accordingly -> target: `skills/audit/SKILL.md`
-- [ ] Step 2: Reorder the Audit Process into risk tiers (Tier 1 high-risk first; all tiers run
+- [x] Step 2: Reorder the Audit Process into risk tiers (Tier 1 high-risk first; all tiers run
   for a full sweep) -> target: `skills/audit/SKILL.md`
-- [ ] Step 3: Add the adversarial **Verification Pass** (reachability, attacker-controllability,
+- [x] Step 3: Add the adversarial **Verification Pass** (reachability, attacker-controllability,
   compensating controls) + Confirmed/Needs-verification labels to the output -> target: `skills/audit/SKILL.md`
-- [ ] Step 4: Write `privilege-escalation/SKILL.md` (admin routes, server-side roles,
+- [x] Step 4: Write `privilege-escalation/SKILL.md` (admin routes, server-side roles,
   vertical/horizontal escalation, admin IDOR) with before/after fixes -> target: `skills/privilege-escalation/SKILL.md`
-- [ ] Step 5: Add `privilege-escalation` to the orchestrator domain list + OWASP map, the README
+- [x] Step 5: Add `privilege-escalation` to the orchestrator domain list + OWASP map, the README
   Skills table, and `SOURCES.md` -> target: `skills/audit/SKILL.md`, `README.md`, `SOURCES.md`
-- [ ] Step 6: Verify the new skill loads and a scoped request ("audit the admin surface") only
+- [x] Step 6: Verify the new skill loads and a scoped request ("audit the admin surface") only
   dispatches the relevant domains -> target: manual verification

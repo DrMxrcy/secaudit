@@ -19,12 +19,22 @@ templates. A vulnerable framework version is often the single highest-impact iss
 ## Check Process
 
 1. Read `package.json` (and `package-lock.json` or equivalent) for framework versions.
-2. Cross-reference against the critical CVEs below **and the live advisory database** — treat the
-   list here as a starting point, not a frozen source of truth. Verify against GitHub Advisories
-   / NVD and run `npm audit`.
-3. Flag any match as **High** or **Critical** severity.
+2. **Look up live advisories for the exact installed versions** — this is the authoritative
+   step. Query OSV.dev (or run `osv-scanner` / `npm audit`) for the packages found, so a CVE
+   disclosed after this skill was last edited is still caught. Full procedure and a worked
+   OSV.dev example: `./references/live-advisory-lookup.md`.
+3. Use the known high-impact examples below as a fast first pass and sanity check, **not** as the
+   source of truth. If a live result and an example disagree, the live result wins.
+4. Flag any match as **High** or **Critical** severity, and always report the **fixed version**
+   to upgrade to (from the live advisory, not a guess).
 
-## Next.js / React — Critical CVEs
+## Known high-impact examples (verify live)
+
+These are frequently-seen, high-impact CVEs — a quick first pass. Always confirm the current
+picture with the live lookup in step 2; treat this list as examples, not an exhaustive or
+frozen source of truth.
+
+### Next.js / React
 
 ### CVE-2025-55182 — React Server Components deserialization RCE (CVSS 10.0, Dec 2025)
 
@@ -71,9 +81,16 @@ cat package.json | grep '"next"'
 # Check React version
 cat package.json | grep '"react"'
 
-# Check for all known vulnerabilities in dependencies
+# Check for all known vulnerabilities in dependencies against LIVE advisory data
 npm audit
+osv-scanner scan source --lockfile package-lock.json   # if installed; see references below
 ```
+
+## References
+
+- `./references/live-advisory-lookup.md` -- How to look up live CVE/advisory data for the exact
+  installed versions (OSV.dev API worked example, `osv-scanner`, `npm audit`, GitHub Advisories,
+  firecrawl/WebSearch fallback). The authoritative step 2 of the check process.
 
 ## The Deeper Lesson
 

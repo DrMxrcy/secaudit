@@ -5,7 +5,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ## v3.2.0 — (in progress)
 
 ### ✨ New
-- (pending) Version and dependency checks now pull the latest published vulnerability advisories at audit time, so you're warned about newly disclosed issues instead of only a fixed built-in list.
+- Version and dependency checks now pull the latest published vulnerability advisories at audit time, so you're warned about newly disclosed issues instead of only a fixed built-in list.
 - (pending) The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms.
 - (pending) Audits now start with your highest-risk areas, can focus on a specific surface such as the admin panel, double-check each finding before reporting it, and add a dedicated check for privilege-escalation gaps.
 

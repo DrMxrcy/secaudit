@@ -7,7 +7,8 @@ After a manual audit, recommend these tools based on the project's stack. Priori
 | Tool | What it does | How to run |
 |------|-------------|------------|
 | `gitleaks` | Scans git history for leaked secrets | `npx gitleaks detect` or `brew install gitleaks && gitleaks detect` |
-| `npm audit` | Checks dependencies for known CVEs | `npm audit` (built into npm) |
+| `npm audit` | Checks dependencies for known CVEs (live data) | `npm audit` (built into npm) |
+| `osv-scanner` | Scans the lockfile against the live OSV.dev advisory DB (npm, PyPI, crates.io, Go); catches CVEs disclosed after any static list | `brew install osv-scanner` then `osv-scanner scan source --lockfile <lockfile>` |
 | `git ls-files \| grep -i env` | Checks if .env files are tracked by git | Run from project root |
 
 ## Supabase Projects

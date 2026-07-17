@@ -84,6 +84,15 @@ For deeper behavioral analysis (install scripts, suspicious package behavior), c
 pip-audit
 ```
 
+### Look up live advisories, not a frozen list
+
+`npm audit` / `pip-audit` already query live data — good. When you flag a specific package
+(unpinned, freshly added, or AI-suggested) and want to know whether *that exact version* has a
+known vulnerability, query OSV.dev directly rather than relying on any static list. OSV.dev needs
+no API key and covers npm, PyPI, crates.io, and Go. The full procedure and a worked example live
+in the `secaudit:framework-versions` skill's `live-advisory-lookup.md` reference (tool order:
+`osv-scanner` → OSV.dev API → `npm audit` → GitHub Advisories → firecrawl/WebSearch fallback).
+
 ## Unpinned Dependencies
 
 AI assistants often generate `package.json` with loose version ranges:

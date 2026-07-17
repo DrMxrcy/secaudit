@@ -13,6 +13,11 @@ Last verified: 2026-06-28.
 - https://github.com/advisories/GHSA-f82v-jwr5-mffw — CVE-2025-29927 middleware bypass
 - https://github.com/advisories/GHSA-67rr-84xm-4c7r — CVE-2025-49826 cache-poisoning DoS
 - https://nextjs.org/blog — official Next.js security releases
+- https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
+- https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape
+- https://github.com/google/osv-scanner — osv-scanner CLI for lockfile scanning
+- https://github.com/advisories — GitHub Security Advisory Database
+- https://nvd.nist.gov/developers/vulnerabilities — NVD CVE API (live CVE detail lookup)
 
 ## Secrets & environment (`secrets`)
 - https://nextjs.org/docs/app/guides/environment-variables — NEXT_PUBLIC_ inlining

@@ -1,0 +1,40 @@
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_49e847d6dc1287 5,9
+skills/audit/SKILL.md
+  s_3b6998ac74d80b::t_fcd517737eeb73 103-112
+.roadmap/plans/004-dynamic-verification-against-the-running-app.md
+  s_3b6998ac74d80b::t_49e847d6dc1287 6,47,49,51,53-54
+SOURCES.md
+  s_3b6998ac74d80b::t_cd20c794a26dfb 140-146
+.roadmap/config.json
+  s_3b6998ac74d80b::t_49e847d6dc1287 60-61,63
+ROADMAP.md
+  s_3b6998ac74d80b::t_49e847d6dc1287 18,20
+CHANGELOG.md
+  s_3b6998ac74d80b::t_49e847d6dc1287 3,6
+skills/dynamic-verification/SKILL.md
+  s_3b6998ac74d80b::t_08bcf1e43d68cb 1-90
+skills/dynamic-verification/references/probes.md
+  s_3b6998ac74d80b::t_7bdf4921d3deea 19-26,32-33
+  s_3b6998ac74d80b::t_bc209d6d202728 1-18,27-31,34-49,54,58-105,108-125
+  s_3b6998ac74d80b::t_c0f439ce1c8bf5 50-53,55-57
+  s_3b6998ac74d80b::t_4585b4dffa8b87 106-107
+README.md
+  s_3b6998ac74d80b::t_45ba1d941bf1bd 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6b3330d5c380a10e1d201ad0b6241a5c77fea850",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

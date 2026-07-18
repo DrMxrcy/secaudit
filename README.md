@@ -58,6 +58,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
+| `secaudit:dynamic-verification` | Optional runtime pass (Playwright): confirms/refutes findings against the running app — live headers, CORS, unauth routes, IDOR, reflected XSS |
 
 ## Why a security plugin for AI-generated code
 

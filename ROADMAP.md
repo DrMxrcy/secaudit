@@ -15,8 +15,8 @@
 ### [x] v3.1.0 — 100%
 - [x] **#2 Comprehensive coverage and cited sources** `feature` — 100% ([plan](.roadmap/plans/002-comprehensive-coverage-and-cited-sources.md))
 
-### [ ] v3.2.0 — 69%
+### [x] v3.2.0 — 100%
 - [x] **#3 Live CVE and advisory lookup** `feature` — 100% ([plan](.roadmap/plans/003-live-cve-and-advisory-lookup.md))
-- [ ] **#4 Dynamic verification against the running app** `feature` — 0% ([plan](.roadmap/plans/004-dynamic-verification-against-the-running-app.md))
+- [x] **#4 Dynamic verification against the running app** `feature` — 100% ([plan](.roadmap/plans/004-dynamic-verification-against-the-running-app.md))
 - [x] **#5 Risk-ranked scoping, finding verification, and admin-surface review** `feature` — 100% ([plan](.roadmap/plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md))
 <!-- roadmap:auto:end -->

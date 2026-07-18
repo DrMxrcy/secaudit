@@ -1,9 +1,9 @@
 # Changelog
 
-## v3.2.0 — (in progress)
+## v3.2.0 — 2026-07-17
 
 ### ✨ New
-- (pending) The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms.
+- The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms.
 
 ## v3.1.0 — 2026-06-28
 

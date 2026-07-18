@@ -100,6 +100,16 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
 For a partial review or when generating code in a specific area, dispatch only the relevant
 domain skill(s).
 
+## Optional final phase — dynamic verification
+
+Static tiers 1–17 read code and produce *candidate* findings. When a running instance of the app
+is available **and the user authorizes active testing of their own app**, follow the static sweep
+with `secaudit:dynamic-verification` to confirm or refute findings against the live app (security
+headers, CORS, unauthenticated routes, IDOR, reflected XSS). It upgrades a suspected finding to
+**Confirmed** with reproduction evidence, or **Refutes** it when a runtime control already handles
+it. This phase is optional and off by default — it requires the authorization gate in that skill.
+If no running app is available, leave unconfirmed findings tagged **Needs verification**.
+
 ## OWASP Coverage Map
 
 A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 10s:

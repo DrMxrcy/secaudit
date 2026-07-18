@@ -3,7 +3,7 @@ id: 4
 title: Dynamic verification against the running app
 type: feature
 version: 3.2.0
-status: planned
+status: done
 created: 2026-07-17
 ---
 
@@ -44,12 +44,12 @@ created: 2026-07-17
 - **Downstream impact:** Orchestrator output; no change to the static domain skills themselves.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write `dynamic-verification/SKILL.md` — authorization gate first, when-to-use,
+- [x] Step 1: Write `dynamic-verification/SKILL.md` — authorization gate first, when-to-use,
   Playwright MCP usage, Confirmed/Refuted verdict format -> target: `skills/dynamic-verification/SKILL.md`
-- [ ] Step 2: Write `references/probes.md` — Playwright recipes for headers, CORS, unauth
+- [x] Step 2: Write `references/probes.md` — Playwright recipes for headers, CORS, unauth
   routes, IDOR, reflected XSS, each mapped to an OWASP WSTG test id -> target: `skills/dynamic-verification/references/probes.md`
-- [ ] Step 3: Wire the optional Dynamic verification phase into the orchestrator and add the
+- [x] Step 3: Wire the optional Dynamic verification phase into the orchestrator and add the
   Confirmed/Suspected label to the output format -> target: `skills/audit/SKILL.md`
-- [ ] Step 4: Add the skill to the README Skills table and WSTG to `SOURCES.md` -> target: `README.md`, `SOURCES.md`
-- [ ] Step 5: Verify the skill loads as `secaudit:dynamic-verification` and the authorization
+- [x] Step 4: Add the skill to the README Skills table and WSTG to `SOURCES.md` -> target: `README.md`, `SOURCES.md`
+- [x] Step 5: Verify the skill loads as `secaudit:dynamic-verification` and the authorization
   gate is the first thing it does -> target: manual verification

@@ -43,6 +43,19 @@ narrow.
   (IDOR), and `logging-monitoring` — not payments, mobile, or supply chain.
 - **A single domain** (e.g. "check my Supabase RLS"): dispatch only that domain skill.
 - **A path/subset**: restrict reading to those files and run the relevant domains against them.
+- **Diff / PR scope** (e.g. "audit my branch changes", "review this PR", "check what I changed"):
+  review only the changed code — the common "is what I just wrote safe before I push?" case. Fast
+  and low-noise, and the right shape for CI on pull requests.
+  - Get the change set from `git diff <base>...HEAD` (or the PR diff, staged changes, or working
+    tree as the user indicates). Read the changed files plus the **immediate context** needed to
+    judge them — the enclosing handler, the imports, the called function — so you can trace a
+    source→sink or confirm a missing control.
+  - Dispatch only the domains the changed files touch (a new route → `auth`,
+    `privilege-escalation`, `web-vulns`, `data-access`; a new dependency → `supply-chain`,
+    `framework-versions`).
+  - **Judge the change by the guards that *should* surround it, not only the added lines.** A new
+    endpoint with no auth check is a finding *because* of what the diff omits. When a verdict truly
+    needs whole-app context the diff can't provide, say so and tag it **Needs verification**.
 
 State the chosen scope in one line before you start, so the user can widen or narrow it.
 

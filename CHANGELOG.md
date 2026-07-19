@@ -1,9 +1,9 @@
 # Changelog
 
-## v3.3.0 — (in progress)
+## v3.3.0 — 2026-07-19
 
 ### ✨ New
-- (pending) You can now point the audit at just your current branch or a pull request's changes, getting a fast, focused review of what you changed instead of the whole app.
+- You can now point the audit at just your current branch or a pull request's changes, getting a fast, focused review of what you changed instead of the whole app.
 - Audits now begin by mapping your app's attack surface and end with a check for anything the sweep missed, making the review more thorough.
 
 ## v3.2.0 — 2026-07-17

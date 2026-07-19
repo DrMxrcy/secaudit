@@ -3,7 +3,7 @@ id: 7
 title: Diff/PR-scoped audit mode
 type: feature
 version: 3.3.0
-status: planned
+status: done
 created: 2026-07-19
 ---
 
@@ -39,9 +39,9 @@ created: 2026-07-19
   scoped set unchanged.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add a "Diff / PR scope" mode to the orchestrator Scope Control (change-set
+- [x] Step 1: Add a "Diff / PR scope" mode to the orchestrator Scope Control (change-set
   derivation, context to pull, domain selection by touched files, the missing-guard caveat) -> target: `skills/audit/SKILL.md`
-- [ ] Step 2: Add a CI-on-PR note to tooling.md cross-referencing `/security-review` and the
+- [x] Step 2: Add a CI-on-PR note to tooling.md cross-referencing `/security-review` and the
   Anthropic action -> target: `skills/audit/references/tooling.md`
-- [ ] Step 3: Verify the mode reads coherently and doesn't contradict the whole-app scope or the
+- [x] Step 3: Verify the mode reads coherently and doesn't contradict the whole-app scope or the
   risk-ranked tiers -> target: manual verification

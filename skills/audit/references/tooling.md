@@ -63,6 +63,13 @@ For ongoing protection, add these to your CI pipeline:
     npx gitleaks detect --source=. --no-git
 ```
 
+For an AI security review on each pull request (the diff-scoped mode of this audit, run
+automatically), use Claude Code's built-in `/security-review` command or the
+[`anthropics/claude-code-security-review`](https://github.com/anthropics/claude-code-security-review)
+GitHub Action, which reviews only the PR's changed files and comments findings inline. Note: it is
+not hardened against prompt injection, so restrict it to trusted PRs (require approval for external
+contributors).
+
 ## When to Use Which
 
 - **Before every deploy:** `npm audit`, `gitleaks detect`, check framework version

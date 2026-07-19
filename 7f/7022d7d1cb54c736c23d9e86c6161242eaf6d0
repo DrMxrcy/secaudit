@@ -1,0 +1,37 @@
+.roadmap/plans/010-evidence-backed-findings-anti-hallucination.md
+  s_3b6998ac74d80b::t_58e0b719945959 12,15-29,33-40,43-49
+  s_3b6998ac74d80b::t_504d880f16a293 1-11,13-14,30-32,41-42
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_504d880f16a293 5-12
+ROADMAP.md
+  s_3b6998ac74d80b::t_504d880f16a293 23-28
+.roadmap/plans/007-diff-pr-scoped-audit-mode.md
+  s_3b6998ac74d80b::t_063b1a1a7d62fe 12,15-28,32-39,42-47
+  s_3b6998ac74d80b::t_504d880f16a293 1-11,13-14,29-31,40-41
+.roadmap/plans/008-attack-chain-construction-in-reports.md
+  s_3b6998ac74d80b::t_504d880f16a293 1-11,13-14,28-30,38-39
+  s_3b6998ac74d80b::t_6f1a124a4273dd 12,15-27,31-37,40-45
+.roadmap/plans/009-recon-and-coverage-gap-phases.md
+  s_3b6998ac74d80b::t_1311edd3b15200 12,15-30,34-35,37-42,45-51
+  s_3b6998ac74d80b::t_504d880f16a293 1-11,13-14,31-33,36,43-44
+CHANGELOG.md
+  s_3b6998ac74d80b::t_504d880f16a293 3-8
+.roadmap/config.json
+  s_3b6998ac74d80b::t_504d880f16a293 4,61-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7f7022d7d1cb54c736c23d9e86c6161242eaf6d0",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

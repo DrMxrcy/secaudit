@@ -7,7 +7,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ### ✨ New
 - (pending) You can now point the audit at just your current branch or a pull request's changes, getting a fast, focused review of what you changed instead of the whole app.
 - (pending) Audit reports now connect related weaknesses into concrete step-by-step attack paths, so you can see how separate issues combine into a real exploit.
-- (pending) Audits now begin by mapping your app's attack surface and end with a check for anything the sweep missed, making the review more thorough.
+- Audits now begin by mapping your app's attack surface and end with a check for anything the sweep missed, making the review more thorough.
 - Every reported issue is now backed by a verified spot in your code and a concrete exploit path, cutting speculative or false findings.
 
 ## v3.2.0 — 2026-07-17

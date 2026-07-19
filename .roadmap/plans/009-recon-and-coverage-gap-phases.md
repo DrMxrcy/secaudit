@@ -3,7 +3,7 @@ id: 9
 title: Recon and coverage-gap phases
 type: feature
 version: 3.3.0
-status: planned
+status: done
 created: 2026-07-19
 ---
 
@@ -42,10 +42,10 @@ created: 2026-07-19
   unchanged in the middle.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write `references/methodology.md` — recon/attack-surface checklist, sink-driven vs
+- [x] Step 1: Write `references/methodology.md` — recon/attack-surface checklist, sink-driven vs
   control-driven strategies, coverage-gap self-check questions -> target: `skills/audit/references/methodology.md`
-- [ ] Step 2: Add the **Reconnaissance** step before the tiers (feeds risk-ranking + scope) and
+- [x] Step 2: Add the **Reconnaissance** step before the tiers (feeds risk-ranking + scope) and
   link the methodology reference -> target: `skills/audit/SKILL.md`
-- [ ] Step 3: Add the **Coverage check** step after the verification pass and a "Coverage & known
+- [x] Step 3: Add the **Coverage check** step after the verification pass and a "Coverage & known
   gaps" line to the output -> target: `skills/audit/SKILL.md`
-- [ ] Step 4: Verify the new phases frame (not duplicate) the existing tiers and verification pass -> target: manual verification
+- [x] Step 4: Verify the new phases frame (not duplicate) the existing tiers and verification pass -> target: manual verification

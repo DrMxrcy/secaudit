@@ -46,6 +46,20 @@ narrow.
 
 State the chosen scope in one line before you start, so the user can widen or narrow it.
 
+## Reconnaissance (before the sweep)
+
+First map the attack surface of what's in scope — stack and frameworks, **entry points** (routes,
+Server Actions, webhooks, cron, public Convex functions, uploads, deep links), trust boundaries,
+the authentication/authorization mechanism and its authoritative layer, data stores, and
+third-party integrations. Read this from the code and config, not from assumptions.
+
+Recon makes the rest evidence-based: it confirms which domains actually apply (so risk-ranking and
+`Scope Control` target real surfaces, not guesses) and gives the coverage check something to check
+against. Apply two lenses throughout the sweep — **sink-driven** (trace untrusted input toward
+dangerous sinks) and **control-driven** (enumerate entry points, verify each has its authZ /
+validation / ownership / rate-limit guard). Full checklist and strategies:
+`./references/methodology.md`.
+
 ## Audit Process (risk-ranked)
 
 Examine the codebase systematically. Work **highest-risk areas first** so criticals surface early,
@@ -174,6 +188,15 @@ attacker-control from the code alone — say what would confirm it). A finding t
 behind. For findings that warrant runtime proof, hand off to `secaudit:dynamic-verification` when a
 running app is available.
 
+### Coverage check (after the sweep)
+
+Before writing the report, run a short completeness-critic pass against the recon map: was every
+entry point traced, every applicable domain actually run (skips confirmed from the code, not
+assumed), every trust boundary given an authorization look, every started data-flow followed to its
+end? Cover any gap you find, or state it explicitly. Report what you did **not** cover as a short
+**Coverage & known gaps** line — a report that names its own boundaries is more trustworthy than
+one that implies total coverage. See `./references/methodology.md`.
+
 ## Output Format
 
 Organize findings by severity: **Critical** → **High** → **Medium** → **Low**.
@@ -254,6 +277,9 @@ const session = await stripe.checkout.sessions.create({
 3. **Client-controlled pricing (High):** Attackers can purchase at any price. Use server-side
    price lookup.
 
+**Coverage & known gaps:** Reviewed the web/API surface, auth, database, and payments. Did not
+review the mobile app (out of scope this pass) — run `secaudit:expo-security` on it separately.
+
 ### Next Steps
 
 Run these automated checks:
@@ -272,6 +298,8 @@ vulnerability in the first place. Prevention is better than detection.
 
 ## References
 
+- `./references/methodology.md` -- The recon / attack-surface checklist, the sink-driven vs
+  control-driven analysis strategies, and the coverage-gap self-check questions.
 - `./references/tooling.md` -- Recommended automated security scanning tools, organized by stack,
   and when to run each.
 

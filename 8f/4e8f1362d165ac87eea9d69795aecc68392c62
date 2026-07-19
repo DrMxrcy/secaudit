@@ -1,0 +1,47 @@
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_d8796b2e52b5fe 12
+  s_3b6998ac74d80b::t_c18501356b4974 13
+  s_3b6998ac74d80b::t_59687360a7efa2 14
+ROADMAP.md
+  s_3b6998ac74d80b::t_c18501356b4974 22
+skills/cryptography/SKILL.md
+  s_3b6998ac74d80b::t_118119329a81ab 9-12
+skills/expo-security/SKILL.md
+  s_3b6998ac74d80b::t_5d7f63cc97e0a1 9-12
+.roadmap/plans/006-redact-secrets-in-audit-output-snyk-w007.md
+  s_3b6998ac74d80b::t_d8796b2e52b5fe 1-5,7-9,11-12,29,41
+  s_3b6998ac74d80b::t_051e1f63147b85 10,13-28,30-40,42,44,48
+  s_3b6998ac74d80b::t_c18501356b4974 6,43,45-47
+skills/react-native-security/SKILL.md
+  s_3b6998ac74d80b::t_6339988de6907f 9-12
+.roadmap/config.json
+  s_3b6998ac74d80b::t_c18501356b4974 72
+  s_3b6998ac74d80b::t_d8796b2e52b5fe 4,52-60
+skills/secrets/SKILL.md
+  s_3b6998ac74d80b::t_cb7e0965aec9ca 9-18
+skills/supply-chain/SKILL.md
+  s_3b6998ac74d80b::t_f1d081a44e7551 114-118
+skills/audit/SKILL.md
+  s_3b6998ac74d80b::t_6ef78b7dad376f 141-147
+  s_3b6998ac74d80b::t_10827d99d49dc5 172-173,177-178
+CHANGELOG.md
+  s_3b6998ac74d80b::t_d8796b2e52b5fe 8
+  s_3b6998ac74d80b::t_c18501356b4974 9
+  s_3b6998ac74d80b::t_4fb43f702d3f97 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8f4e8f1362d165ac87eea9d69795aecc68392c62",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

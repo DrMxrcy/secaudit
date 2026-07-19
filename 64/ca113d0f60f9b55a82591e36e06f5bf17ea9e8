@@ -1,0 +1,29 @@
+skills/audit/SKILL.md
+  s_3b6998ac74d80b::t_4c3ab13b99a48c 135-139
+  s_3b6998ac74d80b::t_c0043850fac992 182-184,187-189
+  s_3b6998ac74d80b::t_9a64a7d0f7ab5a 166-168,170-175
+.roadmap/config.json
+  s_3b6998ac74d80b::t_05c136192a6994 108
+.roadmap/plans/010-evidence-backed-findings-anti-hallucination.md
+  s_3b6998ac74d80b::t_87499a0035c600 6,43,46,48
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_e75d868ff6ab46 11
+ROADMAP.md
+  s_3b6998ac74d80b::t_af3c2d4f6d28bb 24,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "64ca113d0f60f9b55a82591e36e06f5bf17ea9e8",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

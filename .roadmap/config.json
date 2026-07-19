@@ -1,6 +1,6 @@
 {
   "project": "Secaudit",
-  "currentVersion": "0.0.1",
+  "currentVersion": "3.3.0",
   "nextId": 11,
   "items": [
     {
@@ -30,7 +30,8 @@
       "type": "feature",
       "version": "3.2.0",
       "file": "plans/003-live-cve-and-advisory-lookup.md",
-      "note": "Version and dependency checks now pull the latest published vulnerability advisories at audit time, so you're warned about newly disclosed issues instead of only a fixed built-in list."
+      "note": "Version and dependency checks now look up the latest published security advisories as they run, so you're alerted to newly disclosed issues instead of relying only on a built-in list.",
+      "audience": "public"
     },
     {
       "id": 4,
@@ -48,7 +49,8 @@
       "type": "feature",
       "version": "3.2.0",
       "file": "plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md",
-      "note": "Audits now start with your highest-risk areas, can focus on a specific surface such as the admin panel, double-check each finding before reporting it, and add a dedicated check for privilege-escalation gaps."
+      "note": "Audits now start with your highest-risk areas, can zero in on a single part of your app such as the admin area, and double-check each finding before reporting it.",
+      "audience": "public"
     },
     {
       "id": 6,
@@ -75,7 +77,8 @@
       "type": "feature",
       "version": "3.3.0",
       "file": "plans/008-attack-chain-construction-in-reports.md",
-      "note": "Audit reports now connect related weaknesses into concrete step-by-step attack paths, so you can see how separate issues combine into a real exploit."
+      "note": "Audit reports now connect related weaknesses into a single step-by-step attack path, so you can see how separate issues combine into a real-world risk.",
+      "audience": "public"
     },
     {
       "id": 9,
@@ -93,7 +96,8 @@
       "type": "feature",
       "version": "3.3.0",
       "file": "plans/010-evidence-backed-findings-anti-hallucination.md",
-      "note": "Every reported issue is now backed by a verified spot in your code and a concrete exploit path, cutting speculative or false findings."
+      "note": "Every reported issue is now backed by a verified spot in your code and a concrete attack path, so you get fewer false alarms.",
+      "audience": "public"
     }
   ],
   "settings": {

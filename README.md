@@ -1,4 +1,4 @@
-# Secaudit v3.1 - Installable Claude Code Plugin
+# Secaudit v3.3 - Installable Claude Code Plugin
 
 > An installable Claude Code plugin that audits AI-assisted apps for security vulnerabilities, organized as one orchestrator plus focused, fully-sourced per-domain skills. Builds on earlier open-source work (see Credits).
 
@@ -6,7 +6,7 @@ A security plugin that audits "vibe-coded" apps (projects built rapidly with AI 
 
 ## What changed
 
-v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 16 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
+v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 18 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
 
 - **Installable as a plugin** via `/plugin marketplace add` (no more copying a folder).
 - **Focused skills** that trigger independently: ask "check my Supabase RLS" and only the database skill loads.

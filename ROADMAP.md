@@ -21,9 +21,9 @@
 - [x] **#5 Risk-ranked scoping, finding verification, and admin-surface review** `feature` — 100% ([plan](.roadmap/plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md))
 - [x] **#6 Redact secrets in audit output (Snyk W007)** `bug` — 100% ([plan](.roadmap/plans/006-redact-secrets-in-audit-output-snyk-w007.md))
 
-### [ ] v3.3.0 — 0%
+### [ ] v3.3.0 — 23%
 - [ ] **#7 Diff/PR-scoped audit mode** `feature` — 0% ([plan](.roadmap/plans/007-diff-pr-scoped-audit-mode.md))
 - [ ] **#8 Attack-chain construction in reports** `feature` — 0% ([plan](.roadmap/plans/008-attack-chain-construction-in-reports.md))
 - [ ] **#9 Recon and coverage-gap phases** `feature` — 0% ([plan](.roadmap/plans/009-recon-and-coverage-gap-phases.md))
-- [ ] **#10 Evidence-backed findings (anti-hallucination)** `feature` — 0% ([plan](.roadmap/plans/010-evidence-backed-findings-anti-hallucination.md))
+- [x] **#10 Evidence-backed findings (anti-hallucination)** `feature` — 100% ([plan](.roadmap/plans/010-evidence-backed-findings-anti-hallucination.md))
 <!-- roadmap:auto:end -->

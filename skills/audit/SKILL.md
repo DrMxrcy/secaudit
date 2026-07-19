@@ -132,6 +132,11 @@ A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 1
 ## Core Instructions
 
 - Report only genuine security issues. Do not nitpick style or non-security concerns.
+- **No speculative findings.** Report a vulnerability only if you actually read the code that
+  proves it. Every finding must cite a verified `file:line` you opened and name its mechanism (the
+  source→sink data flow, or the specific missing control and the entry point it should protect). If
+  you cannot point to real code, do not report it — a guess dressed as a finding is worse than
+  silence.
 - When multiple issues exist, prioritize by exploitability and real-world impact.
 - If the codebase doesn't use a particular technology (e.g. no Supabase), skip that area entirely.
 - When generating new code, consult the relevant domain skill proactively to avoid introducing
@@ -158,22 +163,30 @@ challenge it adversarially and drop or downgrade the ones that don't survive:
    server-derived, or already constrained upstream?
 3. **Compensating control?** Is there an existing guard (RLS, a middleware+handler check, framework
    auto-escaping, a validator) that already neutralizes it?
+4. **Evidenced?** Can you cite the verified `file:line` you actually read and name the mechanism
+   (the source→sink path, or the missing control and the entry point it should guard)? If not,
+   **drop it** — do not downgrade a finding you cannot tie to real code.
 
-Label each reported finding **Confirmed** (a concrete exploit path holds) or **Needs verification**
-(plausible but you could not confirm reachability/controllability from the code alone — say what
-would confirm it). Don't pad the report with issues you couldn't stand behind. For findings that
-warrant runtime proof, hand off to `secaudit:dynamic-verification` when a running app is available.
+Label each reported finding **Confirmed** (a concrete exploit path holds, backed by cited code) or
+**Needs verification** (real code evidence exists, but you could not confirm reachability or
+attacker-control from the code alone — say what would confirm it). A finding that fails the
+**Evidenced?** check is dropped, not labelled. Don't pad the report with issues you couldn't stand
+behind. For findings that warrant runtime proof, hand off to `secaudit:dynamic-verification` when a
+running app is available.
 
 ## Output Format
 
 Organize findings by severity: **Critical** → **High** → **Medium** → **Low**.
 
 For each issue:
-1. State the file and relevant line(s). If the line contains a secret, mask its value (see the
-   redaction rule in Core Instructions) — cite the location, never the literal credential.
+1. State the file and relevant line(s) — a verified `file:line` you actually read. If the line
+   contains a secret, mask its value (see the redaction rule in Core Instructions) — cite the
+   location, never the literal credential.
 2. Name the vulnerability, and tag it **[Confirmed]** or **[Needs verification]** (see the
    Verification pass above).
-3. Explain what an attacker could do (concrete impact, not abstract risk).
+3. Explain what an attacker could do (concrete impact, not abstract risk), and state the
+   **mechanism** in one line: the source→sink path, or the missing control and the entry point it
+   should guard. This is the evidence the finding rests on.
 4. Show a before/after code fix. In the "before", use a masked placeholder where a real secret
    would appear (`***`, `sk_live_…REDACTED`) — do not reproduce the actual value.
 

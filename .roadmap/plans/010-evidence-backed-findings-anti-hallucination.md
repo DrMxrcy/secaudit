@@ -3,7 +3,7 @@ id: 10
 title: Evidence-backed findings (anti-hallucination)
 type: feature
 version: 3.3.0
-status: planned
+status: done
 created: 2026-07-19
 ---
 
@@ -40,10 +40,10 @@ created: 2026-07-19
   check distinguishes "not found" from "not looked at").
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add the "Evidenced?" check (verified file:line + source→sink or missing-control
+- [x] Step 1: Add the "Evidenced?" check (verified file:line + source→sink or missing-control
   mechanism; drop if unproven) to the Verification pass, plus a "no speculative findings" rule in
   Core Instructions -> target: `skills/audit/SKILL.md`
-- [ ] Step 2: Update the Output Format so each finding states its evidence reference and exploit
+- [x] Step 2: Update the Output Format so each finding states its evidence reference and exploit
   mechanism; keep rate-limiting/denial-of-wallet in scope (no blanket exclusions) -> target: `skills/audit/SKILL.md`
-- [ ] Step 3: Verify the new rule reconciles with the Confirmed / Needs-verification labels and
+- [x] Step 3: Verify the new rule reconciles with the Confirmed / Needs-verification labels and
   doesn't contradict the dynamic-verification handoff -> target: manual verification

@@ -1,0 +1,30 @@
+skills/audit/SKILL.md
+  s_3b6998ac74d80b::t_784221a1977802 231-234
+  s_3b6998ac74d80b::t_c7847df7e7c9cb 288-290,293-296
+  s_3b6998ac74d80b::t_66b7504117fb3b 291-292
+  s_3b6998ac74d80b::t_727b2cd91695ed 200-214
+.roadmap/config.json
+  s_3b6998ac74d80b::t_4d0af044fab06a 108
+.roadmap/plans/008-attack-chain-construction-in-reports.md
+  s_3b6998ac74d80b::t_57cd400af8a473 6,40,42,44
+CHANGELOG.internal.md
+  s_3b6998ac74d80b::t_8fe6e4d0f97d64 9
+ROADMAP.md
+  s_3b6998ac74d80b::t_dab51127447c7f 24,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "eb244453b7622411631348b296cad590a802b3db",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

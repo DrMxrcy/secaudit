@@ -5,6 +5,9 @@
 ### ✨ New
 - The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms.
 
+### 🐛 Fixed
+- Security audits now mask any secrets they find in their reports instead of repeating the real values, so running an audit can't itself leak a credential into logs or transcripts.
+
 ## v3.1.0 — 2026-06-28
 
 ### ✨ New

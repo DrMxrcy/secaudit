@@ -9,6 +9,9 @@ _Full work log — every item, including internal/dev work. The curated public c
 - The audit can now optionally run your app and actively test it to confirm real vulnerabilities and filter out false alarms.
 - Audits now start with your highest-risk areas, can focus on a specific surface such as the admin panel, double-check each finding before reporting it, and add a dedicated check for privilege-escalation gaps.
 
+### 🐛 Fixed
+- Security audits now mask any secrets they find in their reports instead of repeating the real values, so running an audit can't itself leak a credential into logs or transcripts.
+
 ## v3.1.0 — 2026-06-28
 
 ### ✨ New

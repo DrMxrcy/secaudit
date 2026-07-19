@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "0.0.1",
-  "nextId": 6,
+  "nextId": 7,
   "items": [
     {
       "id": 1,
@@ -49,6 +49,15 @@
       "version": "3.2.0",
       "file": "plans/005-risk-ranked-scoping-finding-verification-and-admin-surface-review.md",
       "note": "Audits now start with your highest-risk areas, can focus on a specific surface such as the admin panel, double-check each finding before reporting it, and add a dedicated check for privilege-escalation gaps."
+    },
+    {
+      "id": 6,
+      "slug": "redact-secrets-in-audit-output-snyk-w007",
+      "title": "Redact secrets in audit output (Snyk W007)",
+      "type": "bug",
+      "version": "3.2.0",
+      "file": "plans/006-redact-secrets-in-audit-output-snyk-w007.md",
+      "note": "Security audits now mask any secrets they find in their reports instead of repeating the real values, so running an audit can't itself leak a credential into logs or transcripts."
     }
   ],
   "settings": {
@@ -60,5 +69,5 @@
     "3.1.0": "2026-06-28",
     "3.2.0": "2026-07-17"
   },
-  "last_seen_sha": "7eaa86de066deb22903ee24050e671003db39c14"
+  "last_seen_sha": "6b3330d5c380a10e1d201ad0b6241a5c77fea850"
 }

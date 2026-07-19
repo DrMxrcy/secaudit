@@ -6,6 +6,10 @@ license: MIT
 
 # React Native Security (Core)
 
+> **Redaction:** When you find a real secret in the JS bundle or source, report its **location**
+> and a **masked** form (`***`, last 4 chars) — never echo the literal key/token into your output.
+> Treat it as compromised and tell the user to rotate it.
+
 Framework-agnostic React Native. For Expo/EAS-specific items (`EXPO_PUBLIC_`, EAS secrets,
 `expo-secure-store`, OTA/EAS Update), use `secaudit:expo-security`. Maps to the OWASP Mobile
 Top 10 (2024).

@@ -138,6 +138,13 @@ A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 1
   vulnerabilities in the first place. Prevention is better than detection.
 - If you find a critical issue (exposed secrets, disabled RLS, auth bypass, vulnerable framework
   version), flag it immediately at the top of your response — don't bury it in a long list.
+- **Never reproduce a real secret in your output.** When a finding involves a hardcoded key,
+  token, password, or other credential, identify it by **location** (file + line) and a **masked**
+  form only — e.g. `sk_live_…REDACTED`, `AKIA…REDACTED`, or `***` — quoting at most the last 4
+  characters for identification. Describe the vulnerable *pattern*; do not paste the sensitive
+  literal into a "before" snippet, a quote, or a fix example. The audit report, its logs, and any
+  PR comment are themselves places a leaked secret can spread. Treat a discovered secret as already
+  compromised and tell the user to rotate it, without echoing its value.
 - After the audit, recommend specific automated tools the developer should run (see Next Steps).
 
 ### Verification pass (before reporting)
@@ -162,11 +169,13 @@ warrant runtime proof, hand off to `secaudit:dynamic-verification` when a runnin
 Organize findings by severity: **Critical** → **High** → **Medium** → **Low**.
 
 For each issue:
-1. State the file and relevant line(s).
+1. State the file and relevant line(s). If the line contains a secret, mask its value (see the
+   redaction rule in Core Instructions) — cite the location, never the literal credential.
 2. Name the vulnerability, and tag it **[Confirmed]** or **[Needs verification]** (see the
    Verification pass above).
 3. Explain what an attacker could do (concrete impact, not abstract risk).
-4. Show a before/after code fix.
+4. Show a before/after code fix. In the "before", use a masked placeholder where a real secret
+   would appear (`***`, `sk_live_…REDACTED`) — do not reproduce the actual value.
 
 Skip areas with no issues. End with a prioritized summary and a "Next Steps" section with
 specific automated tools to run.

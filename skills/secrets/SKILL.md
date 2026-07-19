@@ -6,6 +6,16 @@ license: MIT
 
 # Secrets & Environment Variables
 
+## Redaction rule (applies to every finding here)
+
+**Never echo a real secret in your output.** When you find a hardcoded key, token, password, or
+credential, report it by **location** (file + line) and a **masked** form only — e.g.
+`sk_live_…REDACTED`, `AKIA…REDACTED`, or `***`, quoting at most the last 4 characters to identify
+it. Describe the pattern; never paste the literal value into a quote, a "before" snippet, or a fix
+example. Your report, its logs, and any PR comment are themselves places the secret can spread.
+Treat any discovered secret as already compromised: tell the user to rotate it — without
+reproducing its value.
+
 ## When to Use
 
 - Adding or reviewing API keys, tokens, or credentials.

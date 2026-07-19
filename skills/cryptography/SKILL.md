@@ -6,6 +6,10 @@ license: MIT
 
 # Cryptography (OWASP A02: Cryptographic Failures)
 
+> **Redaction:** When a finding exposes a real key, IV, or secret, report its **location** and a
+> **masked** form (`***`, last 4 chars) — never paste the literal value into your output. Treat it
+> as compromised and tell the user to rotate it.
+
 ## When to Use
 
 - Hashing or verifying passwords.

@@ -111,6 +111,11 @@ AI assistants often generate `package.json` with loose version ranges:
 
 At minimum, use a lock file. For critical production apps, pin exact versions.
 
+> **Redaction:** The greps below can surface real credentials and secrets. When reporting a match,
+> cite its **location** and a **masked** form (`***`, last 4 chars) — never echo the literal
+> password, token, or JWT secret into your output. Treat any real value found as compromised and
+> tell the user to rotate it.
+
 ## Common AI-Generated Default Credentials
 
 AI-generated apps frequently ship with hardcoded test credentials that work in production:

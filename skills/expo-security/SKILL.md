@@ -6,6 +6,10 @@ license: MIT
 
 # Expo + EAS Security
 
+> **Redaction:** When you find a real secret inlined into the bundle or config, report its
+> **location** and a **masked** form (`***`, last 4 chars) — never echo the literal key/token into
+> your output. Treat it as compromised and tell the user to rotate it.
+
 Expo/EAS-specific concerns. For framework-agnostic React Native (Keychain, WebView, native bridge,
 ATS), use `secaudit:react-native-security`. The mental model to repeat throughout:
 **everything shipped in the JS bundle, the app binary, or `app.json` is public and trivially

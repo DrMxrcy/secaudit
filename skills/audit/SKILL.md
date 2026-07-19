@@ -197,6 +197,21 @@ end? Cover any gap you find, or state it explicitly. Report what you did **not**
 **Coverage & known gaps** line — a report that names its own boundaries is more trustworthy than
 one that implies total coverage. See `./references/methodology.md`.
 
+### Attack chains (link findings into exploit paths)
+
+Individual findings undersell risk. After findings are gathered and verified, look for **attack
+chains** — an ordered path where several issues combine into a worse outcome than any single one:
+e.g. *public signup with no email verification → no rate limit on login → weak password-reset token
+= account takeover*, or *IDOR on `/orders/:id` → an admin object is reachable → privilege
+escalation*.
+
+Rules:
+- Build a chain only from findings that already passed the verification pass, and only when the
+  steps are genuinely **connected and reachable in sequence** — no speculative chains.
+- Reference each step by the finding's `file:line`; don't restate the whole finding.
+- Rate the chain by its **outcome** severity — a chain can be more severe than any single link
+  (three Mediums that combine into account takeover is a Critical chain).
+
 ## Output Format
 
 Organize findings by severity: **Critical** → **High** → **Medium** → **Low**.
@@ -213,8 +228,10 @@ For each issue:
 4. Show a before/after code fix. In the "before", use a masked placeholder where a real secret
    would appear (`***`, `sk_live_…REDACTED`) — do not reproduce the actual value.
 
-Skip areas with no issues. End with a prioritized summary and a "Next Steps" section with
-specific automated tools to run.
+Skip areas with no issues. After the severity-grouped findings, add an **Attack Chains** section
+when two or more findings combine into an exploit path (see the Attack chains rules above); rate
+each chain by its outcome severity and reference its steps by `file:line`. End with a prioritized
+summary and a "Next Steps" section with specific automated tools to run.
 
 ### Example Output
 
@@ -267,6 +284,15 @@ const session = await stripe.checkout.sessions.create({
   line_items: [{ price: product.stripePriceId }],
 })
 ```
+
+### Attack Chains
+
+**Chain 1 — Account takeover (Critical outcome; individual links are High/Medium)**
+1. `app/api/auth/reset/route.ts:22` (High) — password-reset token is a 6-digit number (weak randomness).
+2. `app/api/auth/login/route.ts:8` (Medium) — no rate limit on the reset/login endpoints.
+3. Combined: an attacker requests a reset for a victim, then brute-forces the 6-digit token
+   unthrottled (10^6 attempts) → full account takeover. Neither issue is critical alone; chained,
+   they are. Fix either link to break the chain; fix both.
 
 ### Summary
 

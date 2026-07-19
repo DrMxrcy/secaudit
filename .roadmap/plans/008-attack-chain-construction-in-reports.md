@@ -3,7 +3,7 @@ id: 8
 title: Attack-chain construction in reports
 type: feature
 version: 3.3.0
-status: planned
+status: done
 created: 2026-07-19
 ---
 
@@ -37,9 +37,9 @@ created: 2026-07-19
   verification pass, so severity stays evidence-based.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add the attack-chain construction step to the audit process (build chains from
+- [x] Step 1: Add the attack-chain construction step to the audit process (build chains from
   connected, reachable, verified findings; rate by outcome severity; no speculative chains) -> target: `skills/audit/SKILL.md`
-- [ ] Step 2: Add an **Attack Chains** section to the Output Format with a worked example
+- [x] Step 2: Add an **Attack Chains** section to the Output Format with a worked example
   referencing findings by file:line -> target: `skills/audit/SKILL.md`
-- [ ] Step 3: Verify the chain rules are consistent with the verification pass and don't
+- [x] Step 3: Verify the chain rules are consistent with the verification pass and don't
   double-count or inflate severity without a connected path -> target: manual verification

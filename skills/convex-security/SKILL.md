@@ -11,6 +11,10 @@ and `action` you write is a public HTTP endpoint callable by anyone with your de
 whatever arguments they choose. All access control must be enforced inside the function body. This
 is the root cause of nearly every Convex vibe-coding vulnerability.
 
+> **Building vs auditing.** This skill *audits* Convex code. For writing it correctly in the first
+> place, defer to the official Convex agent-skills (`npx skills add get-convex/agent-skills`) —
+> they carry the current build patterns. Use them to build; use this skill to review the result.
+
 ## When to Use
 
 - The project has a `convex/` directory (functions, schema, crons, http routes).
@@ -186,6 +190,11 @@ etc.) in Convex Dashboard → Settings → Environment Variables (or via CLI); r
 `process.env.KEY` inside functions. Never hardcode secrets in `convex/*.ts` or accept them as
 client arguments.
 
+**Scoped deploy keys.** A `CONVEX_DEPLOY_KEY` grants deploy access. Prefer a key **scoped to a
+single deployment** so a leaked key (or an AI agent given one) can't touch production — mint one
+with `npx convex deployment token create <name> --save-env` rather than reusing a broad production
+key in CI or local `.env`. Flag a production deploy key sitting in a preview/dev or agent context.
+
 ## 9. File Storage Access Control
 
 Convex file URLs are **unauthenticated** — anyone with the URL can fetch the bytes. There is no
@@ -227,3 +236,5 @@ export const generateUploadUrl = mutation({
 - https://docs.convex.dev/functions/http-actions -- httpAction is public, manual auth required
 - https://docs.convex.dev/file-storage -- file URLs are unauthenticated
 - https://stack.convex.dev/row-level-security -- no built-in RLS; wrapDatabaseReader/Writer
+- https://docs.convex.dev/cli/deploy-key-types -- deploy key types; scoping a key to one deployment
+- https://docs.convex.dev/ai/agent-skills -- official Convex agent-skills (build patterns; `get-convex/agent-skills`)

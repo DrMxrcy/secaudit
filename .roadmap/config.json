@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
-  "currentVersion": "3.3.0",
-  "nextId": 11,
+  "currentVersion": "3.3.1",
+  "nextId": 12,
   "items": [
     {
       "id": 1,
@@ -98,6 +98,15 @@
       "file": "plans/010-evidence-backed-findings-anti-hallucination.md",
       "note": "Every reported issue is now backed by a verified spot in your code and a concrete attack path, so you get fewer false alarms.",
       "audience": "public"
+    },
+    {
+      "id": 11,
+      "slug": "cross-reference-official-convex-expo-build-skills",
+      "title": "Cross-reference official Convex/Expo build skills",
+      "type": "feature",
+      "version": "3.3.1",
+      "file": "plans/011-cross-reference-official-convex-expo-build-skills.md",
+      "note": "When auditing Convex or Expo apps, the audit now points you to the official build guides for those platforms and checks their recommended security settings."
     }
   ],
   "settings": {
@@ -108,7 +117,8 @@
     "3.0.0": "2026-06-27",
     "3.1.0": "2026-06-28",
     "3.2.0": "2026-07-17",
-    "3.3.0": "2026-07-19"
+    "3.3.0": "2026-07-19",
+    "3.3.1": "2026-07-20"
   },
-  "last_seen_sha": "eb244453b7622411631348b296cad590a802b3db"
+  "last_seen_sha": "66803c86fec278255cfbfad3ddedd31254ecc4fa"
 }

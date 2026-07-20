@@ -2,6 +2,11 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.3.1 — 2026-07-20
+
+### ✨ New
+- When auditing Convex or Expo apps, the audit now points you to the official build guides for those platforms and checks their recommended security settings.
+
 ## v3.3.0 — 2026-07-19
 
 ### ✨ New

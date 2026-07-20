@@ -41,6 +41,8 @@ Last verified: 2026-06-28.
 - https://docs.convex.dev/functions/http-actions — httpAction is public
 - https://docs.convex.dev/file-storage — file URLs are unauthenticated
 - https://stack.convex.dev/row-level-security — no built-in RLS
+- https://docs.convex.dev/cli/deploy-key-types — deploy key types; scope a key to one deployment
+- https://docs.convex.dev/ai/agent-skills — official Convex agent-skills (build patterns)
 
 ## Authentication (`auth`)
 - https://nvd.nist.gov/vuln/detail/CVE-2025-29927 — Next.js middleware authorization bypass
@@ -91,6 +93,7 @@ Last verified: 2026-06-28.
 - https://docs.expo.dev/versions/latest/sdk/securestore/ — expo-secure-store
 - https://docs.expo.dev/eas-update/code-signing/ — OTA code signing
 - https://docs.expo.dev/config-plugins/introduction/ — config plugins run at prebuild
+- https://docs.expo.dev/skills/ — official Expo skills (build patterns)
 
 ## AI / LLM (`ai-integration`)
 - https://genai.owasp.org/llm-top-10/ — OWASP Top 10 for LLM Applications (2025)

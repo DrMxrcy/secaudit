@@ -15,6 +15,10 @@ ATS), use `secaudit:react-native-security`. The mental model to repeat throughou
 **everything shipped in the JS bundle, the app binary, or `app.json` is public and trivially
 extractable from a downloaded app.**
 
+> **Building vs auditing.** This skill *audits* Expo/EAS code. For building it correctly, defer to
+> the official Expo skills (`npx skills add expo/skills`, or the `expo` Claude Code plugin) — they
+> carry the current Expo Router, EAS, and native-module patterns. Build with those; review with this.
+
 ## When to Use
 
 - The project uses Expo or EAS (`app.json` / `app.config.js`, `eas.json`, `expo-updates`,
@@ -214,3 +218,4 @@ official plugins, review source, and scope EAS build secrets to least privilege.
 - https://docs.expo.dev/versions/latest/sdk/securestore/ -- expo-secure-store (Keychain/Keystore)
 - https://docs.expo.dev/eas-update/code-signing/ -- OTA code signing verified on-client
 - https://docs.expo.dev/config-plugins/introduction/ -- config plugins run during prebuild
+- https://docs.expo.dev/skills/ -- official Expo skills (build patterns; `expo/skills`)

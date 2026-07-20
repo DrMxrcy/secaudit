@@ -5,7 +5,7 @@
 - (add ideas here)
 
 <!-- roadmap:auto:start -->
-**Current version: v3.3.0**
+**Current version: v3.3.1**
 
 ## 📊 Versions
 
@@ -15,9 +15,8 @@
 
 ### [x] v3.2.0 — 100% · 4 items · shipped 2026-07-17 ([history](CHANGELOG.internal.md))
 
-### [x] v3.3.0 — 100%
-- [x] **#7 Diff/PR-scoped audit mode** `feature` — 100% ([plan](.roadmap/plans/007-diff-pr-scoped-audit-mode.md))
-- [x] **#8 Attack-chain construction in reports** `feature` — 100% ([plan](.roadmap/plans/008-attack-chain-construction-in-reports.md))
-- [x] **#9 Recon and coverage-gap phases** `feature` — 100% ([plan](.roadmap/plans/009-recon-and-coverage-gap-phases.md))
-- [x] **#10 Evidence-backed findings (anti-hallucination)** `feature` — 100% ([plan](.roadmap/plans/010-evidence-backed-findings-anti-hallucination.md))
+### [x] v3.3.0 — 100% · 4 items · shipped 2026-07-19 ([history](CHANGELOG.internal.md))
+
+### [x] v3.3.1 — 100%
+- [x] **#11 Cross-reference official Convex/Expo build skills** `feature` — 100% ([plan](.roadmap/plans/011-cross-reference-official-convex-expo-build-skills.md))
 <!-- roadmap:auto:end -->

@@ -1,6 +1,6 @@
 ---
 name: web-vulns
-description: Audits classic web application vulnerabilities that AI assistants generate by omitting the validation or authorization guard - XSS (stored, reflected, DOM-based), SSRF (user-supplied URLs, webhooks, image/preview fetchers), file upload and path traversal, and IDOR / broken object-level authorization. Use when handling untrusted input that is rendered as HTML, used to build an outbound request, used as a file path or upload, or used to look up an object by ID. Covers OWASP A01/A03/A10.
+description: Audits classic web application vulnerabilities that AI assistants generate by omitting the validation or authorization guard - XSS (stored, reflected, DOM-based), SSRF (user-supplied URLs, webhooks, image/preview fetchers), file upload and path traversal, and IDOR / broken object-level authorization. Use when handling untrusted input that is rendered as HTML, used to build an outbound request, used as a file path or upload, or used to look up an object by ID. Covers OWASP A01 and A05 (2025 edition; SSRF is folded into A01 as of 2025).
 license: MIT
 ---
 
@@ -139,7 +139,7 @@ IDs being non-obvious.
 
 **Why it's exploitable:** the server uses client input to select an object but never verifies the
 authenticated user may access that specific object. Swapping an ID (`/orders/1001` -> `1002`) returns or
-modifies another user's data. This is OWASP API #1 (BOLA) and part of A01. Unguessable IDs only slow
+modifies another user's data. This is OWASP API #1 (BOLA) and part of A01:2025. Unguessable IDs only slow
 enumeration; they leak via referrers, logs, and list endpoints, so they are defense-in-depth, never the
 control.
 

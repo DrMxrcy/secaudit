@@ -1,10 +1,10 @@
 ---
 name: cryptography
-description: Audits cryptographic failures (OWASP A02) - password storage with fast hashes or no salt, insecure randomness for tokens/session IDs, weak or legacy algorithms and modes (DES, RC4, MD5, ECB), reused or hardcoded IVs and keys, and JWT algorithm confusion. Use when handling passwords, generating tokens or reset links or session IDs, encrypting data, or storing keys. Recommends current OWASP parameters.
+description: Audits cryptographic failures (OWASP A04:2025) - password storage with fast hashes or no salt, insecure randomness for tokens/session IDs, weak or legacy algorithms and modes (DES, RC4, MD5, ECB), reused or hardcoded IVs and keys, and JWT algorithm confusion. Use when handling passwords, generating tokens or reset links or session IDs, encrypting data, or storing keys. Recommends current OWASP parameters.
 license: MIT
 ---
 
-# Cryptography (OWASP A02: Cryptographic Failures)
+# Cryptography (OWASP A04:2025 — Cryptographic Failures)
 
 > **Redaction:** When a finding exposes a real key, IV, or secret, report its **location** and a
 > **masked** form (`***`, last 4 chars) — never paste the literal value into your output. Treat it
@@ -127,6 +127,6 @@ encryption (separate data-encryption and key-encryption keys). See `secaudit:sec
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html -- Argon2id/scrypt/bcrypt parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html -- algorithms, modes, secure random, key management
-- https://owasp.org/Top10/A02_2021-Cryptographic_Failures/ -- OWASP A02 overview
+- https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/ -- OWASP A04:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html -- key/secret storage and rotation
 - https://nodejs.org/api/crypto.html -- Node crypto (randomBytes, createCipheriv, randomUUID)

@@ -157,7 +157,7 @@ object-level authorization), `secaudit:data-access` (mass assignment), and `seca
 ## Sources
 
 - https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/ -- OWASP API A05 (BFLA)
-- https://owasp.org/Top10/A01_2021-Broken_Access_Control/ -- OWASP A01 Broken Access Control (privilege escalation)
+- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ -- OWASP A01:2025 Broken Access Control (privilege escalation)
 - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html -- authorization design, default-deny, centralized checks
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html -- mass assignment / allowlisting writable fields
 - https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation -- WSTG privilege-escalation testing

@@ -60,7 +60,7 @@ Last verified: 2026-06-28.
 
 ## Privilege escalation (`privilege-escalation`)
 - https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/ — OWASP API A05 (BFLA)
-- https://owasp.org/Top10/A01_2021-Broken_Access_Control/ — OWASP A01 Broken Access Control
+- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ — OWASP A01:2025 Broken Access Control (absorbs SSRF as of 2025)
 - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html — authorization design, default-deny
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html — mass assignment / allowlisting
 - https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation — WSTG privilege-escalation testing
@@ -130,16 +130,16 @@ Last verified: 2026-06-28.
 ## Cryptography (`cryptography`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html — hashing parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html — algorithms, randomness, keys
-- https://owasp.org/Top10/A02_2021-Cryptographic_Failures/ — OWASP A02
+- https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/ — OWASP A04:2025 Cryptographic Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html — key management
 - https://nodejs.org/api/crypto.html — Node crypto
 
 ## Logging & monitoring (`logging-monitoring`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html — what to log / exclude
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html — safe error responses
-- https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/ — OWASP A09
+- https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/ — OWASP A09:2025 Security Logging and Alerting Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html — insecure deserialization
-- https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/ — OWASP A08
+- https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/ — OWASP A08:2025 Software or Data Integrity Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html — command injection
 - https://nodejs.org/api/child_process.html — execFile/spawn
 
@@ -151,6 +151,6 @@ Last verified: 2026-06-28.
 - https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting — WSTG reflected XSS test
 
 ## Orchestrator (`audit`)
-- https://owasp.org/Top10/ — OWASP Top 10 (2021)
+- https://owasp.org/Top10/2025/ — OWASP Top 10 (2025)
 - https://genai.owasp.org/llm-top-10/ — OWASP LLM Top 10
 - https://owasp.org/www-project-mobile-top-10/ — OWASP Mobile Top 10

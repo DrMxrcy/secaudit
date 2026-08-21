@@ -139,22 +139,26 @@ If no running app is available, leave unconfirmed findings tagged **Needs verifi
 
 ## OWASP Coverage Map
 
-A full sweep covers the OWASP Top 10 (2021), plus the OWASP LLM and Mobile Top 10s:
+A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 10s:
 
-| OWASP 2021 | Domain skill(s) |
+| OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `privilege-escalation`, `convex-security`, `web-vulns` (IDOR) |
-| A02 Cryptographic Failures | `cryptography` |
-| A03 Injection | `data-access`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
-| A04 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A05 Security Misconfiguration | `deployment`, `secrets` |
-| A06 Vulnerable Components | `framework-versions`, `supply-chain` |
-| A07 Auth Failures | `auth` |
-| A08 Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
-| A09 Logging & Monitoring Failures | `logging-monitoring` |
-| A10 SSRF | `web-vulns` |
+| A01 Broken Access Control | `database`, `auth`, `privilege-escalation`, `convex-security`, `web-vulns` (IDOR, SSRF) |
+| A02 Security Misconfiguration | `deployment`, `secrets` |
+| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain` |
+| A04 Cryptographic Failures | `cryptography` |
+| A05 Injection | `data-access`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
+| A06 Insecure Design | `rate-limiting`, `payments` (partial) |
+| A07 Authentication Failures | `auth` |
+| A08 Software or Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
+| A09 Security Logging and Alerting Failures | `logging-monitoring` |
+| A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |
 | OWASP LLM Top 10 | `ai-integration` |
 | OWASP Mobile Top 10 | `react-native-security`, `expo-security` |
+
+Note the 2025 edition renumbered most categories: SSRF was merged into A01, "Vulnerable
+Components" broadened into A03 Software Supply Chain Failures, and A10 is now a new category.
+Cite numbers with their edition year (`A05:2025`) so a future renumbering stays visible.
 
 ## Core Instructions
 
@@ -346,6 +350,6 @@ vulnerability in the first place. Prevention is better than detection.
 
 ## Sources
 
-- https://owasp.org/Top10/ -- OWASP Top 10 (2021), the backbone this audit maps to
+- https://owasp.org/Top10/2025/ -- OWASP Top 10 (2025), the backbone this audit maps to
 - https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
 - https://owasp.org/www-project-mobile-top-10/ -- OWASP Mobile Top 10

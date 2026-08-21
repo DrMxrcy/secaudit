@@ -1,10 +1,10 @@
 ---
 name: logging-monitoring
-description: Audits logging, monitoring, and integrity failures (OWASP A09/A08/A03) - error responses leaking stack traces and internals, secrets or PII written to logs and crash reporters, missing audit logging and alerting for security events, insecure deserialization of untrusted data, and command/code injection via shell-exec or dynamic-eval. Use when writing error handlers, logging, deserializing untrusted data, or running subprocesses, or when auditing observability and incident readiness.
+description: Audits logging, monitoring, and integrity failures (OWASP A09/A08/A05:2025) - error responses leaking stack traces and internals, secrets or PII written to logs and crash reporters, missing audit logging and alerting for security events, insecure deserialization of untrusted data, and command/code injection via shell-exec or dynamic-eval. Use when writing error handlers, logging, deserializing untrusted data, or running subprocesses, or when auditing observability and incident readiness.
 license: MIT
 ---
 
-# Logging, Monitoring & Integrity (OWASP A09 / A08 / A03)
+# Logging, Monitoring & Integrity (OWASP A09 / A08 / A05, 2025 edition)
 
 ## When to Use
 
@@ -67,7 +67,7 @@ See `secaudit:secrets` and `secaudit:react-native-security` (mobile log/crash le
 logging of access-control denials, role/permission changes, admin actions, or payments; no alerting on
 bursts of failed logins or 403s.
 
-**Why it's exploitable:** A09 is about blindness - without these logs you can't detect credential
+**Why it's exploitable:** A09 (Security Logging and Alerting Failures) is about blindness - without these logs you can't detect credential
 stuffing, privilege escalation, or fraud, and breaches go undetected for months. No alerting means even
 logged attacks are never seen.
 
@@ -86,7 +86,7 @@ if (!ok) {
 logger.info({ event: "auth.login.success", userId: user.id, ip: req.ip });
 ```
 
-## 4. Insecure Deserialization (A08)
+## 4. Insecure Deserialization (A08:2025)
 
 **What to look for:** libraries that reconstruct functions/objects from untrusted input
 (`node-serialize`'s `unserialize`, `funcster`), eval-based "parsing", deserializing
@@ -109,7 +109,7 @@ const session = SessionSchema.parse(JSON.parse(raw));                 // no code
 
 Prefer pure-data formats (JSON); only deserialize signed/HMAC'd payloads; validate against a schema.
 
-## 5. Command / Code Injection (A03)
+## 5. Command / Code Injection (A05:2025)
 
 **What to look for:** building a shell command string from user input and running it through a shell;
 dynamic code execution (`eval`, `new Function`, `vm.runInNewContext`, string `setTimeout`) on input;
@@ -137,8 +137,8 @@ allowlist. Run with least privilege. See `secaudit:data-access` for SQL/ORM inje
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html -- what to log, what to exclude
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html -- safe error responses
-- https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/ -- OWASP A09 overview
+- https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/ -- OWASP A09:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- insecure deserialization
-- https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/ -- OWASP A08 overview
+- https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/ -- OWASP A08:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html -- command injection defense
 - https://nodejs.org/api/child_process.html -- execFile/spawn (args as array, no shell)

@@ -10,7 +10,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 
 ### 🐛 Fixed
 - Version-check advice now points at genuinely patched releases; several entries previously named a version that was still vulnerable.
-- (pending) All OWASP category references now match the current 2025 Top 10 numbering.
+- All OWASP category references now match the current 2025 Top 10 numbering.
 - (pending) AI and MCP guidance now tracks the 2026 LLM Top 10 and the current Model Context Protocol revision.
 - (pending) Repairs one dead documentation link and four that had moved.
 

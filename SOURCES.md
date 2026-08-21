@@ -99,10 +99,10 @@ Last verified: 2026-06-28.
 - https://docs.expo.dev/skills/ — official Expo skills (build patterns)
 
 ## AI / LLM (`ai-integration`)
-- https://genai.owasp.org/llm-top-10/ — OWASP Top 10 for LLM Applications (2025)
-- https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/ — official 2025 list
-- https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices — MCP security
-- https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization — MCP token-audience binding
+- https://genai.owasp.org/llm-top-10/ — OWASP Top 10 for LLM Applications (landing page; may lag the current edition)
+- https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ — current edition (2026, published 2026-08-03)
+- https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices — MCP security (2026-07-28)
+- https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization — MCP token-audience binding (2026-07-28)
 
 ## Deployment (`deployment`)
 - https://owasp.org/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)

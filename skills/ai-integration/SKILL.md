@@ -13,7 +13,9 @@ license: MIT
 - Connecting or configuring MCP servers/connectors.
 - Auditing for leaked AI keys, runaway spend, prompt injection, or unsafe output.
 
-Maps to the OWASP Top 10 for LLM Applications (2025).
+Maps to the OWASP Top 10 for LLM Applications. Categories are referenced by name rather than
+number — the 2026 edition (published 2026-08-03) changed the rankings, so numbers drift between
+editions while names stay stable.
 
 ## API Keys Are Server-Side Only
 
@@ -27,7 +29,11 @@ unlimited API usage at your expense. A leaked key can drain thousands of dollars
 All AI API calls go through your backend. The client sends the user's message to your server; your
 server calls the AI API. (See `secaudit:secrets`.)
 
-## Unbounded Consumption / Spending Caps (OWASP LLM10)
+## Unbounded Consumption / Spending Caps
+
+OWASP tracks this as **Unbounded Consumption** in the LLM Top 10. Cite it by name — the
+numbering changed in the 2026 edition, so a bare `LLMnn` goes stale and can end up pointing at a
+different risk entirely.
 
 Set hard spending caps on every AI API provider:
 - OpenAI: Usage limits in dashboard
@@ -41,7 +47,7 @@ to denial-of-wallet:
 - Return a clear error when limits are exceeded
 - Pair with rate limiting (see `secaudit:rate-limiting`)
 
-## Prompt Injection (OWASP LLM01 — the #1 risk)
+## Prompt Injection (OWASP LLM Top 10 — the #1 risk)
 
 User input must be treated as untrusted before it reaches a prompt. Never concatenate raw user
 input into system prompts:
@@ -116,8 +122,11 @@ write access, and review every operation before approving it. (See `secaudit:dat
   `state` on OAuth proxy flows.
 - **SSRF via OAuth metadata URLs** — block private/link-local ranges (e.g. `169.254.169.254`);
   HTTPS-only; reject `javascript:`/`file:` schemes.
-- **Session hijacking** — use non-deterministic session IDs bound to the user; never use sessions
-  for auth.
+- **State handle hijacking** — current MCP is stateless and has no protocol-level sessions, so
+  there is no session ID to harden. Any handle the server mints to carry state must be
+  unguessable and bound **server-side** to the authenticated user, and must never be accepted as
+  proof of identity on its own. (Older guidance about securing MCP session IDs describes a
+  feature the protocol no longer has.)
 - **Local server compromise** — sandbox local MCP servers and show the exact startup command
   before execution.
 
@@ -141,7 +150,7 @@ Beyond per-provider spending caps, implement application-level controls:
 
 ## Sources
 
-- https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
-- https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/ -- official 2025 list/PDF
-- https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices -- MCP security best practices
-- https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization -- MCP token-audience binding (no passthrough)
+- https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (landing page; may lag the current edition)
+- https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ -- current edition (2026, published 2026-08-03; numbering changed from 2025)
+- https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices -- MCP security best practices (2026-07-28 revision)
+- https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization -- MCP token-audience binding (no passthrough), 2026-07-28 revision

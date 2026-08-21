@@ -1,0 +1,45 @@
+skills/secrets/SKILL.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 116
+skills/payments/SKILL.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 88
+skills/framework-versions/references/live-advisory-lookup.md
+  s_735c54ad0ea5cd::t_70a7583ba1f6cb 86
+skills/convex-security/SKILL.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 237
+skills/data-access/SKILL.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 102
+SOURCES.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 29,33,45,76,116
+  s_735c54ad0ea5cd::t_70a7583ba1f6cb 7,84
+.roadmap/plans/016-fix-dead-and-redirected-source-urls.md
+  s_735c54ad0ea5cd::t_c330666218edc3 11,15-34,37-42,45-50,53-65
+  s_735c54ad0ea5cd::t_6edf58fa537f40 6
+skills/supply-chain/SKILL.md
+  s_735c54ad0ea5cd::t_70a7583ba1f6cb 157
+skills/database/SKILL.md
+  s_735c54ad0ea5cd::t_be2151f2e10203 228
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_a9f21c3ccc36db 189
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_4a48a0e29b08da 15
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_9df2db16fca53d 13
+ROADMAP.md
+  s_735c54ad0ea5cd::t_0fc93ca6cfc63d 22,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9eb0b4c13c20e889e8ab266facda543cc48f689c",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

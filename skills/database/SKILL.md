@@ -225,7 +225,7 @@ Supabase uses GoTrue for authentication. Watch for:
 ## Sources
 
 - https://supabase.com/docs/guides/database/postgres/row-level-security -- RLS must be enabled on exposed tables
-- https://supabase.com/docs/guides/api/api-keys -- publishable vs secret keys (BYPASSRLS)
+- https://supabase.com/docs/guides/getting-started/api-keys -- publishable vs secret keys (BYPASSRLS)
 - https://supabase.com/docs/guides/functions/auth -- Edge Functions JWT verification
 - https://supabase.com/docs/guides/auth -- Supabase Auth (formerly GoTrue)
 - https://firebase.google.com/docs/rules -- Firebase Security Rules

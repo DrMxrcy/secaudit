@@ -154,4 +154,4 @@ grep -rn "secret\|changeme\|keyboard.cat\|supersecret" --include="*.ts" --includ
 - https://www.lasso.security/blog/ai-package-hallucinations -- Lasso Security: the huggingface-cli proof of concept
 - https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks -- Socket research on slopsquatting
 - https://snyk.io/articles/slopsquatting-mitigation-strategies/ -- mitigation guidance
-- https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json -- lockfiles pin versions + integrity hashes
+- https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ -- lockfiles pin versions + integrity hashes

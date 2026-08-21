@@ -4,7 +4,7 @@ Every claim in the secaudit skills is backed by a primary source: official docum
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 
-Last verified: 2026-06-28.
+Last verified: 2026-08-21.
 
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/CVE-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
@@ -26,11 +26,11 @@ Last verified: 2026-06-28.
 - https://nextjs.org/docs/app/guides/environment-variables — NEXT_PUBLIC_ inlining
 - https://vite.dev/guide/env-and-mode — VITE_ inlining
 - https://docs.expo.dev/guides/environment-variables/ — EXPO_PUBLIC_ inlining
-- https://supabase.com/docs/guides/api/api-keys — Supabase publishable vs secret keys
+- https://supabase.com/docs/guides/getting-started/api-keys — Supabase publishable vs secret keys
 
 ## Database access (`database`)
 - https://supabase.com/docs/guides/database/postgres/row-level-security — RLS
-- https://supabase.com/docs/guides/api/api-keys — key model (BYPASSRLS)
+- https://supabase.com/docs/guides/getting-started/api-keys — key model (BYPASSRLS)
 - https://supabase.com/docs/guides/functions/auth — Edge Functions JWT
 - https://supabase.com/docs/guides/auth — Supabase Auth (GoTrue)
 - https://firebase.google.com/docs/rules — Firebase Security Rules
@@ -42,7 +42,7 @@ Last verified: 2026-06-28.
 - https://docs.convex.dev/auth/functions-auth — ctx.auth.getUserIdentity()
 - https://docs.convex.dev/understanding/best-practices/ — don't trust spoofable args
 - https://docs.convex.dev/functions/http-actions — httpAction is public
-- https://docs.convex.dev/file-storage — file URLs are unauthenticated
+- https://docs.convex.dev/file-storage/overview — file URLs are unauthenticated
 - https://stack.convex.dev/row-level-security — no built-in RLS
 - https://docs.convex.dev/cli/deploy-key-types — deploy key types; scope a key to one deployment
 - https://docs.convex.dev/ai/agent-skills — official Convex agent-skills (build patterns)
@@ -73,7 +73,7 @@ Last verified: 2026-06-28.
 ## Payments (`payments`)
 - https://docs.stripe.com/webhooks/signature — raw-body signature verification
 - https://docs.stripe.com/webhooks — constructEvent, endpoint secret
-- https://docs.stripe.com/payments/checkout/price-options — server-side Price IDs
+- https://docs.stripe.com/products-prices/how-products-and-prices-work — server-side Price IDs
 
 ## Supply chain (`supply-chain`)
 - https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen — USENIX 2025 package-hallucination study
@@ -81,7 +81,7 @@ Last verified: 2026-06-28.
 - https://www.lasso.security/blog/ai-package-hallucinations — Lasso Security huggingface-cli PoC
 - https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks — Socket
 - https://snyk.io/articles/slopsquatting-mitigation-strategies/ — mitigation
-- https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json — lockfiles
+- https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ — lockfiles
 
 ## React Native (`react-native-security`)
 - https://reactnative.dev/docs/security — official RN security guide
@@ -113,7 +113,7 @@ Last verified: 2026-06-28.
 
 ## Data access (`data-access`)
 - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html — parameterized queries
-- https://www.prisma.io/docs/orm/prisma-client/queries/raw-database-access/raw-queries — $queryRaw vs $queryRawUnsafe
+- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries — $queryRaw vs $queryRawUnsafe
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html — mass assignment
 - https://zod.dev/ — runtime validation
 

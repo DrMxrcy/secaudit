@@ -113,4 +113,4 @@ stands: publishable keys go client-side, secret keys stay server-side only. See
 - https://nextjs.org/docs/app/guides/environment-variables -- NEXT_PUBLIC_ inlined into the client bundle
 - https://vite.dev/guide/env-and-mode -- VITE_ vars bundled at build time
 - https://docs.expo.dev/guides/environment-variables/ -- EXPO_PUBLIC_ embedded in plain text
-- https://supabase.com/docs/guides/api/api-keys -- Supabase publishable vs secret key model
+- https://supabase.com/docs/guides/getting-started/api-keys -- Supabase publishable vs secret key model

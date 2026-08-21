@@ -83,7 +83,7 @@ The npm ecosystem string is exactly `npm`; PyPI is `PyPI`; crates.io is `crates.
 - https://google.github.io/osv.dev/api/ — OSV.dev API overview (endpoints, no key, ecosystems)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — querybatch request/response shape
 - https://github.com/google/osv-scanner — osv-scanner CLI
-- https://docs.npmjs.com/cli/commands/npm-audit — `npm audit` and its `--json` output
+- https://docs.npmjs.com/cli/commands/npm-audit/ — `npm audit` and its `--json` output
 - https://github.com/advisories — GitHub Security Advisory Database
 - https://nvd.nist.gov/developers/vulnerabilities — NVD CVE API (live CVE detail lookup)
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV (actively exploited)

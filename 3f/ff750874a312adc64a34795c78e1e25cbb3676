@@ -1,0 +1,34 @@
+skills/supply-chain/SKILL.md
+  s_735c54ad0ea5cd::t_f82b7771da8dcb 49-59
+  s_735c54ad0ea5cd::t_32b26d38564f22 215-216
+  s_735c54ad0ea5cd::t_7951da0d84acaf 97-143
+SOURCES.md
+  s_735c54ad0ea5cd::t_32b26d38564f22 97-98
+.roadmap/plans/015-add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain.md
+  s_735c54ad0ea5cd::t_33be5eb6acae79 10-11,15-49,53-64,67-79
+  s_735c54ad0ea5cd::t_c6d3f7e9246043 6
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_152e5811cbabc4 187-188,190
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_d5d4d1d0457b69 5,8
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_e29750ef569d63 3,6
+ROADMAP.md
+  s_735c54ad0ea5cd::t_b5560e17412e4a 22,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3fff750874a312adc64a34795c78e1e25cbb3676",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

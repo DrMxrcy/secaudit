@@ -3,7 +3,7 @@
 ## v3.4.0 — 2026-08-21
 
 ### ✨ New
-- Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.
+- Dependency checks no longer rely on advisory scanners alone, so a compromised package that was never formally reported can still be caught.
 - The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.
 
 ### 🐛 Fixed

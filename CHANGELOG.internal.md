@@ -2,6 +2,18 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.4.0 — (in progress)
+
+### ✨ New
+- (pending) Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.
+- (pending) The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.
+
+### 🐛 Fixed
+- Version-check advice now points at genuinely patched releases; several entries previously named a version that was still vulnerable.
+- (pending) All OWASP category references now match the current 2025 Top 10 numbering.
+- (pending) AI and MCP guidance now tracks the 2026 LLM Top 10 and the current Model Context Protocol revision.
+- (pending) Repairs one dead documentation link and four that had moved.
+
 ## v3.3.1 — 2026-07-20
 
 ### ✨ New

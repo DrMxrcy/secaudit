@@ -10,8 +10,11 @@ Last verified: 2026-06-28.
 - https://nvd.nist.gov/vuln/detail/CVE-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
 - https://nvd.nist.gov/vuln/detail/CVE-2025-66478 — confirms the Next.js-side ID is a rejected duplicate of CVE-2025-55182
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV (React2Shell actively exploited)
-- https://github.com/advisories/GHSA-f82v-jwr5-mffw — CVE-2025-29927 middleware bypass
-- https://github.com/advisories/GHSA-67rr-84xm-4c7r — CVE-2025-49826 cache-poisoning DoS
+- https://github.com/advisories/GHSA-f82v-jwr5-mffw — CVE-2025-29927 middleware bypass; ranges start at 12.0.0, confirming 11.x has no patched release
+- https://github.com/advisories/GHSA-67rr-84xm-4c7r — CVE-2025-49826 cache-poisoning DoS; range is `>=15.0.4-canary.51 <15.1.8`
+- https://github.com/advisories/GHSA-925w-6v3x-g4j4 — CVE-2025-55183 source exposure, fixed 19.0.2 / 19.1.3 / 19.2.2 (one patch later than CVE-2025-55182)
+- https://github.com/advisories/GHSA-2m3v-v2m8-q956 — CVE-2025-55184 DoS, same one-patch-later fix line
+- https://github.com/advisories/GHSA-rv95-896h-c2vc — CVE-2024-29041 Express open redirect, fixed 4.19.2 (not 4.19.0) and 5.0.0-beta.3
 - https://nextjs.org/blog — official Next.js security releases
 - https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape

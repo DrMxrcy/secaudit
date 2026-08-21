@@ -44,17 +44,27 @@ payloads in React Server Components. Actively exploited (listed in CISA KEV).
 - **Canonical ID:** `CVE-2025-55182` (the React advisory). The Next.js-side ID `CVE-2025-66478`
   was **rejected by NVD as a duplicate** — cite `CVE-2025-55182` so scanners aren't confused.
 - **Affected (React):** `react-server-dom-*` 19.0.0, 19.1.0–19.1.1, 19.2.0.
-- **Fixed (React):** 19.0.1, 19.1.2, 19.2.1.
-- **Fixed (Next.js):** 15.0.5, 15.1.9, 15.2.6, 15.3.6, 15.4.8, 15.5.7, 16.0.7.
-- **Action:** Upgrade immediately. Also `CVE-2025-55183` (source exposure) and
-  `CVE-2025-55184` (DoS) are fixed in the same releases.
+- **Patched by (React):** 19.0.1, 19.1.2, 19.2.1.
+- **Patched by (Next.js):** 15.0.5, 15.1.9, 15.2.6, 15.3.6, 15.4.8, 15.5.7, 16.0.7.
+- **Do not stop there.** These are the releases that fixed *this* CVE, not versions that are
+  safe today — later advisories landed on the same lines. As of 2026-08-21, OSV reports 28 open
+  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.21`**
+  or **`next@16.2.11`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
+  not trust the numbers on this line to still be clean when you read them.
+- **Sibling CVEs are patched one release later**, so upgrading to the -55182 fix leaves both
+  open: `CVE-2025-55183` (source exposure) and `CVE-2025-55184` (DoS) are fixed in
+  **19.0.2 / 19.1.3 / 19.2.2**, not 19.0.1 / 19.1.2 / 19.2.1.
+- **Action:** Upgrade immediately, to a current clean floor rather than to the minimum patch.
 
 ### CVE-2025-29927 — Next.js middleware authorization bypass (CVSS 9.1, Mar 2025)
 
 Adding the `x-middleware-subrequest` header bypasses all middleware logic, including auth checks.
 
-- **Affected:** 11.1.4–12.3.4, 13.0.0–13.5.8, 14.0.0–14.2.24, 15.0.0–15.2.2.
+- **Affected (patched lines):** 12.0.0–12.3.4, 13.0.0–13.5.8, 14.0.0–14.2.24, 15.0.0–15.2.2.
 - **Fixed in:** 12.3.5, 13.5.9, 14.2.25, 15.2.3.
+- **11.x is also vulnerable and has no patch.** The advisory's ranges start at 12.0.0, so there
+  is no fixed release to upgrade to on 11.x. An 11.x app must move to a supported major, or
+  strip the `x-middleware-subrequest` header at the proxy as a stopgap.
 - **Action:** Upgrade AND stop relying on middleware as the sole auth layer (see
   `secaudit:auth`). Vercel-hosted apps were not affected; self-hosted deployments were.
 
@@ -62,12 +72,16 @@ Adding the `x-middleware-subrequest` header bypasses all middleware logic, inclu
 
 Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
 
-- **Affected:** 15.1.0–15.1.7. **Fixed in:** 15.1.8.
+- **Affected:** `>=15.0.4-canary.51 <15.1.8` — canary builds below 15.1.0 are in range too, so a
+  pinned canary is not off the hook. **Fixed in:** 15.1.8.
 
 ## Other ecosystems (verify against live advisories)
 
-- **Express:** `CVE-2024-29041` (open redirect in `res.location`/`res.redirect`, fixed 4.19.0);
-  `path-to-regexp` ReDoS `CVE-2024-52798` (fixed via Express 4.21.2 / path-to-regexp 0.1.12).
+- **Express:** `CVE-2024-29041` (open redirect in `res.location`/`res.redirect`, fixed **4.19.2**
+  — not 4.19.0, which is still in range; `5.0.0-beta.3` on the 5.x line). Note 4.19.2 is *not* a
+  clean floor: `CVE-2024-43796` (XSS via `res.redirect()`) is still open there, and so is the
+  `path-to-regexp` ReDoS `CVE-2024-52798`. Current clean 4.x floor is **4.21.2**
+  (path-to-regexp 0.1.12), which closes all three.
 - **Astro:** `CVE-2024-56159` (server source-code exposure via public `.map` files, fixed
   4.16.18 / 5.0.8).
 - **Vue 2:** EOL — `vue-template-compiler` XSS (`CVE-2024-6783`); migrate to Vue 3.

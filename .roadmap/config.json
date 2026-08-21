@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.4.0",
-  "nextId": 12,
+  "nextId": 18,
   "items": [
     {
       "id": 1,
@@ -107,6 +107,72 @@
       "version": "3.3.1",
       "file": "plans/011-cross-reference-official-convex-expo-build-skills.md",
       "note": "When auditing Convex or Expo apps, the audit now points you to the official build guides for those platforms and checks their recommended security settings."
+    },
+    {
+      "id": 12,
+      "slug": "correct-wrong-cve-fix-versions-in-framework-versions",
+      "title": "Correct wrong CVE fix-versions in framework-versions",
+      "type": "bug",
+      "version": "3.4.0",
+      "file": "plans/012-correct-wrong-cve-fix-versions-in-framework-versions.md",
+      "note": "Version-check advice now points at genuinely patched releases; several entries previously named a version that was still vulnerable.",
+      "audience": "public",
+      "order": 0
+    },
+    {
+      "id": 13,
+      "slug": "remap-owasp-top-10-citations-to-the-2025-edition",
+      "title": "Remap OWASP Top 10 citations to the 2025 edition",
+      "type": "bug",
+      "version": "3.4.0",
+      "file": "plans/013-remap-owasp-top-10-citations-to-the-2025-edition.md",
+      "note": "All OWASP category references now match the current 2025 Top 10 numbering.",
+      "audience": "public",
+      "order": 2
+    },
+    {
+      "id": 14,
+      "slug": "update-ai-skill-to-llm-top-10-2026-and-mcp-2026-07-28-spec",
+      "title": "Update AI skill to LLM Top 10 2026 and MCP 2026-07-28 spec",
+      "type": "bug",
+      "version": "3.4.0",
+      "file": "plans/014-update-ai-skill-to-llm-top-10-2026-and-mcp-2026-07-28-spec.md",
+      "note": "AI and MCP guidance now tracks the 2026 LLM Top 10 and the current Model Context Protocol revision.",
+      "audience": "public",
+      "order": 3
+    },
+    {
+      "id": 15,
+      "slug": "add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain",
+      "title": "Add ChainDrop npm worm and provenance-evasion detection to supply-chain",
+      "type": "feature",
+      "version": "3.4.0",
+      "file": "plans/015-add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain.md",
+      "note": "Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.",
+      "audience": "public",
+      "order": 4
+    },
+    {
+      "id": 16,
+      "slug": "fix-dead-and-redirected-source-urls",
+      "title": "Fix dead and redirected source URLs",
+      "type": "bug",
+      "version": "3.4.0",
+      "file": "plans/016-fix-dead-and-redirected-source-urls.md",
+      "note": "Repairs one dead documentation link and four that had moved.",
+      "audience": "public",
+      "order": 5
+    },
+    {
+      "id": 17,
+      "slug": "add-2026-next-js-middleware-bypass-wave-and-cisa-kev-entries",
+      "title": "Add 2026 Next.js middleware-bypass wave and CISA KEV entries",
+      "type": "feature",
+      "version": "3.4.0",
+      "file": "plans/017-add-2026-next-js-middleware-bypass-wave-and-cisa-kev-entries.md",
+      "note": "The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.",
+      "audience": "public",
+      "order": 1
     }
   ],
   "settings": {
@@ -120,5 +186,5 @@
     "3.3.0": "2026-07-19",
     "3.3.1": "2026-07-20"
   },
-  "last_seen_sha": "66803c86fec278255cfbfad3ddedd31254ecc4fa"
+  "last_seen_sha": "e94348840a1e0a55d2d28fc6d7bb45b206e8839d"
 }

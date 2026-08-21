@@ -268,14 +268,16 @@ const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 **`package.json` — next@15.1.0 vulnerable to CVE-2025-55182 (React2Shell, CVSS 10.0)**
 
 This version is exposed to a critical pre-auth Remote Code Execution vulnerability in React Server
-Components. Upgrade to the patched release for your branch (e.g. 15.1.9).
+Components. Upgrade to a release with no open advisories — not merely to the release that first
+patched this CVE, which has since accrued others. Derive the target from a live OSV query for the
+package, not from a version named in a skill file.
 
 ```json
 // Before
 "next": "15.1.0"
 
-// After — upgrade to the patched version for your branch
-"next": "15.1.9"
+// After — a version OSV currently reports zero advisories for
+"next": "15.5.21"
 ```
 
 #### High

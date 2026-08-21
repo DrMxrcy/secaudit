@@ -1,0 +1,35 @@
+skills/ai-integration/SKILL.md
+  s_735c54ad0ea5cd::t_0f367f90372ed1 153-156
+  s_735c54ad0ea5cd::t_679a6d9368c20d 125-129
+  s_735c54ad0ea5cd::t_bc2c8a1e322e04 32-36
+  s_735c54ad0ea5cd::t_e056757ae908dc 16-18,50
+.roadmap/plans/014-update-ai-skill-to-llm-top-10-2026-and-mcp-2026-07-28-spec.md
+  s_735c54ad0ea5cd::t_0a1b5177b66fb5 11,15-33,36-56,59-65,68-77
+  s_735c54ad0ea5cd::t_2533cbc3f2c3ff 6
+SOURCES.md
+  s_735c54ad0ea5cd::t_0f367f90372ed1 102-105
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_004bba10378986 189
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_8643b4c3abb7e4 14
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_5b627458c7c04b 12
+ROADMAP.md
+  s_735c54ad0ea5cd::t_f16465b5b55bc0 22,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "549cf159b4c40fe1c51f7e5b3b1fcf744301a4cd",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

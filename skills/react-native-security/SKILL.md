@@ -79,6 +79,18 @@ Sentry.init({ beforeSend(e) { delete e.request?.headers?.Authorization; return e
 if (__DEV__) { /* init Flipper / Reactotron */ }
 ```
 
+**The dev server itself is an attack surface.** `CVE-2025-11953` — the Metro development server
+shipped by `@react-native-community/cli` binds to external interfaces and exposes an endpoint
+that executes arbitrary OS commands, giving unauthenticated RCE to anyone on the same network.
+CISA added it to the Known Exploited Vulnerabilities catalog on **2026-02-05**, so this is
+confirmed in-the-wild exploitation, not theory.
+
+Check `@react-native-community/cli` and `@react-native-community/cli-server-api` — fixed in
+**18.0.1 / 19.1.2 / 20.0.0**. Bind the dev server to loopback and never run it on untrusted
+networks (coffee shop, conference, shared office Wi-Fi). A developer machine holds source,
+signing keys, and cloud credentials, so "it's only the dev server" is not mitigation.
+(See `secaudit:framework-versions`.)
+
 ## 4. Deep Link / URL Scheme Validation
 
 Custom URL schemes (`myapp://`) have **no ownership registration** — any app can register the same

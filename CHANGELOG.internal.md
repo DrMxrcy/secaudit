@@ -6,7 +6,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 
 ### ✨ New
 - (pending) Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.
-- (pending) The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.
+- The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.
 
 ### 🐛 Fixed
 - Version-check advice now points at genuinely patched releases; several entries previously named a version that was still vulnerable.

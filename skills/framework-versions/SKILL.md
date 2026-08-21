@@ -68,6 +68,51 @@ Adding the `x-middleware-subrequest` header bypasses all middleware logic, inclu
 - **Action:** Upgrade AND stop relying on middleware as the sole auth layer (see
   `secaudit:auth`). Vercel-hosted apps were not affected; self-hosted deployments were.
 
+### The 2026 middleware-bypass wave — why upgrading is not the fix
+
+`CVE-2025-29927` was not a one-off. Through 2026 a run of successors landed on the same surface,
+several of them auth bypasses:
+
+| CVE | What | Fixed in |
+|---|---|---|
+| `CVE-2026-44573` | Middleware/Proxy bypass, Pages Router (affects from 12.2.0) | 15.5.16 / 16.2.5 |
+| `CVE-2026-44574` | Middleware/Proxy bypass via dynamic routes | 15.5.16 / 16.2.5 |
+| `CVE-2026-44575` | Middleware/Proxy bypass, App Router (from 15.2.0) | 15.5.16 / 16.2.5 |
+| `CVE-2026-45109` | Incomplete fix for `-44575` | see advisory |
+| `CVE-2026-64642` | Middleware/Proxy bypass, App Router + Turbopack | see advisory |
+| `CVE-2026-64643` | Unauthenticated disclosure of internal Server Function endpoints (from 13.0.0) | 15.5.21 / 16.2.11 |
+| `CVE-2026-64649` | SSRF in Server Actions | see advisory |
+| `CVE-2026-29057` | HTTP request smuggling in rewrites (from 9.5.0) | 15.5.13 / 16.1.7 |
+| `CVE-2026-44581` | XSS in App Router with CSP nonces | see advisory |
+
+**Read this as one finding, not nine.** A single middleware bypass is a bug; nine in a year on
+the same surface is a structural argument. An app whose only authorization check lives in
+middleware is one advisory away from being open, permanently — the patch treadmill is not a
+control. Enforce authorization at the data-access layer, where no routing-layer bypass can
+skip it. Middleware is an optimistic redirect, not a boundary. (See `secaudit:auth`.)
+
+Note `CVE-2026-64643` is fixed exactly at **15.5.21 / 16.2.11** — that advisory is what sets the
+clean floors named above.
+
+### CISA KEV — actively exploited, in ecosystems this plugin covers
+
+Being on the CISA Known Exploited Vulnerabilities catalog means confirmed exploitation in the
+wild, not theoretical risk. Treat a KEV match as **Critical** regardless of its CVSS score.
+
+- **`CVE-2025-11953`** — `@react-native-community/cli` Metro development server binds to external
+  interfaces and exposes an endpoint that runs arbitrary OS commands. Unauthenticated RCE against
+  any developer machine on a shared or public network. **KEV-listed 2026-02-05.** Affects
+  `@react-native-community/cli` and `@react-native-community/cli-server-api`; fixed **18.0.1 /
+  19.1.2 / 20.0.0**. (See `secaudit:react-native-security`.)
+- **`CVE-2025-31125`** — Vite `server.fs.deny` bypass, allowing reads of files the dev server was
+  configured to refuse. **KEV-listed 2026-01-22.** Fixed **4.5.11 / 5.4.16 / 6.0.13 / 6.1.3 /
+  6.2.4**. `server.fs.deny` is a repeat-offender surface — `CVE-2025-32395` and `CVE-2025-46565`
+  are further bypasses of the same control, so check the installed version against *all* of them
+  rather than this one CVE.
+
+Both are dev-server flaws, which teams routinely dismiss as "not production". They are
+exploitable against developer and CI machines, which hold source, credentials, and cloud tokens.
+
 ### CVE-2025-49826 — Next.js cache poisoning DoS (15.1.x)
 
 Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).

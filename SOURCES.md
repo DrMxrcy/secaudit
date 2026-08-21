@@ -15,6 +15,18 @@ Last verified: 2026-08-21.
 - https://github.com/advisories/GHSA-925w-6v3x-g4j4 — CVE-2025-55183 source exposure, fixed 19.0.2 / 19.1.3 / 19.2.2 (one patch later than CVE-2025-55182)
 - https://github.com/advisories/GHSA-2m3v-v2m8-q956 — CVE-2025-55184 DoS, same one-patch-later fix line
 - https://github.com/advisories/GHSA-rv95-896h-c2vc — CVE-2024-29041 Express open redirect, fixed 4.19.2 (not 4.19.0) and 5.0.0-beta.3
+- https://github.com/advisories/GHSA-36qx-fr4f-26g5 — CVE-2026-44573 middleware/proxy bypass, Pages Router
+- https://github.com/advisories/GHSA-492v-c6pp-mqqv — CVE-2026-44574 middleware/proxy bypass via dynamic routes
+- https://github.com/advisories/GHSA-267c-6grr-h53f — CVE-2026-44575 middleware/proxy bypass, App Router
+- https://github.com/advisories/GHSA-26hh-7cqf-hhc6 — CVE-2026-45109 incomplete fix for CVE-2026-44575
+- https://github.com/advisories/GHSA-6gpp-xcg3-4w24 — CVE-2026-64642 middleware/proxy bypass, App Router + Turbopack
+- https://github.com/advisories/GHSA-955p-x3mx-jcvp — CVE-2026-64643 unauthenticated Server Function endpoint disclosure; sets the 15.5.21 / 16.2.11 floors
+- https://github.com/advisories/GHSA-89xv-2m56-2m9x — CVE-2026-64649 SSRF in Server Actions
+- https://github.com/advisories/GHSA-ggv3-7p47-pfv8 — CVE-2026-29057 HTTP request smuggling in rewrites
+- https://github.com/advisories/GHSA-ffhc-5mcf-pf4q — CVE-2026-44581 XSS in App Router with CSP nonces
+- https://github.com/advisories/GHSA-399j-vxmf-hjvr — CVE-2025-11953 React Native CLI Metro dev-server RCE (CISA KEV 2026-02-05)
+- https://github.com/advisories/GHSA-4r4m-qw57-chr8 — CVE-2025-31125 Vite server.fs.deny bypass (CISA KEV 2026-01-22)
+- https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json — CISA KEV feed (machine-readable; check dateAdded)
 - https://nextjs.org/blog — official Next.js security releases
 - https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape

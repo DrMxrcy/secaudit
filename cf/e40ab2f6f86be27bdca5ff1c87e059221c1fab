@@ -1,0 +1,19 @@
+.claude-plugin/plugin.json
+  s_3b6998ac74d80b::t_a57e220b0738d5 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "cfe40ab2f6f86be27bdca5ff1c87e059221c1fab",
+  "prompts": {},
+  "sessions": {
+    "s_3b6998ac74d80b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e72fd004-e5ee-4b70-a79d-f3ba9adf7117",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

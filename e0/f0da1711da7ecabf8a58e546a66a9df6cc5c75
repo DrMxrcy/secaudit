@@ -1,0 +1,23 @@
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_e7ccd5e7873a6f 6
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_e7ccd5e7873a6f 151
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_e7ccd5e7873a6f 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "e0f0da1711da7ecabf8a58e546a66a9df6cc5c75",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

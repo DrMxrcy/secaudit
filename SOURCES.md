@@ -94,6 +94,8 @@ Last verified: 2026-08-21.
 - https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks — Socket
 - https://snyk.io/articles/slopsquatting-mitigation-strategies/ — mitigation
 - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ — lockfiles
+- https://www.elastic.co/security-labs/shai-hulud-chaindrop-npm-supply-chain — CHAINDROP/Shai-Hulud npm worm (2026-08-04): preinstall-hook delivery, 400+ packages, 300+ credential patterns, self-propagation via npm publish tokens
+- https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack — same incident, independent analysis: keyv/cacheable ecosystem, IDE persistence attempts, no CVE assigned
 
 ## React Native (`react-native-security`)
 - https://reactnative.dev/docs/security — official RN security guide

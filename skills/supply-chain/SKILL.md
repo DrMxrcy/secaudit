@@ -46,7 +46,17 @@ For every dependency in `package.json` or `requirements.txt`:
 - Package was published within the last 30 days
 - Package name looks like two well-known packages smashed together
 - Package has no GitHub repo linked, or the repo has no stars
-- Package has a `postinstall` script (check the dependency's `package.json`)
+- Package has a `preinstall` or `postinstall` script (check the dependency's `package.json`)
+
+The signals above catch a package that was *always* malicious. A package that *became* malicious
+looks different — the name, download count, and repo all stay reputable, so these red flags all
+pass. Watch instead for:
+
+- A transitive dependency you never touched gains a new version in the lockfile diff
+- A lifecycle hook appears where the previous version had none (`hasInstallScript` flips to true)
+- A long-stable package publishes an unexpected patch release, especially across a whole family
+  of related packages at once
+- A maintainer account change, or a release that breaks the package's usual cadence
 
 ## Lock File Hygiene
 
@@ -83,6 +93,53 @@ For deeper behavioral analysis (install scripts, suspicious package behavior), c
 ```bash
 pip-audit
 ```
+
+### A clean `npm audit` is not evidence of a clean dependency tree
+
+Every tool above is a **lagging indicator**: it matches your tree against *published advisories*.
+When a legitimate, correctly-spelled, popular package is compromised at the source, there is no
+advisory to match until someone files one — and often no CVE is ever assigned. The scan returns
+clean while the compromise is live.
+
+**Worked example — CHAINDROP / Shai-Hulud, 2026-08-04.** A maintainer account in the
+`keyv` / `cacheable` ecosystem was taken over. Over 400 unique npm packages were compromised. The
+payload ran from a **`preinstall`** hook — arbitrary commands executed *before* the package is
+installed, needing no action from the victim beyond `npm install`. It harvested credentials
+against 300+ patterns (AWS/GCP/Azure, GitHub tokens, SSH keys, Kubernetes tokens, npm tokens, and
+AI tooling credentials), attempted IDE persistence via editor config files, and wormed: on
+finding an npm token with publish rights it enumerated every package the victim could publish to
+and injected itself, bumping the patch version.
+
+**No CVE was assigned.** `npm audit`, `audit-ci`, and OSV.dev had nothing to report.
+
+So do not treat a clean scan as a result. Use the controls that hold when no advisory exists:
+
+```bash
+# Install scripts are the delivery mechanism — turn them off by default.
+npm config set ignore-scripts true
+npm ci --ignore-scripts        # re-enable per-package, deliberately, only where needed
+
+# Install exactly what the lockfile says. `npm ci` fails on drift; `npm install` silently resolves.
+npm ci
+
+# Pin exact versions — no ^ or ~ — so a patch bump can never arrive unreviewed.
+npm install --save-exact <pkg>
+```
+
+Then review the lockfile diff like code. In a compromise of this shape the tell is in the
+lockfile, not in `package.json`: a transitive dependency you did not touch gains a new `version`,
+`resolved`, and `integrity`, and sometimes a `hasInstallScript: true` where there was none.
+
+```bash
+# Scan the tree for packages that execute code at install time
+npm query ":attr(hasInstallScript)" 2>/dev/null || grep -n "hasInstallScript" package-lock.json
+
+# Review dependency churn in a PR
+git diff package-lock.json | grep -E '^\+.*(version|resolved|integrity|hasInstallScript)'
+```
+
+For behavioral analysis of what a package actually does at install time — as opposed to whether
+it has a CVE — [Socket](https://socket.dev) is the right class of tool.
 
 ### Look up live advisories, not a frozen list
 
@@ -155,3 +212,5 @@ grep -rn "secret\|changeme\|keyboard.cat\|supersecret" --include="*.ts" --includ
 - https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks -- Socket research on slopsquatting
 - https://snyk.io/articles/slopsquatting-mitigation-strategies/ -- mitigation guidance
 - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ -- lockfiles pin versions + integrity hashes
+- https://www.elastic.co/security-labs/shai-hulud-chaindrop-npm-supply-chain -- CHAINDROP npm worm, preinstall delivery, no CVE assigned
+- https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack -- independent analysis of the same incident

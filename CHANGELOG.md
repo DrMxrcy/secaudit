@@ -1,9 +1,9 @@
 # Changelog
 
-## v3.4.0 — (in progress)
+## v3.4.0 — 2026-08-21
 
 ### ✨ New
-- (pending) Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.
+- Supply-chain checks now cover a 2026 npm worm that carried valid build provenance and had no CVE, so scanners alone would miss it.
 - The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.
 
 ### 🐛 Fixed

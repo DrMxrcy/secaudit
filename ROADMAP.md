@@ -5,7 +5,7 @@
 - (add ideas here)
 
 <!-- roadmap:auto:start -->
-**Current version: v3.3.1**
+**Current version: v3.4.0**
 
 ## 📊 Versions
 
@@ -17,6 +17,5 @@
 
 ### [x] v3.3.0 — 100% · 4 items · shipped 2026-07-19 ([history](CHANGELOG.internal.md))
 
-### [x] v3.3.1 — 100%
-- [x] **#11 Cross-reference official Convex/Expo build skills** `feature` — 100% ([plan](.roadmap/plans/011-cross-reference-official-convex-expo-build-skills.md))
+### [x] v3.3.1 — 100% · 1 item · shipped 2026-07-20 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

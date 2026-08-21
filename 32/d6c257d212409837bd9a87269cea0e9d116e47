@@ -1,0 +1,42 @@
+skills/privilege-escalation/SKILL.md
+  s_735c54ad0ea5cd::t_eafc0ff7f0ee43 160
+SOURCES.md
+  s_735c54ad0ea5cd::t_eafc0ff7f0ee43 63,133,140,142,154
+skills/audit/SKILL.md
+  s_735c54ad0ea5cd::t_3cc3ff24f56f1f 142,144,146-155,159-161
+  s_735c54ad0ea5cd::t_bc09fc58d2c87d 353
+  s_735c54ad0ea5cd::t_8b9c62e55106dc 162
+skills/cryptography/SKILL.md
+  s_735c54ad0ea5cd::t_dbd106410786c2 3,7,130
+skills/logging-monitoring/SKILL.md
+  s_735c54ad0ea5cd::t_5d5ba24456bb3f 3,7,70,89,112,140,142
+skills/web-vulns/SKILL.md
+  s_735c54ad0ea5cd::t_56bc2d599eb13b 3,142
+.roadmap/plans/013-remap-owasp-top-10-citations-to-the-2025-edition.md
+  s_735c54ad0ea5cd::t_5a15cf7e358018 11,15-44,47-54,57-64,67-81
+  s_735c54ad0ea5cd::t_6825c9fe7d5f37 6
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_5ccacf2337f554 189
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_a4a443190bb447 13
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_bae8af0ce7ec5b 11
+ROADMAP.md
+  s_735c54ad0ea5cd::t_a6f347334c5455 22,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "32d6c257d212409837bd9a87269cea0e9d116e47",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,15 +1,15 @@
 # Changelog
 
-## v3.5.0 — (in progress)
+## v3.5.0 — 2026-08-24
 
 ### ✨ New
 - Adds a script that re-checks every version and link the skills cite, so outdated advice is caught automatically instead of drifting unnoticed.
-- (pending) New checks for projects using Prisma with Postgres, including tenant isolation and vector search used by AI features.
-- (pending) New checks for apps built with Better Auth, covering session handling, organization roles, and account linking.
-- (pending) New checks for containerised projects, covering image contents, published ports, and runtime permissions.
-- (pending) New checks for Python backends built with FastAPI or Django.
-- (pending) AI checks now cover chat apps end to end, including conversation history, retrieval, and how tools are given access to data.
-- (pending) Existing checks now recognise Python equivalents alongside the JavaScript ones.
+- New checks for projects using Prisma with Postgres, including tenant isolation and vector search used by AI features.
+- New checks for apps built with Better Auth, covering session handling, organization roles, and account linking.
+- New checks for containerised projects, covering image contents, published ports, and runtime permissions.
+- New checks for Python backends built with FastAPI or Django.
+- AI checks now cover chat apps end to end, including conversation history, retrieval, and how tools are given access to data.
+- Existing checks now recognise Python equivalents alongside the JavaScript ones.
 
 ## v3.4.0 — 2026-08-21
 

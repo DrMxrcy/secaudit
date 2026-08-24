@@ -1,7 +1,7 @@
 {
   "name": "secaudit",
-  "version": "3.4.0",
-  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex), missing auth, client-side trust, insecure payments, supply-chain risks (slopsquatting), and Expo / React Native / Convex specific issues. One orchestrator skill plus focused per-domain skills.",
+  "version": "3.5.0",
+  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (incl. Better Auth), client-side trust, insecure payments, supply-chain risks (slopsquatting, compromised-but-unreported packages), AI/LLM and RAG risks, container hardening, and Expo / React Native / Python specifics. One orchestrator skill plus focused per-domain skills.",
   "author": {
     "name": "DrMxrcy"
   },
@@ -18,6 +18,16 @@
     "expo",
     "react-native",
     "nextjs",
-    "supply-chain"
+    "supply-chain",
+    "prisma",
+    "postgres",
+    "pgvector",
+    "better-auth",
+    "docker",
+    "containers",
+    "python",
+    "fastapi",
+    "django",
+    "rag"
   ]
 }

@@ -53,6 +53,7 @@ PLACEHOLDER_PATTERNS = [
     r"<[^>]*>",                       # <project-id>, <img, <id>
     r"GHSA-xxxx", r"api\.openai\.com", r"localhost", r"127\.0\.0\.1",
     r"registry\.npmjs\.org/:_authToken",
+    r"pypi\.company\.com",           # fictional private index in a dependency-confusion example
 ]
 
 # Hosts/URLs that legitimately answer non-200 to this script. Each needs a reason.

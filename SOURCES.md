@@ -118,6 +118,80 @@ Last verified: 2026-08-21.
 - https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices — MCP security (2026-07-28)
 - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization — MCP token-audience binding (2026-07-28)
 
+## Prisma & Postgres (`prisma-security`)
+- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries — $queryRaw vs Prisma.raw / Prisma.join
+- https://www.prisma.io/docs/orm/prisma-client/client-extensions/query — query extensions cannot mutate include/select
+- https://www.prisma.io/docs/guides/upgrade-prisma-orm/v7 — $use middleware removed in Prisma 7
+- https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields — omit, local and global
+- https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql — sslaccept defaults to accept_invalid_certs
+- https://www.prisma.io/docs/orm/more/best-practices — migrate deploy only in production
+- https://www.postgresql.org/docs/current/ddl-rowsecurity.html — table owners bypass RLS; FORCE ROW LEVEL SECURITY; constraint checks always bypass RLS
+- https://www.postgresql.org/docs/current/functions-admin.html — set_config is_local transaction scope; current_setting missing_ok
+- https://github.com/pgvector/pgvector — filtered search, partial HNSW indexes, hnsw.iterative_scan
+- https://github.com/pgvector/pgvector-node — Prisma + pgvector integration
+- https://node-postgres.com/features/ssl — ssl object overwritten when the connection string carries sslmode
+
+## Better Auth (`better-auth-security`)
+- https://better-auth.com/docs/integrations/next — getSessionCookie is not secure; auth.api.getSession({ headers })
+- https://better-auth.com/docs/reference/security — trustedOrigins, OAuth state, disableOriginCheck
+- https://better-auth.com/docs/concepts/session-management — cookieCache staleness, disableCookieCache, freshAge
+- https://better-auth.com/docs/concepts/cookies — useSecureCookies, cookie attributes
+- https://better-auth.com/docs/concepts/rate-limit — production-only default, storage backends, customRules
+- https://better-auth.com/docs/reference/options — advanced.* flags, trustedProxyHeaders, accountLinking
+- https://better-auth.com/docs/concepts/users-accounts — accountLinking trustedProviders
+- https://better-auth.com/docs/plugins/organization — hasPermission, activeOrganizationId
+- https://better-auth.com/docs/plugins/admin — userHasPermission, adminUserIds, impersonation
+- https://better-auth.com/docs/plugins/api-key — verifyApiKey with permissions
+- https://better-auth.com/docs/installation — BETTER_AUTH_SECRET requirements
+- https://nextjs.org/docs/app/guides/authentication — data access layer; re-verify in every action
+- https://nextjs.org/docs/app/api-reference/file-conventions/proxy — middleware renamed to proxy in Next.js 16
+- https://nextjs.org/docs/app/api-reference/directives/use-cache — cached data is keyed by arguments, not session
+
+## Docker & containers (`docker-security`)
+- https://docs.docker.com/build/building/best-practices/ — Dockerfile best practices, non-root, pinning
+- https://docs.docker.com/build/building/secrets/ — BuildKit build secrets
+- https://docs.docker.com/reference/dockerfile/ — ARG visible in image history and provenance
+- https://docs.docker.com/build/concepts/context/ — .dockerignore and build context
+- https://docs.docker.com/reference/compose-file/services/ — cap_drop, security_opt, read_only, pids_limit, ports
+- https://docs.docker.com/reference/compose-file/secrets/ — compose secrets
+- https://docs.docker.com/engine/security/ — the Docker socket is root-equivalent
+- https://docs.docker.com/engine/network/packet-filtering-firewalls/ — Docker bypasses host firewall rules
+- https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html — OWASP Docker cheat sheet
+- https://www.cisecurity.org/benchmark/docker — CIS Docker Benchmark
+
+## Python web (`python-web-security`)
+- https://fastapi.tiangolo.com/tutorial/response-model/ — response_model output filtering
+- https://fastapi.tiangolo.com/tutorial/extra-models/ — separate input/output/DB models
+- https://fastapi.tiangolo.com/tutorial/bigger-applications/ — router- and app-level dependencies
+- https://fastapi.tiangolo.com/reference/dependencies/ — Security() and OAuth2 scopes
+- https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/ — Django deployment checklist
+- https://docs.djangoproject.com/en/6.0/ref/checks/ — check --deploy warning IDs (does not cover ALLOWED_HOSTS=['*'])
+- https://requests.readthedocs.io/en/latest/user/advanced/ — certificate verification
+- https://cheatsheetseries.owasp.org/cheatsheets/Django_Security_Cheat_Sheet.html — Django hardening
+
+## Python language-level (in `data-access`, `logging-monitoring`, `supply-chain`)
+- https://docs.sqlalchemy.org/en/20/core/sqlelement.html — text(), bindparam()
+- https://pydantic.dev/docs/validation/latest/concepts/models/ — extra='forbid'
+- https://docs.python.org/3/library/pickle.html — not secure against maliciously constructed data
+- https://pyyaml.org/wiki/PyYAMLDocumentation — loader classes and safe_load
+- https://github.com/jsonpickle/jsonpickle/issues/178 — safe=True does not prevent py/reduce execution
+- https://docs.python.org/3/library/subprocess.html — shell=True security considerations
+- https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html — deserialization
+- https://pip.pypa.io/en/stable/cli/pip_install/ — --extra-index-url dependency confusion
+- https://pip.pypa.io/en/stable/topics/secure-installs/ — hash-checking mode
+- https://docs.astral.sh/uv/concepts/indexes/ — first-index default
+- https://peps.python.org/pep-0751/ — pylock.toml
+- https://docs.pypi.org/trusted-publishers/ — PyPI Trusted Publishing
+- https://docs.pypi.org/attestations/ — PyPI attestations
+- https://packaging.python.org/en/latest/specifications/name-normalization/ — PEP 503 name folding
+
+## AI chat & RAG (`ai-integration`)
+- https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-message-persistence — send last message only; validateUIMessages
+- https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage — server-side tools, step limits, approval
+- https://ai-sdk.dev/docs/ai-sdk-ui/error-handling — stream errors masked by default
+- https://ai-sdk.dev/docs/ai-sdk-core/telemetry — recordInputs / recordOutputs
+- https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA (chat-thread IDOR)
+
 ## Deployment (`deployment`)
 - https://owasp.org/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP

@@ -1,6 +1,6 @@
 ---
 name: audit
-description: Runs a full security audit of a codebase for the vulnerabilities AI coding assistants commonly introduce in "vibe-coded" apps. Orchestrates the focused secaudit domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more). Use whenever the user asks for a security review or audit, says "is this safe?", "check my code", "review for vulnerabilities", "can someone hack this?", mentions "vibe coding", or wants a whole-app security sweep before shipping.
+description: Runs a full security audit of a codebase for the vulnerabilities AI coding assistants commonly introduce in "vibe-coded" apps. Orchestrates the focused secaudit domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Docker, Prisma/Postgres, Better Auth, Python, Expo, React Native, Convex, and more). Use whenever the user asks for a security review or audit, says "is this safe?", "check my code", "review for vulnerabilities", "can someone hack this?", mentions "vibe coding", or wants a whole-app security sweep before shipping.
 license: MIT
 ---
 
@@ -91,45 +91,56 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
    source of critical vulnerabilities in vibe-coded apps. → `secaudit:database`
 4. **Convex** — if the project uses Convex (`convex/` functions, schema). Convex has no row-level
    security; access control lives in function bodies. → `secaudit:convex-security`
-5. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
+5. **Prisma / Postgres data layer** — if the project has a `prisma/schema.prisma`. Prisma has no
+   row-level security; the tenant predicate must be in every query, and Postgres RLS is silently
+   bypassed when the app connects as the table owner. Covers pgvector retrieval too.
+   → `secaudit:prisma-security`
+6. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
    Server Action protection, session management. → `secaudit:auth`
-6. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
+   - If `better-auth` is in `package.json`, also → `secaudit:better-auth-security`
+7. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
    the client, broken function-level authorization, role mass-assignment. → `secaudit:privilege-escalation`
-7. **Payments** — client-side price manipulation, webhook signature verification, subscription
+8. **Payments** — client-side price manipulation, webhook signature verification, subscription
    status validation. → `secaudit:payments`
 
 **Tier 2 — common, high-frequency web attack surface.**
 
-8. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
+9. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
    proof counters. → `secaudit:rate-limiting`
-9. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
+10. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
    authorization). → `secaudit:web-vulns`
-10. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
+11. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
     validation. → `secaudit:data-access`
-11. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
+12. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
     unsafe output rendering. → `secaudit:ai-integration`
-12. **Deployment configuration** — production settings, security headers, source maps, preview
+13. **Deployment configuration** — production settings, security headers, source maps, preview
     deployment isolation, environment separation. → `secaudit:deployment`
+14. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
+    image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
+    Docker socket mounted in. → `secaudit:docker-security`
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-13. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+15. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-14. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+16. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-15. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+17. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-16. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+18. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-17. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+19. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
+20. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+    or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
+    settings, TLS verification. → `secaudit:python-web-security`
 
 For a partial review or when generating code in a specific area, dispatch only the relevant
 domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–17 read code and produce *candidate* findings. When a running instance of the app
+Static tiers 1–20 read code and produce *candidate* findings. When a running instance of the app
 is available **and the user authorizes active testing of their own app**, follow the static sweep
 with `secaudit:dynamic-verification` to confirm or refute findings against the live app (security
 headers, CORS, unauthenticated routes, IDOR, reflected XSS). It upgrades a suspected finding to
@@ -143,13 +154,13 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `privilege-escalation`, `convex-security`, `web-vulns` (IDOR, SSRF) |
-| A02 Security Misconfiguration | `deployment`, `secrets` |
-| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain` |
-| A04 Cryptographic Failures | `cryptography` |
-| A05 Injection | `data-access`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
+| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `python-web-security` (Django settings) |
+| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `docker-security` (base images) |
+| A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
+| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A07 Authentication Failures | `auth` |
+| A07 Authentication Failures | `auth`, `better-auth-security` |
 | A08 Software or Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |

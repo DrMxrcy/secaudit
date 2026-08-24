@@ -3,7 +3,7 @@ id: 23
 title: Extend ai-integration with chat and RAG application layer
 type: feature
 version: 3.5.0
-status: planned
+status: done
 created: 2026-08-24
 ---
 
@@ -26,5 +26,5 @@ created: 2026-08-24
 - **Fails if:** <regression or out-of-scope change that blocks sign-off>
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1:  -> target:
-- [ ] Step 2:  -> target:
+- [x] Step 1:  -> target:
+- [x] Step 2:  -> target:

@@ -2,6 +2,16 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.6.0 — (in progress)
+
+### ✨ New
+- (pending) Version checks now cover several more widely used frameworks and the Node.js runtime itself.
+- (pending) When a container is running, the audit can now confirm container findings against it instead of reporting them as suspected.
+- (pending) New checks for apps that connect AI agents to external tools, covering the permissions those connections are granted.
+
+### 🐛 Fixed
+- The automated freshness check now also verifies versions named as a fix for a specific issue, catching outdated upgrade advice it previously skipped.
+
 ## v3.5.0 — 2026-08-24
 
 ### ✨ New

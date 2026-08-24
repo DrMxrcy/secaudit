@@ -117,17 +117,30 @@ class TransientError(Exception):
     """
 
 
+_ADVISORY_CACHE: dict[str, dict | None] = {}
+
+
 def osv_advisory(advisory_id: str, attempts: int = 3) -> dict | None:
-    """Return the advisory, None if it truly does not exist, raise if we could not tell."""
+    """Return the advisory, None if it truly does not exist, raise if we could not tell.
+
+    Cached per process: the same advisory is cited from several files, and the fix-claim
+    check follows aliases, so without this a single run refetches the same records many
+    times and takes minutes instead of seconds.
+    """
+    if advisory_id in _ADVISORY_CACHE:
+        return _ADVISORY_CACHE[advisory_id]
     req = urllib.request.Request(OSV_VULN + advisory_id, headers={"User-Agent": UA})
     last = None
     for i in range(attempts):
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-                return json.load(r)
+                data = json.load(r)
+            _ADVISORY_CACHE[advisory_id] = data
+            return data
         except urllib.error.HTTPError as e:
             if e.code == 404:
-                return None          # definitive: no such advisory
+                _ADVISORY_CACHE[advisory_id] = None   # definitive: no such advisory
+                return None
             last = e                 # 429/5xx — retry
         except Exception as e:
             last = e
@@ -143,12 +156,18 @@ FLOOR_RE = re.compile(
 )
 
 
-# A version cited *as vulnerable* is not drift — the skills deliberately name bad
-# versions ("Before", "not a clean floor", "28 open advisories") to teach the contrast.
-# Only versions presented as somewhere to upgrade TO should be required to be clean.
+# A version cited *as vulnerable* is not drift — the skills deliberately name bad versions
+# to teach the contrast. But suppression must key on an EXPLICIT disclaimer, never on a word
+# that appears in both the good and the bad case.
+#
+# "fixed in X" and "patched by X" are deliberately NOT here. They read as recommendations, so
+# they must be verified. Suppressing them once hid an Astro entry recommending a version with
+# 17 open advisories: the suppression that prevented a false positive created a false negative,
+# which is strictly worse — it turns "nobody checked" into "the check passed".
 NEGATIVE_CONTEXT = re.compile(
-    r"\b(BAD|Before|vulnerable|affected|not a clean floor|still in range|advisories"
-    r"|do not|don't|no longer safe|exposed to|in range|patched by|fixed in|Affected)\b",
+    r"(\bBAD\b|\bBefore\b|\bvulnerable\b|\baffected\b|not a clean floor|still in range"
+    r"|open advisories|do not stop there|not versions that are safe|no longer safe"
+    r"|\bexposed to\b|\bin range\b|is \*not\* a|are \*not\*)",
     re.IGNORECASE,
 )
 
@@ -160,16 +179,28 @@ def unwrap(text: str) -> str:
     Without this, a qualifying phrase straddles a newline and sentence context misses it.
     """
     out, buf = [], []
+
+    def flush():
+        if buf:
+            out.append(" ".join(buf))
+            buf.clear()
+
     for line in text.split("\n"):
-        if not line.strip() or re.match(r"\s*([-*+]|\d+\.|#|\||```)", line):
-            if buf:
-                out.append(" ".join(buf))
-                buf = []
+        stripped = line.strip()
+        # Hard breaks: a blank line, a heading, a table row, or a fence ends the paragraph.
+        if not stripped or re.match(r"\s*(#|\||```)", line):
+            flush()
             out.append(line)
+        # A list marker STARTS a new buffer rather than being emitted alone, so the item's
+        # wrapped continuation lines join it. Note the marker patterns require a following
+        # space: without it, a version like "4.16.18" reads as an ordered-list marker and the
+        # line carrying it gets split away from the "fixed" that qualifies it.
+        elif re.match(r"\s*([-*+]\s|\d+\.\s)", line):
+            flush()
+            buf.append(stripped)
         else:
-            buf.append(line.strip())
-    if buf:
-        out.append(" ".join(buf))
+            buf.append(stripped)
+    flush()
     return "\n".join(out)
 
 
@@ -224,6 +255,155 @@ def check_version_floors() -> list[dict]:
 ADVISORY_RE = re.compile(r"\b(GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4})\b")
 CVE_RE = re.compile(r"\bCVE-\d{4}-\d{4,7}\b")
 
+# --- Check 2b: bare "fixed in X" versions -----------------------------------
+# Most version claims in the skills are bare numbers in prose ("fixed 4.16.18 / 5.0.8"),
+# not `pkg@1.2.3`, so the floor check above never sees them. That blind spot hid an Astro
+# entry recommending a version with 17 open advisories.
+#
+# Package identity comes from the CVE cited on the same line: ask OSV which packages that
+# advisory affects, then check the bare versions against those packages. Using the advisory
+# as the source of identity avoids guessing a package name out of prose.
+BARE_VERSION_RE = re.compile(r"\b\d+\.\d+\.\d+(?:-[a-z0-9.]+)?\b")
+# Version numbers contain dots, so the clause cannot terminate on the first ".".
+# Stop at a sentence end (". " or end of line) instead.
+FIX_CLAIM_RE = re.compile(r"\b(fixed|patched)\b(?:[^.]|\.(?=\d))*", re.IGNORECASE)
+
+
+def _packages_for(cve: str) -> set[str]:
+    """npm packages an advisory affects.
+
+    A CVE-keyed OSV record often carries an `affected` entry with no `package` field — the
+    package data lives on the GHSA alias. Follow the alias rather than giving up, or this
+    check silently finds nothing (which is how the Astro entry stayed wrong).
+    """
+    for ident in (cve,):
+        adv = osv_advisory(ident)
+        if not adv:
+            continue
+        pkgs = {a["package"]["name"] for a in adv.get("affected", [])
+                if a.get("package", {}).get("ecosystem") == "npm"}
+        if pkgs:
+            return pkgs
+        for alias in adv.get("aliases", []):
+            if alias.startswith("GHSA-"):
+                sub = osv_advisory(alias)
+                if sub:
+                    pkgs = {a["package"]["name"] for a in sub.get("affected", [])
+                            if a.get("package", {}).get("ecosystem") == "npm"}
+                    if pkgs:
+                        return pkgs
+    return set()
+
+
+def _before_not(clause: str) -> str:
+    """Drop the trailing counter-example in "fixed in X, not Y".
+
+    The skills deliberately name the wrong version right after the right one ("fixed 4.19.2,
+    not 4.19.0") to make the correction memorable. Everything after "not" is the version
+    being warned against, so verifying it would report the lesson itself as the defect.
+    """
+    return re.split(r"\bnot\b", clause, maxsplit=1)[0]
+
+
+def check_fix_claims() -> list[dict]:
+    """Verify that a version named as a CVE's fix actually fixes it.
+
+    Two different defects hide in a "fixed in X" claim, and they need different handling:
+
+    1. **X does not fix that CVE at all.** This is a hard failure — it is the Express
+       "fixed 4.19.0" defect (the real fix was 4.19.2), which shipped for months.
+    2. **X fixes that CVE but has since accrued later advisories.** This is normal and true
+       of essentially every CVE entry over time, so failing on it would make the check
+       useless noise. It is reported as a WARNING, and only matters when the entry reads as
+       upgrade advice without naming a current clean floor.
+    """
+    claims = []
+    for f in source_files():
+        text = unwrap(f.read_text(encoding="utf-8"))
+        for line in text.split("\n"):
+            if not FIX_CLAIM_RE.search(line):
+                continue
+            cves = CVE_RE.findall(line)
+            # Suppression is scoped to the fix CLAUSE, not the whole line. A good entry
+            # discusses its own caveats ("4.19.2 is not a clean floor: ..."), and matching
+            # those against the line would exempt the very entries that explain themselves
+            # best — leaving the actual "fixed in X" claim unchecked.
+            versions = set()
+            for m in FIX_CLAIM_RE.finditer(line):
+                clause = _before_not(m.group(0))
+                if NEGATIVE_CONTEXT.search(clause):
+                    continue
+                versions.update(BARE_VERSION_RE.findall(clause))
+            if cves and versions:
+                claims.append((str(f.relative_to(ROOT)), cves[0], tuple(sorted(versions))))
+
+    cves = sorted({c for _, c, _ in claims})
+    advisories: dict[str, dict | None] = {}
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        for cve, adv in zip(cves, ex.map(lambda c: _safe(_resolve_advisory, c), cves)):
+            advisories[cve] = adv
+
+    findings, warnings = [], []
+    for path, cve, versions in claims:
+        adv = advisories.get(cve)
+        if not adv:
+            continue
+        # Only SEMVER/ECOSYSTEM ranges. A CVE record also carries GIT ranges whose "fixed"
+        # values are commit hashes, which would make every semver claim look wrong.
+        fixed = {e["fixed"] for a in adv.get("affected", [])
+                 for r in a.get("ranges", []) if r.get("type") in ("SEMVER", "ECOSYSTEM")
+                 for e in r["events"] if "fixed" in e}
+        if not fixed:
+            continue
+        for ver in versions:
+            if ver not in fixed:
+                findings.append({
+                    "check": "fix-claim",
+                    "file": path,
+                    "subject": f"{ver} named as the fix for {cve}",
+                    "problem": ("that version is not in the advisory's fixed list; "
+                                f"actual: {', '.join(sorted(fixed)[:6])}"),
+                })
+            else:
+                warnings.append(f"{cve}: {ver} fixes it but may carry later advisories ({path})")
+
+    if warnings:
+        print(f"note: {len(warnings)} version(s) fix their stated CVE but may have accrued "
+              f"later advisories — expected over time; confirm the entry names a current "
+              f"clean floor where it reads as upgrade advice", file=sys.stderr)
+    return findings
+
+
+def _resolve_advisory(cve: str) -> dict | None:
+    """The advisory record that actually carries package/version data.
+
+    A CVE-keyed OSV record often has an `affected` entry with no `package` field; the data
+    lives on the GHSA alias. Follow the alias rather than giving up, or this check silently
+    finds nothing — which is how the Astro entry stayed wrong through two releases.
+    """
+    adv = osv_advisory(cve)
+    if not adv:
+        return None
+    def has_semver(rec):
+        return any(r.get("type") in ("SEMVER", "ECOSYSTEM")
+                   for a in rec.get("affected", []) for r in a.get("ranges", []))
+    has_ranges = has_semver(adv)
+    if has_ranges:
+        return adv
+    for alias in adv.get("aliases", []):
+        if alias.startswith("GHSA-"):
+            sub = osv_advisory(alias)
+            if sub and has_semver(sub):
+                return sub
+    return None
+
+
+def _safe(fn, *args, default=None):
+    """Run fn; treat any failure as 'could not determine', never as a finding."""
+    try:
+        return fn(*args)
+    except Exception:
+        return default
 
 def check_advisories() -> list[dict]:
     findings = []
@@ -344,6 +524,7 @@ def check_kev() -> list[dict]:
 
 CHECKS = {
     "versions": check_version_floors,
+    "fixclaims": check_fix_claims,
     "cves": check_advisories,
     "links": check_links,
     "kev": check_kev,

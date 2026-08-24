@@ -133,8 +133,11 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   clean floor: `CVE-2024-43796` (XSS via `res.redirect()`) is still open there, and so is the
   `path-to-regexp` ReDoS `CVE-2024-52798`. Current clean 4.x floor is **4.21.2**
   (path-to-regexp 0.1.12), which closes all three.
-- **Astro:** `CVE-2024-56159` (server source-code exposure via public `.map` files, fixed
-  4.16.18 / 5.0.8).
+- **Astro:** `CVE-2024-56159` (server source-code exposure via public `.map` files) was patched by
+  4.16.18 / 5.0.8. **Those are not safe versions today** — as of 2026-08-24 OSV reports **17 open
+  advisories** for each, including middleware auth bypasses via URL encoding. The 5.x line never
+  becomes clean: `5.20.0` still carries 8. Current clean floor is **`astro@7.1.0`**. Astro accrues
+  advisories faster than most of this list, so re-derive from step 2 rather than trusting this line.
 - **Vue 2:** EOL — `vue-template-compiler` XSS (`CVE-2024-6783`); migrate to Vue 3.
 
 ## What to Check

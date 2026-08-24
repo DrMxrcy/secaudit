@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.6.0",
-  "nextId": 25,
+  "nextId": 29,
   "items": [
     {
       "id": 1,
@@ -243,6 +243,46 @@
       "file": "plans/024-extend-data-access-supply-chain-and-logging-monitoring-for-python.md",
       "note": "Existing checks now recognise Python equivalents alongside the JavaScript ones.",
       "audience": "public"
+    },
+    {
+      "id": 25,
+      "slug": "freshness-check-misses-versions-named-as-a-cve-fix",
+      "title": "Freshness check misses versions named as a CVE fix",
+      "type": "bug",
+      "version": "3.6.0",
+      "file": "plans/025-freshness-check-misses-versions-named-as-a-cve-fix.md",
+      "note": "The automated freshness check now also verifies versions named as a fix for a specific issue, catching outdated upgrade advice it previously skipped.",
+      "audience": "public"
+    },
+    {
+      "id": 26,
+      "slug": "add-coverage-for-nuxt-react-router-vite-and-node-js",
+      "title": "Add coverage for Nuxt, React Router, Vite and Node.js",
+      "type": "feature",
+      "version": "3.6.0",
+      "file": "plans/026-add-coverage-for-nuxt-react-router-vite-and-node-js.md",
+      "note": "Version checks now cover several more widely used frameworks and the Node.js runtime itself.",
+      "audience": "public"
+    },
+    {
+      "id": 27,
+      "slug": "extend-dynamic-verification-to-containers",
+      "title": "Extend dynamic-verification to containers",
+      "type": "feature",
+      "version": "3.6.0",
+      "file": "plans/027-extend-dynamic-verification-to-containers.md",
+      "note": "When a container is running, the audit can now confirm container findings against it instead of reporting them as suspected.",
+      "audience": "public"
+    },
+    {
+      "id": 28,
+      "slug": "add-mcp-agent-security-skill",
+      "title": "Add mcp-agent-security skill",
+      "type": "feature",
+      "version": "3.6.0",
+      "file": "plans/028-add-mcp-agent-security-skill.md",
+      "note": "New checks for apps that connect AI agents to external tools, covering the permissions those connections are granted.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -258,5 +298,5 @@
     "3.4.0": "2026-08-21",
     "3.5.0": "2026-08-24"
   },
-  "last_seen_sha": "15242b741ece805e0b69f141765fb28b9bab32d9"
+  "last_seen_sha": "2f7237c2940fd3478176ebb66194f8a3267e1759"
 }

@@ -1,0 +1,102 @@
+name: Freshness
+
+# Why monthly: measured on 2026-08-21, the median gap between `next` advisory
+# publication days was 31 days (64 advisories total, 31 of them in 2026 alone).
+# A hardcoded version floor for a fast-moving framework has a useful life of weeks,
+# so anything less frequent ships stale remediation advice between runs.
+on:
+  schedule:
+    - cron: "0 6 1 * *"   # 06:00 UTC on the 1st of each month
+  workflow_dispatch:       # and on demand, e.g. before cutting a release
+  pull_request:
+    paths:
+      - "skills/**"
+      - "SOURCES.md"
+      - "scripts/check-freshness.py"
+
+# Default to read-only. The reporting job below opts into `issues: write` for itself,
+# so the job that executes repository code never holds a write-capable token.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      drift: ${{ steps.check.outputs.drift }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # No pip install: the script is stdlib-only by design, so this workflow has
+      # no dependency of its own to keep patched.
+      - name: Check freshness
+        id: check
+        run: |
+          set +e
+          python3 scripts/check-freshness.py | tee freshness.txt
+          code=${PIPESTATUS[0]}
+          echo "drift=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: freshness-report
+          path: freshness.txt
+
+      - name: Fail on drift
+        if: steps.check.outputs.drift != '0'
+        run: exit 1
+
+  # Separate job so `issues: write` is never held while running repository code —
+  # this job downloads the report as an artifact and does not check out the repo.
+  report:
+    needs: check
+    if: always() && needs.check.outputs.drift != '0' && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freshness-report
+
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '(report unavailable; see the run log)';
+            try { report = fs.readFileSync('freshness.txt', 'utf8').slice(0, 60000); } catch (e) {}
+
+            // Report content comes from our own script over repo files, but it is still
+            // embedded as a fenced block rather than interpolated into any shell command.
+            const body = [
+              'The monthly freshness check found drift.',
+              '', '```', report, '```', '',
+              'These facts were correct when written. Re-verify each against its live source,',
+              'then update the skills by hand — do not auto-apply.',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const existing = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'freshness',
+            });
+            if (existing.data.length) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: existing.data[0].number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner, repo, title: 'Freshness check: cited facts have drifted',
+                body, labels: ['freshness'],
+              });
+            }

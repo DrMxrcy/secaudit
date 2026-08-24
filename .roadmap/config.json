@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.5.0",
-  "nextId": 18,
+  "nextId": 25,
   "items": [
     {
       "id": 1,
@@ -173,6 +173,76 @@
       "note": "The version check now recognises a recent group of framework authentication flaws, including two that are known to be under active attack.",
       "audience": "public",
       "order": 1
+    },
+    {
+      "id": 18,
+      "slug": "self-checking-freshness-script-for-hardcoded-versions-and-links",
+      "title": "Self-checking freshness script for hardcoded versions and links",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/018-self-checking-freshness-script-for-hardcoded-versions-and-links.md",
+      "note": "Adds a script that re-checks every version and link the skills cite, so outdated advice is caught automatically instead of drifting unnoticed.",
+      "audience": "public"
+    },
+    {
+      "id": 19,
+      "slug": "add-prisma-security-skill-prisma-postgres-rls-pgvector",
+      "title": "Add prisma-security skill (Prisma, Postgres RLS, pgvector)",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/019-add-prisma-security-skill-prisma-postgres-rls-pgvector.md",
+      "note": "New checks for projects using Prisma with Postgres, including tenant isolation and vector search used by AI features.",
+      "audience": "public"
+    },
+    {
+      "id": 20,
+      "slug": "add-better-auth-security-skill",
+      "title": "Add better-auth-security skill",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/020-add-better-auth-security-skill.md",
+      "note": "New checks for apps built with Better Auth, covering session handling, organization roles, and account linking.",
+      "audience": "public"
+    },
+    {
+      "id": 21,
+      "slug": "add-docker-security-skill",
+      "title": "Add docker-security skill",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/021-add-docker-security-skill.md",
+      "note": "New checks for containerised projects, covering image contents, published ports, and runtime permissions.",
+      "audience": "public"
+    },
+    {
+      "id": 22,
+      "slug": "add-python-web-security-skill-fastapi-django",
+      "title": "Add python-web-security skill (FastAPI, Django)",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/022-add-python-web-security-skill-fastapi-django.md",
+      "note": "New checks for Python backends built with FastAPI or Django.",
+      "audience": "public"
+    },
+    {
+      "id": 23,
+      "slug": "extend-ai-integration-with-chat-and-rag-application-layer",
+      "title": "Extend ai-integration with chat and RAG application layer",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/023-extend-ai-integration-with-chat-and-rag-application-layer.md",
+      "note": "AI checks now cover chat apps end to end, including conversation history, retrieval, and how tools are given access to data.",
+      "audience": "public"
+    },
+    {
+      "id": 24,
+      "slug": "extend-data-access-supply-chain-and-logging-monitoring-for-python",
+      "title": "Extend data-access, supply-chain and logging-monitoring for Python",
+      "type": "feature",
+      "version": "3.5.0",
+      "file": "plans/024-extend-data-access-supply-chain-and-logging-monitoring-for-python.md",
+      "note": "Existing checks now recognise Python equivalents alongside the JavaScript ones.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -187,5 +257,5 @@
     "3.3.1": "2026-07-20",
     "3.4.0": "2026-08-21"
   },
-  "last_seen_sha": "051d71578c6f712ae4e46827e51f3facae8a67bf"
+  "last_seen_sha": "e0f0da1711da7ecabf8a58e546a66a9df6cc5c75"
 }

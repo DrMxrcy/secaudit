@@ -30,6 +30,12 @@ templates. A vulnerable framework version is often the single highest-impact iss
 
 ## Known high-impact examples (verify live)
 
+> **These version numbers expire.** Every hardcoded version below is re-checked against OSV
+> monthly by `scripts/check-freshness.py`, which fails if a version named as a safe target has
+> acquired an advisory. That catches rot after the fact — it does not make the numbers current
+> at the moment you are reading them. The median gap between `next` advisories is ~31 days, so
+> **step 2's live lookup remains authoritative and this list never is.**
+
 These are frequently-seen, high-impact CVEs — a quick first pass. Always confirm the current
 picture with the live lookup in step 2; treat this list as examples, not an exhaustive or
 frozen source of truth.

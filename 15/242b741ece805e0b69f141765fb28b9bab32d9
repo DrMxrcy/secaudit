@@ -1,0 +1,22 @@
+skills/ai-integration/SKILL.md
+  s_735c54ad0ea5cd::t_000f40b6d15172 78,80,82-173,184-229
+  s_735c54ad0ea5cd::t_e7e84de617778c 3,15,356-358
+  s_735c54ad0ea5cd::t_e5aa9bab75aa19 230-298
+  s_735c54ad0ea5cd::t_8470a09808f33f 299,359,362-366
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "15242b741ece805e0b69f141765fb28b9bab32d9",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

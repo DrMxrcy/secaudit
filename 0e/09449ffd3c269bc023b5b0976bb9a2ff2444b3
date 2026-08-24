@@ -1,0 +1,85 @@
+skills/data-access/SKILL.md
+  s_735c54ad0ea5cd::t_a3d06bc634e408 143-168
+  s_735c54ad0ea5cd::t_8d3698262f3206 60-103
+  s_735c54ad0ea5cd::t_8aa6302c69da43 3
+  s_735c54ad0ea5cd::t_a8362eacbcdce0 172
+  s_735c54ad0ea5cd::t_db18930ce2c248 171
+scripts/check-freshness.py
+  s_735c54ad0ea5cd::t_4b430b60fcce14 56
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_f778623e719c93 261
+  s_735c54ad0ea5cd::t_b11cbdd39194de 258-259
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_f778623e719c93 7-12
+  s_735c54ad0ea5cd::t_55f5797b810ff6 3
+skills/docker-security/SKILL.md
+  s_735c54ad0ea5cd::t_b123c6718a74b4 201
+  s_735c54ad0ea5cd::t_a4218f7eec4e62 1-200,202-555
+ROADMAP.md
+  s_735c54ad0ea5cd::t_3810b5f8368f79 30
+  s_735c54ad0ea5cd::t_f778623e719c93 24,26-29,31
+skills/prisma-security/SKILL.md
+  s_735c54ad0ea5cd::t_5d4ca6af1397eb 1-8,15-16,20-30,34-44,49-85,88-102,105-115,122-132,137-201,206-207,211-220,226-254,257-261,267-284,288-293,296,299-307,310-321,327,329,334-335,342-361,364-376,381-399,403-408,413-419,423-441,443-451,453-458
+  s_735c54ad0ea5cd::t_d63a61dee64c12 203,336-337,340-341,442
+  s_735c54ad0ea5cd::t_04a18ac5db7c55 9-14,17-19,31-33,45-48,86-87,103-104,116-121,133-136,202,204-205,208-210,221-225,255-256,262-266,285-287,294-295,297-298,308-309,322-326,362-363,377-380,400-402,409-412,420-422
+  s_735c54ad0ea5cd::t_a8362eacbcdce0 452
+  s_735c54ad0ea5cd::t_29227356559c62 328,330-333,338-339
+.roadmap/plans/019-add-prisma-security-skill-prisma-postgres-rls-pgvector.md
+  s_735c54ad0ea5cd::t_f778623e719c93 6,29-30
+skills/better-auth-security/SKILL.md
+  s_735c54ad0ea5cd::t_e7e84de617778c 1-506,518-520
+  s_735c54ad0ea5cd::t_a8362eacbcdce0 507-517
+skills/audit/SKILL.md
+  s_735c54ad0ea5cd::t_cbde84378bdd94 94-98,100-101,103,108,110,112,114,116,118-120,124,126,128,130,132,134-136,143
+  s_735c54ad0ea5cd::t_eb923239691bda 3,157-161,163
+SOURCES.md
+  s_735c54ad0ea5cd::t_a8362eacbcdce0 126,135-145,174
+  s_735c54ad0ea5cd::t_b5dceca626808f 121-125,127-134,146-173,175-194
+.roadmap/plans/024-extend-data-access-supply-chain-and-logging-monitoring-for-python.md
+  s_735c54ad0ea5cd::t_f778623e719c93 6,29-30
+skills/supply-chain/SKILL.md
+  s_735c54ad0ea5cd::t_db18930ce2c248 287-293
+  s_735c54ad0ea5cd::t_8aa6302c69da43 3
+  s_735c54ad0ea5cd::t_05c12ce49d7602 101-153
+  s_735c54ad0ea5cd::t_5a96656d6446ac 61-85
+skills/python-web-security/SKILL.md
+  s_735c54ad0ea5cd::t_ba7de4c8b8a29b 15-19,150
+  s_735c54ad0ea5cd::t_c4368eac5c74ed 65-66,151-152
+  s_735c54ad0ea5cd::t_ec5b2e05287c74 153-154
+  s_735c54ad0ea5cd::t_8ef560bd72946f 1-14,20-64,67-149,155-308
+.roadmap/plans/023-extend-ai-integration-with-chat-and-rag-application-layer.md
+  s_735c54ad0ea5cd::t_3810b5f8368f79 6,29
+  s_735c54ad0ea5cd::t_55b8685ecef7e8 30
+.roadmap/plans/022-add-python-web-security-skill-fastapi-django.md
+  s_735c54ad0ea5cd::t_f778623e719c93 6,29-30
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_f778623e719c93 9-14
+  s_735c54ad0ea5cd::t_5314d2efe47776 5
+.claude-plugin/plugin.json
+  s_735c54ad0ea5cd::t_32c3c3025690cd 3-4,21-31
+skills/logging-monitoring/SKILL.md
+  s_735c54ad0ea5cd::t_606eb39acefbc6 112-140
+  s_735c54ad0ea5cd::t_8aa6302c69da43 3
+  s_735c54ad0ea5cd::t_db18930ce2c248 188-192
+  s_735c54ad0ea5cd::t_623e597512e8b0 165-185
+.roadmap/plans/020-add-better-auth-security-skill.md
+  s_735c54ad0ea5cd::t_f778623e719c93 6,29-30
+.roadmap/plans/021-add-docker-security-skill.md
+  s_735c54ad0ea5cd::t_f778623e719c93 6,29-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "0e09449ffd3c269bc023b5b0976bb9a2ff2444b3",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

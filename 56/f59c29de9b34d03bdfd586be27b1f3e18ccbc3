@@ -1,0 +1,68 @@
+SOURCES.md
+  s_735c54ad0ea5cd::t_550ec8722683f2 30-34
+  s_735c54ad0ea5cd::t_d4f5a72a798787 200-215
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_9c8e2253cacb93 9
+  s_735c54ad0ea5cd::t_9b486534b3f5f4 5,10
+  s_735c54ad0ea5cd::t_a1f949dec3d72c 8
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_fc0de98881bdea 299-300
+  s_735c54ad0ea5cd::t_a1f949dec3d72c 302
+.roadmap/plans/026-add-coverage-for-nuxt-react-router-vite-and-node-js.md
+  s_735c54ad0ea5cd::t_a1f949dec3d72c 6,81,83,86-87
+  s_735c54ad0ea5cd::t_4ebd3e36ce8b81 10-11,15-60,63-70,73-77,80,82,84-85,88
+.roadmap/plans/027-extend-dynamic-verification-to-containers.md
+  s_735c54ad0ea5cd::t_9c8e2253cacb93 6,95,97,99,101,103
+  s_735c54ad0ea5cd::t_c854f828c2b90f 10-11,15-70,73-83,86-91,94,96,98,100,102,104
+skills/docker-security/SKILL.md
+  s_735c54ad0ea5cd::t_bc955e2c9dbd2c 544-556
+skills/audit/SKILL.md
+  s_735c54ad0ea5cd::t_74dcb9c26dcee4 146-151
+  s_735c54ad0ea5cd::t_6ff2139b277ab2 118-120,172
+skills/framework-versions/SKILL.md
+  s_735c54ad0ea5cd::t_50a8f7c77bbbe9 142-167
+.claude-plugin/plugin.json
+  s_735c54ad0ea5cd::t_6ff2139b277ab2 31-34
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_9c8e2253cacb93 7
+  s_735c54ad0ea5cd::t_4d13b793a3dc56 3,8
+  s_735c54ad0ea5cd::t_a1f949dec3d72c 6
+.roadmap/plans/028-add-mcp-agent-security-skill.md
+  s_735c54ad0ea5cd::t_542e95a76749ba 10-11,15-67,70-76,79-84,87-95
+  s_735c54ad0ea5cd::t_30dc243d384809 6
+skills/mcp-agent-security/SKILL.md
+  s_735c54ad0ea5cd::t_edba8e8966b289 486
+  s_735c54ad0ea5cd::t_4a67c3c3a4c60c 487-488
+  s_735c54ad0ea5cd::t_d72902319b31ce 541-542
+  s_735c54ad0ea5cd::t_5c7edd331537cc 147,179-180,230,239,246-247,252,389-390,415,494-495,539
+  s_735c54ad0ea5cd::t_489731a9884eb5 159-161,294,508,540
+  s_735c54ad0ea5cd::t_248fa2b7728202 1-146,148-158,162-178,181-229,231-238,240-245,248-251,253-293,295-388,391-414,416-485,489-493,496-507,509-538,543-598
+skills/ai-integration/SKILL.md
+  s_735c54ad0ea5cd::t_6ff2139b277ab2 305-309
+ROADMAP.md
+  s_735c54ad0ea5cd::t_9c8e2253cacb93 29
+  s_735c54ad0ea5cd::t_a1f949dec3d72c 28
+  s_735c54ad0ea5cd::t_040a27450ea179 26,30
+skills/dynamic-verification/SKILL.md
+  s_735c54ad0ea5cd::t_e8825a93792ea6 3,7,9-20
+  s_735c54ad0ea5cd::t_8eb02d6722966c 35,51-66,96-123
+  s_735c54ad0ea5cd::t_64e3cc7cf68e74 124
+  s_735c54ad0ea5cd::t_bc955e2c9dbd2c 76-80
+  s_735c54ad0ea5cd::t_eaadc225f07de0 25-34,67,83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "56f59c29de9b34d03bdfd586be27b1f3e18ccbc3",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

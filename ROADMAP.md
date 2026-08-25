@@ -5,7 +5,7 @@
 - (add ideas here)
 
 <!-- roadmap:auto:start -->
-**Current version: v3.7.0**
+**Current version: v3.8.0**
 
 ## 📊 Versions
 
@@ -25,10 +25,5 @@
 
 ### [x] v3.6.0 — 100% · 4 items · shipped 2026-08-24 ([history](CHANGELOG.internal.md))
 
-### [x] v3.7.0 — 100%
-- [x] **#29 Parallel subagent fan-out for whole-app audits** `feature` — 100% ([plan](.roadmap/plans/029-parallel-subagent-fan-out-for-whole-app-audits.md))
-- [x] **#30 Add EPSS exploitation scoring and endoflife.date runtime EOL** `feature` — 100% ([plan](.roadmap/plans/030-add-epss-exploitation-scoring-and-endoflife-date-runtime-eol.md))
-- [x] **#31 Add revenuecat-security skill (mobile IAP)** `feature` — 100% ([plan](.roadmap/plans/031-add-revenuecat-security-skill-mobile-iap.md))
-- [x] **#32 Add Clerk coverage to auth** `feature` — 100% ([plan](.roadmap/plans/032-add-clerk-coverage-to-auth.md))
-- [x] **#33 Add object-storage-security skill (R2, S3, Supabase Storage)** `feature` — 100% ([plan](.roadmap/plans/033-add-object-storage-security-skill-r2-s3-supabase-storage.md))
+### [x] v3.7.0 — 100% · 5 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

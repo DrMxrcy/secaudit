@@ -1,0 +1,43 @@
+.roadmap/plans/029-parallel-subagent-fan-out-for-whole-app-audits.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 1-9,12-14,42,72-73,88-89,98
+  s_735c54ad0ea5cd::t_c895705f236873 10-11,15-41,43-71,74-87,90-97,99-112
+.roadmap/plans/031-add-revenuecat-security-skill-mobile-iap.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 1-30
+.roadmap/plans/033-add-object-storage-security-skill-r2-s3-supabase-storage.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 1-30
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 5-13
+skills/audit/SKILL.md
+  s_735c54ad0ea5cd::t_ea18294d0b1099 63-76,107-136,138-158
+  s_735c54ad0ea5cd::t_e8e2ada9999d19 447-458
+  s_735c54ad0ea5cd::t_9b22f0147f0c54 137
+  s_735c54ad0ea5cd::t_8df632e9ed637b 77-106
+  s_735c54ad0ea5cd::t_a54f23f6967512 16-17,302-306,330-335
+.roadmap/plans/032-add-clerk-coverage-to-auth.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 1-30
+.roadmap/plans/030-add-epss-exploitation-scoring-and-endoflife-date-runtime-eol.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 1-30
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 3-11
+ROADMAP.md
+  s_735c54ad0ea5cd::t_9135023ec11da6 8,26-33
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_9135023ec11da6 3-4,286-335
+  s_735c54ad0ea5cd::t_0fb37c2b2d2f8e 352
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f1fb490289b8703420cb90b9920603b2236d5dd7",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

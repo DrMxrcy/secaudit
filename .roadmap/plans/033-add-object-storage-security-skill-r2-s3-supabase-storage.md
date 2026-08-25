@@ -3,7 +3,7 @@ id: 33
 title: Add object-storage-security skill (R2, S3, Supabase Storage)
 type: feature
 version: 3.7.0
-status: planned
+status: done
 created: 2026-08-25
 ---
 
@@ -26,5 +26,5 @@ created: 2026-08-25
 - **Fails if:** <regression or out-of-scope change that blocks sign-off>
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1:  -> target:
-- [ ] Step 2:  -> target:
+- [x] Step 1:  -> target:
+- [x] Step 2:  -> target:

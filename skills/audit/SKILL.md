@@ -199,39 +199,45 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
    the client, broken function-level authorization, role mass-assignment. → `secaudit:privilege-escalation`
 8. **Payments** — client-side price manipulation, webhook signature verification, subscription
    status validation. → `secaudit:payments`
+   - If the app sells via mobile in-app purchase (RevenueCat, StoreKit, Play Billing), also →
+     `secaudit:revenuecat-security`. Mobile IAP fails differently from Stripe: entitlement is
+     asserted by a client SDK, and webhook authenticity is opt-in.
+9. **Object storage** — if the project uploads files to R2, S3, Supabase Storage, or Convex file
+   storage: presigned-URL lifetime, client-supplied object keys, public buckets, and whether
+   knowing a key is treated as authorization. → `secaudit:object-storage-security`
 
 **Tier 2 — common, high-frequency web attack surface.**
 
-9. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
+10. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
    proof counters. → `secaudit:rate-limiting`
-10. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
+11. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
    authorization). → `secaudit:web-vulns`
-11. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
+12. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
     validation. → `secaudit:data-access`
-12. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
+13. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
     unsafe output rendering. → `secaudit:ai-integration`
-13. **Deployment configuration** — production settings, security headers, source maps, preview
+14. **Deployment configuration** — production settings, security headers, source maps, preview
     deployment isolation, environment separation. → `secaudit:deployment`
     - If the project builds an agent loop or hosts an MCP server, also →
       `secaudit:mcp-agent-security` (per-tool-call authorization, tool-result provenance, agent
       memory poisoning, blast radius).
-14. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
+15. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
     image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
     Docker socket mounted in. → `secaudit:docker-security`
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-15. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+16. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-16. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+17. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-17. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+18. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-18. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+19. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-19. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+20. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-20. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+21. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -240,7 +246,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–20 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–21 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -256,7 +262,7 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
 | A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `python-web-security` (Django settings) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `docker-security` (base images) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |

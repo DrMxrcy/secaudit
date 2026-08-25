@@ -2,14 +2,14 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
-## v3.7.0 — (in progress)
+## v3.7.0 — 2026-08-25
 
 ### ✨ New
 - Whole-app audits now run each area in its own worker, so large projects get read thoroughly instead of sampled.
 - Findings are now ranked by how likely an issue is to actually be exploited, and the audit flags runtimes that no longer receive security updates.
-- (pending) New checks for apps selling subscriptions through mobile in-app purchase.
-- (pending) New checks for apps using Clerk for sign-in.
-- (pending) New checks for file and image storage, covering who can read uploaded files and for how long.
+- New checks for apps selling subscriptions through mobile in-app purchase.
+- New checks for apps using Clerk for sign-in.
+- New checks for file and image storage, covering who can read uploaded files and for how long.
 
 ## v3.6.0 — 2026-08-24
 

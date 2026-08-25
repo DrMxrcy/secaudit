@@ -216,6 +216,38 @@ Last verified: 2026-08-21.
 - https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling — tool definitions, approval
 - https://datatracker.ietf.org/doc/html/rfc8707 — RFC 8707 resource indicators (token audience binding)
 
+## Mobile in-app purchase (`revenuecat-security`)
+- https://www.revenuecat.com/docs/integrations/webhooks — webhook delivery; authorization header and HMAC signing are both opt-in
+- https://www.revenuecat.com/docs/integrations/webhooks/event-types-and-fields — event types; there is no REFUND event (refunds arrive as CANCELLATION)
+- https://www.revenuecat.com/docs/integrations/webhooks/sample-events — event payload shapes
+- https://www.revenuecat.com/docs/api-v1 — REST v1; GET /subscribers is get-or-create, so a 200 is not authorization
+- https://www.revenuecat.com/docs/api-v2 — REST v2
+- https://www.revenuecat.com/docs/projects/authentication — public SDK key vs secret API key
+- https://www.revenuecat.com/docs/customers/customer-info — entitlements object, client-side cache
+- https://www.revenuecat.com/docs/customers/identifying-customers — logIn and the anonymous alias flow
+- https://www.revenuecat.com/docs/customers/user-ids — App User ID guidance
+- https://www.revenuecat.com/docs/customers/trusted-entitlements — signature verification of customer info
+- https://www.revenuecat.com/docs/getting-started/entitlements — entitlement model
+- https://www.revenuecat.com/docs/test-and-launch/sandbox — sandbox environment flag
+- https://www.revenuecat.com/docs/test-and-launch/sandbox/apple-app-store — sandbox receipts
+
+## Object storage (`object-storage-security`)
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html — presigned URLs are bearer credentials
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html — presigned PUT
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html — Block Public Access
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-policies.html — bucket policy
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html — bucket CORS
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html — versioning; "deleted" objects remain retrievable
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html — lifecycle rules
+- https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html — S3 security best practices
+- https://developers.cloudflare.com/r2/api/s3/presigned-urls/ — R2 presigned URLs (no presigned POST; 604800s cap)
+- https://developers.cloudflare.com/r2/buckets/public-buckets/ — r2.dev is development-only and rate-limited
+- https://developers.cloudflare.com/r2/api/tokens/ — scoping R2 API tokens to a bucket
+- https://developers.cloudflare.com/r2/buckets/cors/ — R2 CORS
+- https://developers.cloudflare.com/r2/buckets/object-lifecycles/ — R2 lifecycle rules
+- https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html — upload validation
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition — forcing download instead of inline render
+
 ## Deployment (`deployment`)
 - https://owasp.org/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP

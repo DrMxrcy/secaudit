@@ -144,7 +144,7 @@
     {
       "id": 15,
       "slug": "add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain",
-      "title": "Add ChainDrop npm worm and provenance-evasion detection to supply-chain",
+      "title": "Add ChainDrop npm worm and no-CVE detection to supply-chain",
       "type": "feature",
       "version": "3.4.0",
       "file": "plans/015-add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain.md",

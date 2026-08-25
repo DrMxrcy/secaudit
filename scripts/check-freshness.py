@@ -374,10 +374,11 @@ def check_fix_claims() -> list[dict]:
             else:
                 warnings.append(f"{cve}: {ver} fixes it but may carry later advisories ({path})")
 
-    if warnings:
-        print(f"note: {len(warnings)} version(s) fix their stated CVE but may have accrued "
-              f"later advisories — expected over time; confirm the entry names a current "
-              f"clean floor where it reads as upgrade advice", file=sys.stderr)
+    # Deliberately NOT reported. Every CVE entry accrues later advisories over time, so this
+    # would print on every clean run — an action item nobody will work through 24 times, which
+    # is how a checker's output becomes wallpaper. The hard check above catches the real defect
+    # (a version that does not fix its stated CVE); the "is this a clean floor today" question
+    # is the `versions` check's job, on versions actually offered as upgrade targets.
     return findings
 
 

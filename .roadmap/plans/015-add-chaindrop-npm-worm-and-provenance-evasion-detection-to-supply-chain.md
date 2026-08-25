@@ -1,13 +1,13 @@
 ---
 id: 15
-title: Add ChainDrop npm worm and provenance-evasion detection to supply-chain
+title: Add ChainDrop npm worm and no-CVE detection to supply-chain
 type: feature
 version: 3.4.0
 status: done
 created: 2026-08-21
 ---
 
-# ✨ Plan 15: Add ChainDrop npm worm and provenance-evasion detection to supply-chain
+# ✨ Plan 15: Add ChainDrop npm worm and no-CVE detection to supply-chain
 
 > Type: feature · Target: v3.4.0
 

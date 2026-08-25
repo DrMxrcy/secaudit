@@ -1,0 +1,35 @@
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_32f85b0ebda05c 4,346-355
+  s_735c54ad0ea5cd::t_bf20ffc8f4983d 374
+.roadmap/plans/035-close-verified-gaps-in-payments-and-supply-chain.md
+  s_735c54ad0ea5cd::t_32f85b0ebda05c 1-14,58,65-67,72
+  s_735c54ad0ea5cd::t_2d979f055c7fcc 15-57,59-64,68-71,73-78
+skills/supply-chain/SKILL.md
+  s_735c54ad0ea5cd::t_54986c8ead5fda 165-169
+skills/payments/SKILL.md
+  s_735c54ad0ea5cd::t_1a1630ea465fa0 67-118
+SOURCES.md
+  s_735c54ad0ea5cd::t_54986c8ead5fda 94
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_d80cc426ed0b77 9
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_1f11c9059361eb 7
+ROADMAP.md
+  s_735c54ad0ea5cd::t_76fef17076ec60 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "8adc9bc9766ead3995daced34497ddbb83694a0f",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

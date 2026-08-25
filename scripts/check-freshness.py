@@ -93,7 +93,13 @@ def http_status(url: str, attempts: int = 3) -> int:
             with opener.open(req, timeout=TIMEOUT) as r:
                 return r.status
         except urllib.error.HTTPError as e:
-            return e.code                # a real HTTP answer, including 404/301
+            # 429 and 5xx are the server having a problem, not the page having moved.
+            # Retry, and if it never answers cleanly treat it as unreachable rather than
+            # drift — a 503 is not evidence that a citation is wrong.
+            if e.code == 429 or 500 <= e.code < 600:
+                last = e
+            else:
+                return e.code            # a real answer about the resource: 200/301/403/404
         except Exception as e:
             last = e                     # DNS/TLS/reset — retry before believing it
         time.sleep(1.0 * (i + 1))

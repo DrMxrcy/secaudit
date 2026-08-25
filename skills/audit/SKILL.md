@@ -13,7 +13,8 @@ to real breaches, stolen API keys, and drained billing accounts.
 
 This skill is the entry point for a full sweep. It owns the audit process, the severity model,
 and the output format. The detection patterns and fixes for each area live in the focused domain
-skills it dispatches to.
+skills it dispatches to. For a whole-app sweep it **fans those domains out across parallel
+workers** rather than running them in one context — see `Execution model`.
 
 ## When to Use
 
@@ -58,6 +59,102 @@ narrow.
     needs whole-app context the diff can't provide, say so and tag it **Needs verification**.
 
 State the chosen scope in one line before you start, so the user can widen or narrow it.
+
+## Execution model — fan out for whole-app sweeps
+
+**A whole-app sweep must not run in a single context.** The domain skills total several thousand
+lines, and a modern stack activates most of them. Loading them all leaves no room to actually
+read the target codebase, so the audit silently degrades into pattern-sampling — and a sampled
+audit that reports "no findings" is indistinguishable from one that never looked. That is the
+failure this section exists to prevent.
+
+So for a **whole-app** scope, run one worker per applicable domain, concurrently. Narrow scopes
+(a single domain, a named surface, a diff/PR) stay inline — see `Scope Control`; fan-out costs
+more than the work for those.
+
+### Choosing worker agents
+
+Discover, don't assume. **Enumerate what actually exists before choosing**, reading each agent's
+`description` — not just its name:
+
+```bash
+ls .claude/agents/*.md 2>/dev/null          # project agents — check these FIRST
+ls ~/.claude/agents/*.md 2>/dev/null        # the user's personal agents
+```
+
+**Project-level agents take precedence over everything else.** A repo that ships its own agents
+has encoded knowledge of that codebase — its conventions, its risky areas, its data model — that
+no generic security agent has. If a project defines an agent whose description covers a domain you
+are about to audit, use it *for that domain* even when a personal or general-purpose agent would
+otherwise match the role. Prefer the most specific agent available, per domain, not one agent for
+the whole sweep.
+
+Resolution order per role: **project agent → personal agent → general-purpose agent → inline**.
+Reaching the last rung is fine, but say so, because the coverage caveat then applies again.
+
+| Role | Prefer an agent whose description mentions | Used in |
+|------|-------------------------------------------|---------|
+| Recon | cheap, high-volume repo discovery, file enumeration, summarising | Phase 1 |
+| Domain audit | security-sensitive analysis, auditing, the specific domain | Phase 2 (one per domain) |
+| Verification | fresh-context adversarial verification of claimed findings | Phase 3 |
+
+Respect deliberate model assignments in the agent definitions — a cheap model for enumeration and
+a strong one for analysis is the right shape, and where an environment has configured that, it is
+a decision already made. Do not override it.
+
+State which agents you selected, and for what, in one line before starting. If the project defines
+agents and you used them, say so — the user needs to know whose judgement produced the report.
+
+### Phase 1 — recon (1 worker)
+
+Map the attack surface per `Reconnaissance` below and return a structured inventory: entry points,
+auth mechanism and its authoritative layer, data stores, third-party integrations, and **a file
+inventory per domain** so Phase 2 workers know their territory and Phase 3 can check coverage.
+
+### Phase 2 — domain sweep (N workers, concurrent)
+
+One worker per applicable domain from the tiers below. Each:
+
+- loads **only its own** domain skill, so it has context to spare for the code;
+- receives the recon inventory and its file list;
+- reads its territory **exhaustively**, not by sampling.
+
+Each worker returns:
+
+1. **Findings** — `file:line`, severity, the evidence actually read, and the fix.
+2. **Explicit passes** — controls checked and found present. A silent absence is not a pass;
+   "every public mutation is auth-gated, here are all four" is a result, "no findings" is not.
+3. **Coverage** — files read, and files deliberately skipped **with the reason**.
+
+That third item is the point. Coverage becomes mechanical and per-domain instead of one hedge at
+the end of the report.
+
+### Phase 3 — verification
+
+Send each candidate finding to a **fresh-context** verifier for a CONFIRMED / REFUTED / PARTIAL
+verdict against the evidence. This applies to refutations too: a false positive dismissed in the
+same context that raised it has not really been checked. Wire the verdicts into the existing
+evidence rules in `Verification pass (before reporting)`.
+
+### Parent responsibilities
+
+The parent **synthesises and does not audit**. If it reads application code itself, it reintroduces
+the context pressure the fan-out exists to remove. It owns:
+
+- **De-duplication** — one root cause surfacing in three domains is one finding, not three.
+- **Attack chains** — chaining across domains is only visible from here (see `Attack chains`).
+- **Severity and the final report.** Workers never write the report directly.
+
+**A worker that fails leaves its domain UNAUDITED, and the report must say so.** Silently dropping
+a domain produces the same lie as sampling: it reads as clean. Never infer a pass from a missing
+worker result.
+
+### After the static sweep
+
+Static analysis produces *candidate* findings. When the sweep finishes, **offer**
+`secaudit:dynamic-verification` explicitly rather than waiting to be asked — it is opt-in by
+design, which in practice means it never runs. Name what it would settle for this specific
+codebase (which suspected findings, which containers), so the choice is concrete.
 
 ## Reconnaissance (before the sweep)
 
@@ -202,7 +299,11 @@ Cite numbers with their edition year (`A05:2025`) so a future renumbering stays 
 ### Verification pass (before reporting)
 
 Static reading produces *candidate* findings; some aren't real. Before a finding reaches the user,
-challenge it adversarially and drop or downgrade the ones that don't survive:
+challenge it adversarially and drop or downgrade the ones that don't survive.
+
+Under the fan-out model this runs as **Phase 3, in a fresh context** — the worker that raised a
+finding is the worst judge of it, and the same applies to one it dismissed. Inline, apply the same
+four questions yourself:
 
 1. **Reachable?** Is the vulnerable code reachable from an entry point (route, action, handler,
    event), or is it dead/unused code?
@@ -226,7 +327,12 @@ running app is available.
 Before writing the report, run a short completeness-critic pass against the recon map: was every
 entry point traced, every applicable domain actually run (skips confirmed from the code, not
 assumed), every trust boundary given an authorization look, every started data-flow followed to its
-end? Cover any gap you find, or state it explicitly. Report what you did **not** cover as a short
+end?
+
+Under the fan-out model this is largely mechanical: each worker returned its files-read and
+files-skipped, so diff those against the recon inventory rather than reconstructing coverage from
+memory. **A domain whose worker failed is UNAUDITED and must be reported as such** — not folded
+into a general caveat, and never left to read as clean. Cover any gap you find, or state it explicitly. Report what you did **not** cover as a short
 **Coverage & known gaps** line — a report that names its own boundaries is more trustworthy than
 one that implies total coverage. See `./references/methodology.md`.
 
@@ -338,8 +444,18 @@ const session = await stripe.checkout.sessions.create({
 3. **Client-controlled pricing (High):** Attackers can purchase at any price. Use server-side
    price lookup.
 
-**Coverage & known gaps:** Reviewed the web/API surface, auth, database, and payments. Did not
-review the mobile app (out of scope this pass) — run `secaudit:expo-security` on it separately.
+**Coverage & known gaps:** Per-domain, from each worker's coverage report:
+
+| Domain | Read | Skipped |
+|---|---|---|
+| secrets | all env config, `.gitignore`, git history for env/key adds | — |
+| convex-security | all 104 modules in `convex/` | — |
+| auth | `middleware.ts`, all 18 route handlers, session helpers | — |
+| payments | webhook handler, checkout route | — |
+| expo-security | — | **UNAUDITED** — worker failed, re-run before shipping |
+
+Do not fold a failed worker into a general caveat. `expo-security` above did not run, so the
+mobile surface has *no* result — not a clean one.
 
 ### Next Steps
 

@@ -5,7 +5,7 @@
 - (add ideas here)
 
 <!-- roadmap:auto:start -->
-**Current version: v3.6.0**
+**Current version: v3.7.0**
 
 ## 📊 Versions
 
@@ -23,9 +23,12 @@
 
 ### [x] v3.5.0 — 100% · 7 items · shipped 2026-08-24 ([history](CHANGELOG.internal.md))
 
-### [x] v3.6.0 — 100%
-- [x] **#25 Freshness check misses versions named as a CVE fix** `bug` — 100% ([plan](.roadmap/plans/025-freshness-check-misses-versions-named-as-a-cve-fix.md))
-- [x] **#26 Add coverage for Nuxt, React Router, Vite and Node.js** `feature` — 100% ([plan](.roadmap/plans/026-add-coverage-for-nuxt-react-router-vite-and-node-js.md))
-- [x] **#27 Extend dynamic-verification to containers** `feature` — 100% ([plan](.roadmap/plans/027-extend-dynamic-verification-to-containers.md))
-- [x] **#28 Add mcp-agent-security skill** `feature` — 100% ([plan](.roadmap/plans/028-add-mcp-agent-security-skill.md))
+### [x] v3.6.0 — 100% · 4 items · shipped 2026-08-24 ([history](CHANGELOG.internal.md))
+
+### [ ] v3.7.0 — 43%
+- [x] **#29 Parallel subagent fan-out for whole-app audits** `feature` — 100% ([plan](.roadmap/plans/029-parallel-subagent-fan-out-for-whole-app-audits.md))
+- [ ] **#30 Add EPSS exploitation scoring and endoflife.date runtime EOL** `feature` — 0% ([plan](.roadmap/plans/030-add-epss-exploitation-scoring-and-endoflife-date-runtime-eol.md))
+- [ ] **#31 Add revenuecat-security skill (mobile IAP)** `feature` — 0% ([plan](.roadmap/plans/031-add-revenuecat-security-skill-mobile-iap.md))
+- [ ] **#32 Add Clerk coverage to auth** `feature` — 0% ([plan](.roadmap/plans/032-add-clerk-coverage-to-auth.md))
+- [ ] **#33 Add object-storage-security skill (R2, S3, Supabase Storage)** `feature` — 0% ([plan](.roadmap/plans/033-add-object-storage-security-skill-r2-s3-supabase-storage.md))
 <!-- roadmap:auto:end -->

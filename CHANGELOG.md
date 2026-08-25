@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.7.0 — (in progress)
+
+### ✨ New
+- Whole-app audits now run each area in its own worker, so large projects get read thoroughly instead of sampled.
+- (pending) Findings are now ranked by how likely an issue is to actually be exploited, and the audit flags runtimes that no longer receive security updates.
+- (pending) New checks for apps selling subscriptions through mobile in-app purchase.
+- (pending) New checks for apps using Clerk for sign-in.
+- (pending) New checks for file and image storage, covering who can read uploaded files and for how long.
+
 ## v3.6.0 — 2026-08-24
 
 ### ✨ New

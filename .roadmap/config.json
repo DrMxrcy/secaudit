@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
-  "currentVersion": "3.6.0",
-  "nextId": 29,
+  "currentVersion": "3.7.0",
+  "nextId": 34,
   "items": [
     {
       "id": 1,
@@ -283,6 +283,56 @@
       "file": "plans/028-add-mcp-agent-security-skill.md",
       "note": "New checks for apps that connect AI agents to external tools, covering the permissions those connections are granted.",
       "audience": "public"
+    },
+    {
+      "id": 29,
+      "slug": "parallel-subagent-fan-out-for-whole-app-audits",
+      "title": "Parallel subagent fan-out for whole-app audits",
+      "type": "feature",
+      "version": "3.7.0",
+      "file": "plans/029-parallel-subagent-fan-out-for-whole-app-audits.md",
+      "note": "Whole-app audits now run each area in its own worker, so large projects get read thoroughly instead of sampled.",
+      "audience": "public"
+    },
+    {
+      "id": 30,
+      "slug": "add-epss-exploitation-scoring-and-endoflife-date-runtime-eol",
+      "title": "Add EPSS exploitation scoring and endoflife.date runtime EOL",
+      "type": "feature",
+      "version": "3.7.0",
+      "file": "plans/030-add-epss-exploitation-scoring-and-endoflife-date-runtime-eol.md",
+      "note": "Findings are now ranked by how likely an issue is to actually be exploited, and the audit flags runtimes that no longer receive security updates.",
+      "audience": "public"
+    },
+    {
+      "id": 31,
+      "slug": "add-revenuecat-security-skill-mobile-iap",
+      "title": "Add revenuecat-security skill (mobile IAP)",
+      "type": "feature",
+      "version": "3.7.0",
+      "file": "plans/031-add-revenuecat-security-skill-mobile-iap.md",
+      "note": "New checks for apps selling subscriptions through mobile in-app purchase.",
+      "audience": "public"
+    },
+    {
+      "id": 32,
+      "slug": "add-clerk-coverage-to-auth",
+      "title": "Add Clerk coverage to auth",
+      "type": "feature",
+      "version": "3.7.0",
+      "file": "plans/032-add-clerk-coverage-to-auth.md",
+      "note": "New checks for apps using Clerk for sign-in.",
+      "audience": "public"
+    },
+    {
+      "id": 33,
+      "slug": "add-object-storage-security-skill-r2-s3-supabase-storage",
+      "title": "Add object-storage-security skill (R2, S3, Supabase Storage)",
+      "type": "feature",
+      "version": "3.7.0",
+      "file": "plans/033-add-object-storage-security-skill-r2-s3-supabase-storage.md",
+      "note": "New checks for file and image storage, covering who can read uploaded files and for how long.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -299,5 +349,5 @@
     "3.5.0": "2026-08-24",
     "3.6.0": "2026-08-24"
   },
-  "last_seen_sha": "44373f1030ace5f2bd163474e1a7df955d154f4e"
+  "last_seen_sha": "56f59c29de9b34d03bdfd586be27b1f3e18ccbc3"
 }

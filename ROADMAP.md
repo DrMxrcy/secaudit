@@ -5,7 +5,7 @@
 - (add ideas here)
 
 <!-- roadmap:auto:start -->
-**Current version: v3.8.0**
+**Current version: v3.9.0**
 
 ## 📊 Versions
 
@@ -27,7 +27,5 @@
 
 ### [x] v3.7.0 — 100% · 5 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 
-### [x] v3.8.0 — 100%
-- [x] **#34 Continuous dependency monitoring for app repos** `feature` — 100% ([plan](.roadmap/plans/034-continuous-dependency-monitoring-for-app-repos.md))
-- [x] **#35 Close verified gaps in payments and supply-chain** `feature` — 100% ([plan](.roadmap/plans/035-close-verified-gaps-in-payments-and-supply-chain.md))
+### [x] v3.8.0 — 100% · 2 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

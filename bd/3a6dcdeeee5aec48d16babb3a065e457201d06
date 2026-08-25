@@ -1,0 +1,23 @@
+.roadmap/plans/015-add-chaindrop-npm-worm-and-provenance-evasion-detection-to-supply-chain.md
+  s_735c54ad0ea5cd::t_0f1a59282a0bb4 3,10
+scripts/check-freshness.py
+  s_735c54ad0ea5cd::t_ce3aa0f1ae2ed4 377-381
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_0f1a59282a0bb4 147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "bd3a6dcdeeee5aec48d16babb3a065e457201d06",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

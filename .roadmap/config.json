@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.8.0",
-  "nextId": 35,
+  "nextId": 36,
   "items": [
     {
       "id": 1,
@@ -343,6 +343,16 @@
       "file": "plans/034-continuous-dependency-monitoring-for-app-repos.md",
       "note": "A drop-in scheduled check that watches an app's own dependencies and tells you which issues are actually being exploited, instead of listing everything that could be updated.",
       "audience": "public"
+    },
+    {
+      "id": 35,
+      "slug": "close-verified-gaps-in-payments-and-supply-chain",
+      "title": "Close verified gaps in payments and supply-chain",
+      "type": "feature",
+      "version": "3.8.0",
+      "file": "plans/035-close-verified-gaps-in-payments-and-supply-chain.md",
+      "note": "Payment webhook checks now cover replayed and duplicated events, sender verification, and secret rotation; dependency checks verify lockfiles use secure download URLs.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -361,5 +371,5 @@
     "3.7.0": "2026-08-25",
     "3.8.0": "2026-08-25"
   },
-  "last_seen_sha": "bd3a6dcdeeee5aec48d16babb3a065e457201d06"
+  "last_seen_sha": "0f52e7f0763ad385229930b2d549a34561bfb5ab"
 }

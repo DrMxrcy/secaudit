@@ -64,6 +64,58 @@ export async function POST(request: Request) {
 }
 ```
 
+### A verified signature is not the whole check
+
+Signature verification proves the payload came from Stripe. It does not prove this is the *first*
+time you have seen it, or that it is *recent*. Four controls Stripe's own webhook docs call for
+are routinely skipped, because the handler looks finished once `constructEvent` stops throwing.
+
+**1. Replay — do not disable the recency check.** Stripe signs a timestamp into
+`Stripe-Signature` so a captured payload cannot be re-sent indefinitely. The libraries default to
+a 5-minute tolerance. Stripe's docs are blunt about the footgun: *"Don't use a tolerance value of
+`0`. Using a tolerance value of `0` disables the recency check entirely."*
+
+```typescript
+// BAD: silences a "timestamp outside tolerance" error by removing the protection
+stripe.webhooks.constructEvent(body, sig, secret, 0);
+
+// GOOD: keep the default, or widen it only slightly and fix the clock instead
+stripe.webhooks.constructEvent(body, sig, secret);   // 5 minutes
+```
+
+If you hit tolerance errors, the cause is almost always server clock drift — run NTP rather than
+widening the window.
+
+**2. Duplicates — be idempotent on `event.id`.** Stripe retries failed deliveries for up to three
+days, and the docs note an endpoint *"might occasionally receive the same event more than once"*.
+Without idempotency a retried `invoice.paid` grants the entitlement, or the credits, twice.
+
+```typescript
+// GOOD: record the event id first; a unique constraint makes the replay a no-op
+const seen = await db.webhookEvent.createMany({
+  data: [{ id: event.id }], skipDuplicates: true,
+});
+if (seen.count === 0) return new Response('ok');   // already processed
+```
+
+Also do not assume ordering — Stripe explicitly does not guarantee it, so a handler that requires
+`customer.subscription.created` before `invoice.paid` will eventually be wrong.
+
+**3. Verify the sender two ways.** Stripe's docs list IP allowlisting *and* signature verification
+together, not as alternatives. Restrict the endpoint to Stripe's published webhook IP ranges at
+the firewall or edge, and verify the signature in the handler.
+
+**4. Rotate the signing secret.** Secrets should be rolled periodically, or immediately if one is
+suspected compromised. During a roll an endpoint has **multiple active secrets** and Stripe signs
+once per secret — so a handler hardcoded to exactly one secret fails during rotation, which is
+how rotation gets abandoned. Read the secret from the environment and support a second one during
+the overlap window.
+
+**Operational note:** Stripe treats a `3xx` response to a webhook as a **failure**. An endpoint
+sitting behind a redirect (a trailing-slash rule, an apex→www rewrite) silently receives nothing.
+Register the URL the redirect resolves to. This presents as "payments stopped working" with no
+error anywhere in your logs.
+
 ## Subscription Status Validation
 
 Check subscription status **server-side on every protected request** using your database (kept in

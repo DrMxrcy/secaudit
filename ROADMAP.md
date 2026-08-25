@@ -29,4 +29,5 @@
 
 ### [x] v3.8.0 — 100%
 - [x] **#34 Continuous dependency monitoring for app repos** `feature` — 100% ([plan](.roadmap/plans/034-continuous-dependency-monitoring-for-app-repos.md))
+- [x] **#35 Close verified gaps in payments and supply-chain** `feature` — 100% ([plan](.roadmap/plans/035-close-verified-gaps-in-payments-and-supply-chain.md))
 <!-- roadmap:auto:end -->

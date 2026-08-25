@@ -162,8 +162,11 @@ npm audit
 # More thorough — check for known vulnerabilities
 npx audit-ci --critical
 
-# Validate lock file integrity / allowed hosts
-npx lockfile-lint --path package-lock.json --type npm --allowed-hosts npm
+# Validate lock file integrity / allowed hosts.
+# --validate-https matters as much as --allowed-hosts: without it a lockfile entry whose
+# resolved URL is http:// or git:// passes, which is the exact substitution the lockfile
+# is supposed to prevent.
+npx lockfile-lint --path package-lock.json --type npm --allowed-hosts npm --validate-https
 ```
 
 For deeper behavioral analysis (install scripts, suspicious package behavior), consider

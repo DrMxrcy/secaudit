@@ -91,6 +91,7 @@ Last verified: 2026-08-21.
 - https://upstash.com/docs/redis/sdks/ratelimit-ts/overview — Upstash sliding window
 
 ## Payments (`payments`)
+- https://docs.stripe.com/webhooks — replay tolerance ("don't use 0"), duplicate events, IP allowlisting, secret rolling, 3xx treated as failure
 - https://docs.stripe.com/webhooks/signature — raw-body signature verification
 - https://docs.stripe.com/webhooks — constructEvent, endpoint secret
 - https://docs.stripe.com/products-prices/how-products-and-prices-work — server-side Price IDs

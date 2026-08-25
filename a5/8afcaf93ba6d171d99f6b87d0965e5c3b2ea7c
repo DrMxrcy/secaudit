@@ -1,0 +1,21 @@
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_0a6246c605c55f 3
+ROADMAP.md
+  s_735c54ad0ea5cd::t_74785c646d9f4a 8,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a58afcaf93ba6d171d99f6b87d0965e5c3b2ea7c",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

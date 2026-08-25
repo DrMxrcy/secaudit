@@ -40,7 +40,7 @@ python3 scripts/check-freshness.py --only links
 python3 scripts/check-freshness.py --json     # machine-readable
 ```
 
-It re-derives four things from live sources and exits non-zero on drift:
+It re-derives the following from live sources (and the repo's own manifests) and exits non-zero on drift:
 
 | Check | What it asserts |
 |---|---|
@@ -50,6 +50,7 @@ It re-derives four things from live sources and exits non-zero on drift:
 | `kev` | no cited CVE has quietly joined the CISA KEV catalog without the skill saying so |
 | `fixclaims` | a version named as a CVE's fix actually appears in that advisory's fixed list |
 | `eol` | no recommended runtime version sits on an end-of-life cycle (endoflife.date) |
+| `manifests` | plugin.json and marketplace.json agree; every skill is in the README, dispatched by the orchestrator, and its frontmatter name matches its directory |
 
 **Why monthly?** Measured on 2026-08-21: `next` has 64 advisories, 31 of them published in 2026
 alone, and the **median gap between advisory days is 31 days** (longest quiet stretch 96 days,

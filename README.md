@@ -45,20 +45,27 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:secrets` | Hardcoded keys, client-exposed env prefixes, default credentials, `.gitignore` hygiene |
 | `secaudit:database` | Supabase RLS, Firebase Security Rules, storage policies, Edge Functions, the new key model |
 | `secaudit:convex-security` | Convex: public vs internal functions, validators, auth in handlers, file-storage access |
-| `secaudit:auth` | JWT verification, why middleware is not a security boundary, Server Actions, sessions |
+| `secaudit:prisma-security` | Prisma has no RLS: tenant scoping in every query, Postgres RLS silently bypassed by the table owner, pgvector retrieval |
+| `secaudit:auth` | JWT verification, why middleware is not a security boundary, Server Actions, sessions, Clerk |
+| `secaudit:better-auth-security` | Better Auth: getSessionCookie is not a gate, cookieCache vs revocation, org/admin roles, account linking |
 | `secaudit:privilege-escalation` | Admin-surface review: unprotected admin routes/actions, roles trusted from the client, broken function-level authorization, role mass-assignment |
 | `secaudit:rate-limiting` | Where limits are required, tamper-proof counters, billing and spend caps |
 | `secaudit:payments` | Client-side price manipulation, webhook signature verification, subscription validation |
+| `secaudit:revenuecat-security` | Mobile in-app purchase: client-asserted entitlement, opt-in webhook auth, sandbox purchases, entitlement writes |
 | `secaudit:supply-chain` | Slopsquatting / hallucinated packages, lock-file hygiene, weak default secrets |
 | `secaudit:react-native-security` | RN core: secure storage, deep links, WebView, native bridge, network/ATS, PKCE |
 | `secaudit:expo-security` | Expo/EAS: `EXPO_PUBLIC_` inlining, EAS secrets, secure-store, OTA code signing, config plugins |
-| `secaudit:ai-integration` | AI key exposure, usage caps, prompt injection, MCP threat model, output sanitization |
+| `secaudit:ai-integration` | AI key exposure, usage caps, prompt injection, MCP threat model, chat/RAG layer, output sanitization |
+| `secaudit:mcp-agent-security` | Agents and MCP servers: per-tool-call authorization, tool-result laundering, memory poisoning, blast radius |
 | `secaudit:deployment` | Production config, security headers, source maps, preview-deployment isolation, clickjacking |
+| `secaudit:docker-security` | Secrets in image layers, root containers, unpinned bases, docker.sock mounts, ports on 0.0.0.0 |
+| `secaudit:object-storage-security` | R2/S3: presigned URLs as bearer credentials, client-minted keys, public buckets, read authorization |
 | `secaudit:data-access` | SQL injection, ORM operator injection, runtime input validation, mass assignment |
 | `secaudit:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
-| `secaudit:dynamic-verification` | Optional runtime pass (Playwright): confirms/refutes findings against the running app — live headers, CORS, unauth routes, IDOR, reflected XSS |
+| `secaudit:python-web-security` | FastAPI/Django: per-route auth gaps, response_model leakage, production settings, TLS verification |
+| `secaudit:dynamic-verification` | Optional runtime pass: browser probes (headers, CORS, unauth routes, IDOR, XSS) and read-only container probes confirm or refute findings |
 
 ## Why a security plugin for AI-generated code
 

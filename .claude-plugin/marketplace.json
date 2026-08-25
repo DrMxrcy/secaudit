@@ -8,8 +8,8 @@
     {
       "name": "secaudit",
       "source": "./",
-      "description": "Audits codebases for security vulnerabilities common in vibe-coded apps and guides secure code generation. Orchestrator skill plus focused per-domain skills (secrets, database, auth, payments, supply chain, AI/LLM, Expo, React Native, Convex, and more).",
-      "version": "3.1.0",
+      "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (Clerk, Better Auth), client-side trust, insecure payments (Stripe and mobile in-app purchase), object storage and presigned URLs, supply-chain risks, AI/LLM, RAG, MCP and agent risks, container hardening, and Expo / React Native / Python specifics. Whole-app audits fan out across parallel workers and rank findings by live advisory, exploitation-probability and end-of-life data.",
+      "version": "3.7.0",
       "author": {
         "name": "DrMxrcy"
       },
@@ -20,9 +20,32 @@
         "audit",
         "vibe-coding",
         "supabase",
+        "rls",
         "convex",
         "expo",
-        "react-native"
+        "react-native",
+        "nextjs",
+        "supply-chain",
+        "prisma",
+        "postgres",
+        "pgvector",
+        "better-auth",
+        "docker",
+        "containers",
+        "python",
+        "fastapi",
+        "django",
+        "rag",
+        "mcp",
+        "agents",
+        "tool-calling",
+        "clerk",
+        "revenuecat",
+        "in-app-purchase",
+        "r2",
+        "s3",
+        "object-storage",
+        "epss"
       ]
     }
   ]

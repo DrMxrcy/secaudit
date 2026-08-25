@@ -591,7 +591,60 @@ def check_eol() -> list[dict]:
     return findings
 
 
+# --- Check 6: manifest consistency ------------------------------------------
+# Not a network check, but the same failure shape: facts that were true when written
+# and quietly stopped being true. marketplace.json sat at 3.1.0 for six releases with a
+# stale description and 7 of 30 keywords — and that is the copy users see when installing.
+def check_manifests() -> list[dict]:
+    findings = []
+
+    def add(file, subject, problem):
+        findings.append({"check": "manifest", "file": file,
+                         "subject": subject, "problem": problem})
+
+    try:
+        plugin = json.loads((ROOT / ".claude-plugin/plugin.json").read_text())
+    except Exception as e:
+        return [{"check": "manifest", "file": ".claude-plugin/plugin.json",
+                 "subject": "plugin.json", "problem": f"unreadable: {e}"}]
+
+    # marketplace.json must agree with plugin.json on what is being shipped
+    mpath = ROOT / ".claude-plugin/marketplace.json"
+    if mpath.exists():
+        try:
+            entry = json.loads(mpath.read_text())["plugins"][0]
+            for key in ("version", "description", "keywords"):
+                if entry.get(key) != plugin.get(key):
+                    add(".claude-plugin/marketplace.json", key,
+                        f"disagrees with plugin.json (marketplace={entry.get(key)!r:.60})")
+        except Exception as e:
+            add(".claude-plugin/marketplace.json", "marketplace.json", f"unreadable: {e}")
+
+    # every skill on disk must be discoverable: named in README and dispatched by audit
+    on_disk = {d.name for d in (ROOT / "skills").iterdir() if (d / "SKILL.md").is_file()}
+    readme = (ROOT / "README.md").read_text()
+    audit = (ROOT / "skills/audit/SKILL.md").read_text()
+    for name in sorted(on_disk):
+        if f"secaudit:{name}" not in readme:
+            add("README.md", name, "skill exists on disk but is not listed in the README table")
+        if name != "audit" and f"secaudit:{name}" not in audit:
+            add("skills/audit/SKILL.md", name,
+                "skill exists but the orchestrator never dispatches it — it will never run")
+
+    # and a skill's frontmatter name must match its directory, or it will not load
+    for name in sorted(on_disk):
+        text = (ROOT / "skills" / name / "SKILL.md").read_text()
+        m = re.search(r"(?m)^name:\s*(\S+)\s*$", text)
+        if not m:
+            add(f"skills/{name}/SKILL.md", name, "no `name:` in frontmatter")
+        elif m.group(1) != name:
+            add(f"skills/{name}/SKILL.md", name,
+                f"frontmatter name is {m.group(1)!r} but the directory is {name!r}")
+    return findings
+
+
 CHECKS = {
+    "manifests": check_manifests,
     "versions": check_version_floors,
     "fixclaims": check_fix_claims,
     "cves": check_advisories,

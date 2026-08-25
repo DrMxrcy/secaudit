@@ -139,8 +139,10 @@ Fold these verdicts back into the audit report so the user sees which suspected 
 
 ## References
 
-- `./references/probes.md` -- Concrete Playwright MCP recipes for each probe (headers, CORS,
-  unauthenticated routes, IDOR, reflected XSS), each mapped to its OWASP WSTG test id.
+- `./references/probes.md` -- Concrete Playwright MCP recipes for the **browser** probes
+  (headers, CORS, unauthenticated routes, IDOR, reflected XSS), each mapped to its OWASP WSTG
+  test id. The container probes need no reference file: each is a single documented command in
+  the `Container probes` table above.
 
 ## Sources
 

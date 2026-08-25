@@ -1,0 +1,42 @@
+.roadmap/plans/030-add-epss-exploitation-scoring-and-endoflife-date-runtime-eol.md
+  s_735c54ad0ea5cd::t_b014273bd428ed 10-11,15-79,82-89,92-97,100-112
+  s_735c54ad0ea5cd::t_0f8e609d0591f5 6
+scripts/check-freshness.py
+  s_735c54ad0ea5cd::t_419c6f783565f7 25
+  s_735c54ad0ea5cd::t_3d486ec7b2fc68 526-581,588
+skills/audit/SKILL.md
+  s_735c54ad0ea5cd::t_4f8f2791827f2d 284-289
+SOURCES.md
+  s_735c54ad0ea5cd::t_4f8f2791827f2d 12-14
+skills/framework-versions/SKILL.md
+  s_735c54ad0ea5cd::t_791d4caffdf574 26-30,32,35-92
+  s_735c54ad0ea5cd::t_8c9c27ec13d65b 93
+skills/framework-versions/references/live-advisory-lookup.md
+  s_735c54ad0ea5cd::t_05ffcc6ae77670 81-119,129-131
+.roadmap/config.json
+  s_735c54ad0ea5cd::t_3eea2b1373f1e6 352
+CHANGELOG.internal.md
+  s_735c54ad0ea5cd::t_020f86a2d95bd4 9
+CHANGELOG.md
+  s_735c54ad0ea5cd::t_439c1eba09ac1e 7
+CONTRIBUTING.md
+  s_735c54ad0ea5cd::t_a4788d6e63c272 51-52
+ROADMAP.md
+  s_735c54ad0ea5cd::t_fd91458285abd8 28,30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "9a2f3c2bea499ffca1647acd84599976f2f57536",
+  "prompts": {},
+  "sessions": {
+    "s_735c54ad0ea5cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46819ae9-2cf8-4d2a-84cc-7d0640aa1f71",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

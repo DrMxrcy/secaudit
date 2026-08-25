@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import datetime
 import re
 import sys
 import time
@@ -522,12 +523,69 @@ def check_kev() -> list[dict]:
     return findings
 
 
+# --- Check 5: runtime end-of-life -------------------------------------------
+# OSV indexes packages, not runtimes, so the version checks above cannot see that a
+# recommended Node/Python/Postgres major has gone EOL. An EOL runtime gets no patches
+# at all, which outranks any single CVE — and there is no advisory to catch it.
+EOL_API = "https://endoflife.date/api/{}.json"
+
+# Runtimes the skills give version advice about, mapped to their endoflife.date product.
+EOL_PRODUCTS = {
+    "node": "nodejs", "nodejs": "nodejs", "python": "python",
+    "django": "django", "postgres": "postgresql", "postgresql": "postgresql",
+    "php": "php", "ruby": "ruby", "laravel": "laravel",
+}
+# "Node 22", "Python 3.9", "Postgres 16" — a major (optionally minor) after the name.
+RUNTIME_VER_RE = re.compile(
+    r"\b(?P<name>" + "|".join(sorted(EOL_PRODUCTS, key=len, reverse=True)) + r")"
+    r"[\s@v]+(?P<ver>\d+(?:\.\d+)?)\b", re.IGNORECASE)
+
+
+def _eol_cycles(product: str) -> dict[str, str]:
+    req = urllib.request.Request(EOL_API.format(product), headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        return {str(c["cycle"]): c.get("eol") for c in json.load(r)}
+
+
+def check_eol() -> list[dict]:
+    findings = []
+    today = datetime.date.today().isoformat()
+    cache: dict[str, dict[str, str]] = {}
+    for f in source_files():
+        text = unwrap(f.read_text(encoding="utf-8"))
+        for line in text.split("\n"):
+            # Only lines that read as a recommendation. A line explaining that something is
+            # EOL is the correct advice, not drift.
+            if not re.search(r"\b(use|upgrade|require|minimum|at least|target)\b", line, re.I):
+                continue
+            if NEGATIVE_CONTEXT.search(line) or re.search(r"\bEOL\b|end.of.life", line, re.I):
+                continue
+            for m in RUNTIME_VER_RE.finditer(line):
+                name, ver = m.group("name").lower(), m.group("ver")
+                product = EOL_PRODUCTS[name]
+                if product not in cache:
+                    try:
+                        cache[product] = _eol_cycles(product)
+                    except Exception:
+                        cache[product] = {}
+                eol = cache[product].get(ver)
+                if isinstance(eol, str) and eol < today:
+                    findings.append({
+                        "check": "eol",
+                        "file": str(f.relative_to(ROOT)),
+                        "subject": f"{m.group('name')} {ver}",
+                        "problem": f"reached end of life on {eol} — receives no security patches",
+                    })
+    return findings
+
+
 CHECKS = {
     "versions": check_version_floors,
     "fixclaims": check_fix_claims,
     "cves": check_advisories,
     "links": check_links,
     "kev": check_kev,
+    "eol": check_eol,
 }
 
 

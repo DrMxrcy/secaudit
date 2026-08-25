@@ -23,10 +23,73 @@ templates. A vulnerable framework version is often the single highest-impact iss
    step. Query OSV.dev (or run `osv-scanner` / `npm audit`) for the packages found, so a CVE
    disclosed after this skill was last edited is still caught. Full procedure and a worked
    OSV.dev example: `./references/live-advisory-lookup.md`.
-3. Use the known high-impact examples below as a fast first pass and sanity check, **not** as the
+3. **Check whether the runtime itself is EOL** (see *Runtime end-of-life* below). An EOL runtime
+   never gets a patch, which outranks any individual CVE.
+4. **Look up EPSS for the CVEs you found** (see *Ranking by exploitation probability*), so the
+   upgrade order reflects what is actually being exploited rather than only what scores badly.
+5. Use the known high-impact examples below as a fast first pass and sanity check, **not** as the
    source of truth. If a live result and an example disagree, the live result wins.
-4. Flag any match as **High** or **Critical** severity, and always report the **fixed version**
+6. Flag any match as **High** or **Critical** severity, and always report the **fixed version**
    to upgrade to (from the live advisory, not a guess).
+
+## Ranking by exploitation probability (EPSS)
+
+CVSS measures *potential impact*. CISA KEV records *confirmed* exploitation but is deliberately
+small, so almost every CVE a real project hits is absent from it. Between those two sits the
+question a user actually needs answered: **is this one likely to be used against me?**
+
+EPSS (FIRST.org) gives the probability a CVE is exploited in the wild within 30 days. Free, no key,
+batched:
+
+```bash
+curl -s "https://api.first.org/data/v1/epss?cve=CVE-2025-55182,CVE-2024-29041" \
+  | python3 -m json.tool
+```
+
+Why it changes the report — three CVEs this skill already covers:
+
+| CVE | CVSS shape | EPSS | Percentile |
+|---|---|---|---|
+| `CVE-2025-55182` React2Shell RCE | Critical | **0.998** | 99.96th |
+| `CVE-2025-29927` middleware bypass | Critical | **0.992** | 99.93rd |
+| `CVE-2024-29041` Express open redirect | Moderate | **0.008** | 53rd |
+
+All three are real. Only two are being used. Without EPSS the third gets patched with the same
+urgency, which is how upgrade backlogs lose credibility.
+
+**Decision rule — do not invent a composite score:**
+
+- **On CISA KEV** → **Critical**, whatever CVSS and EPSS say. Confirmed exploitation ends it.
+- **High CVSS + high EPSS** → patch now.
+- **High CVSS + low EPSS** → real, but schedulable. Say so — this is the case that gets
+  over-escalated today.
+- **Low CVSS + high EPSS** → do not dismiss; frequently a chain component.
+- **EOL runtime** → Critical on its own. There will never be a patch.
+
+EPSS is a 30-day forecast and it moves. **Re-derive it at audit time; never quote a score from
+memory or cache one into a skill file** — same rule as version floors.
+
+## Runtime end-of-life
+
+An end-of-life runtime receives **no security patches at all**, so it outranks any single CVE —
+and no advisory database will tell you, because there is no CVE to file. OSV indexes packages, not
+runtimes: an `ecosystem: "Node.js"` query returns HTTP 400.
+
+Use endoflife.date (free, no key):
+
+```bash
+curl -s https://endoflife.date/api/nodejs.json | python3 -m json.tool | head -40
+# also: python, django, postgresql, php, ruby, laravel, dotnet
+```
+
+Compare the running major's `eol` date against today. Examples as of writing — **re-derive these,
+do not trust the line you are reading**:
+
+- `Node 25` → eol 2026-06-01 → **already EOL**, still widely deployed
+- `Python 3.9` → eol 2025-10-31 → **already EOL**
+
+Check the runtime *and* the framework: Django, Laravel and .NET all have EOL cycles here too, and
+a supported framework on an EOL language runtime is still unpatched underneath.
 
 ## Known high-impact examples (verify live)
 

@@ -48,6 +48,8 @@ It re-derives four things from live sources and exits non-zero on drift:
 | `cves` | every cited `GHSA-…` resolves |
 | `links` | every URL returns 200 **without** a redirect |
 | `kev` | no cited CVE has quietly joined the CISA KEV catalog without the skill saying so |
+| `fixclaims` | a version named as a CVE's fix actually appears in that advisory's fixed list |
+| `eol` | no recommended runtime version sits on an end-of-life cycle (endoflife.date) |
 
 **Why monthly?** Measured on 2026-08-21: `next` has 64 advisories, 31 of them published in 2026
 alone, and the **median gap between advisory days is 31 days** (longest quiet stretch 96 days,

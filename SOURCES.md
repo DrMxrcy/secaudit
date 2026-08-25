@@ -9,6 +9,9 @@ Last verified: 2026-08-21.
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/CVE-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
 - https://nvd.nist.gov/vuln/detail/CVE-2025-66478 — confirms the Next.js-side ID is a rejected duplicate of CVE-2025-55182
+- https://api.first.org/data/v1/epss — EPSS exploitation-probability API (no key, batched)
+- https://www.first.org/epss/ — EPSS model documentation
+- https://endoflife.date/ — runtime and framework end-of-life dates (no key)
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV (React2Shell actively exploited)
 - https://github.com/advisories/GHSA-f82v-jwr5-mffw — CVE-2025-29927 middleware bypass; ranges start at 12.0.0, confirming 11.x has no patched release
 - https://github.com/advisories/GHSA-67rr-84xm-4c7r — CVE-2025-49826 cache-poisoning DoS; range is `>=15.0.4-canary.51 <15.1.8`

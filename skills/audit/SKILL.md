@@ -281,7 +281,12 @@ Cite numbers with their edition year (`A05:2025`) so a future renumbering stays 
   source→sink data flow, or the specific missing control and the entry point it should protect). If
   you cannot point to real code, do not report it — a guess dressed as a finding is worse than
   silence.
-- When multiple issues exist, prioritize by exploitability and real-world impact.
+- When multiple issues exist, prioritize by exploitability and real-world impact. For CVE-based
+  findings that means **CISA KEV first, then EPSS, then CVSS** — CVSS measures potential impact,
+  EPSS measures likelihood of exploitation, and only KEV records that it is already happening. A
+  Critical-CVSS issue at 0.8% EPSS is real but schedulable; say so instead of escalating everything
+  equally. An **end-of-life runtime is Critical on its own** — there will never be a patch. See
+  `secaudit:framework-versions`.
 - If the codebase doesn't use a particular technology (e.g. no Supabase), skip that area entirely.
 - When generating new code, consult the relevant domain skill proactively to avoid introducing
   vulnerabilities in the first place. Prevention is better than detection.

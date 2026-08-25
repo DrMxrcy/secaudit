@@ -78,6 +78,45 @@ The npm ecosystem string is exactly `npm`; PyPI is `PyPI`; crates.io is `crates.
 - If a source disagrees with the hardcoded example list in the skill, **the live result wins**;
   note the discrepancy so the skill's example can be refreshed later.
 
+## Ranking: EPSS (exploitation probability)
+
+After you have the CVE list, batch it through EPSS to get the upgrade order right. Free, no key.
+
+```bash
+curl -s "https://api.first.org/data/v1/epss?cve=CVE-2025-55182,CVE-2025-29927,CVE-2024-29041" \
+  | python3 -c "import json,sys;[print(f\"{r['cve']:<18} epss={r['epss']} pct={r['percentile']}\") for r in json.load(sys.stdin)['data']]"
+```
+
+```
+CVE-2025-55182     epss=0.998020000 pct=0.999560000
+CVE-2025-29927     epss=0.992030000 pct=0.999320000
+CVE-2024-29041     epss=0.007860000 pct=0.533500000
+```
+
+A CVE absent from the response has no score yet (usually very recent) — treat that as unknown,
+not as low. EPSS is a rolling 30-day forecast, so re-derive it every audit.
+
+## Runtime end-of-life
+
+No advisory database covers this: OSV indexes packages, not runtimes (`ecosystem: "Node.js"`
+returns HTTP 400). An EOL runtime gets no patches at all.
+
+```bash
+curl -s https://endoflife.date/api/nodejs.json \
+  | python3 -c "
+import json,sys,datetime
+today=datetime.date.today().isoformat()
+for r in json.load(sys.stdin):
+    eol=r.get('eol')
+    if isinstance(eol,str):
+        print(f\"{r['cycle']:<6} eol={eol}  {'EOL' if eol<today else 'supported'}\")
+"
+```
+
+Products available include `nodejs`, `python`, `django`, `postgresql`, `php`, `ruby`, `laravel`,
+`dotnet`. Check the language runtime *and* the framework — a supported framework on an EOL
+runtime is still unpatched underneath.
+
 ## Sources
 
 - https://google.github.io/osv.dev/api/ — OSV.dev API overview (endpoints, no key, ecosystems)
@@ -87,3 +126,6 @@ The npm ecosystem string is exactly `npm`; PyPI is `PyPI`; crates.io is `crates.
 - https://github.com/advisories — GitHub Security Advisory Database
 - https://nvd.nist.gov/developers/vulnerabilities — NVD CVE API (live CVE detail lookup)
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV (actively exploited)
+- https://api.first.org/data/v1/epss — EPSS exploitation-probability API (FIRST.org, no key)
+- https://www.first.org/epss/ — EPSS model and how to read the score
+- https://endoflife.date/ — runtime and framework end-of-life dates (no key)

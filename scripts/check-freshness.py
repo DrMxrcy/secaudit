@@ -59,7 +59,7 @@ PLACEHOLDER_PATTERNS = [
 
 # Hosts/URLs that legitimately answer non-200 to this script. Each needs a reason.
 URL_ALLOWLIST = {
-    # Returns 403 to a browser User-Agent, 200 with none. Alive; still the W3C Recommendation.
+    # Kept for documentation; the global 403 rule below now covers this class generally.
     "https://www.w3.org/TR/webauthn-2/": "403 to browser UA, alive",
     # POST-only API endpoints, documented as such in live-advisory-lookup.md.
     "https://api.osv.dev/v1/query": "POST-only by design",
@@ -475,6 +475,12 @@ def check_links() -> list[dict]:
         for url, status, err in ex.map(probe, urls):
             if err:
                 unreachable.append(url)
+            elif status == 403:
+                # 403 never means "moved" or "gone" — it means this client was refused.
+                # WAFs block datacenter IPs, so links that are 200 from a laptop are 403
+                # from a CI runner. Reporting that as drift would fail the monthly job every
+                # time and teach everyone to ignore it.
+                unreachable.append(f"{url} (403 — likely bot/WAF block, not drift)")
             elif status != 200:
                 kind = "dead" if status in (404, 410) else f"redirects ({status})"
                 findings.append({

@@ -1,0 +1,25 @@
+.claude-plugin/marketplace.json
+  s_d24bcd69e7546b::t_5db5e64c9c85e3 12
+.claude-plugin/plugin.json
+  s_d24bcd69e7546b::t_37b2eea66198ac 3
+.roadmap/config.json
+  s_d24bcd69e7546b::t_f813417be66ef0 3
+ROADMAP.md
+  s_d24bcd69e7546b::t_ad48f9c6ff5ac0 8,30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a09df72abc696a7586a04b9f088004924111e32e",
+  "prompts": {},
+  "sessions": {
+    "s_d24bcd69e7546b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f01fc3d9-300c-46df-9e83-21b1f47aee80",
+        "model": "claude-opus-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -67,6 +67,13 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:python-web-security` | FastAPI/Django: per-route auth gaps, response_model leakage, production settings, TLS verification |
 | `secaudit:dynamic-verification` | Optional runtime pass: browser probes (headers, CORS, unauth routes, IDOR, XSS) and read-only container probes confirm or refute findings |
 
+
+## Continuous monitoring
+
+An audit is point-in-time. `docs/monitoring.md` adds a scheduled check to an app repo that runs
+the same OSV → EPSS → CISA KEV → end-of-life pass against its own lockfile and opens an issue
+when something is actually being exploited — the prioritisation layer Dependabot lacks.
+
 ## Why a security plugin for AI-generated code
 
 AI assistants reliably get a recurring set of security patterns wrong, which leads to real breaches: stolen API keys, drained billing accounts, and fully exposed databases. The core principle running through every skill: **never trust the client.** Every price, user ID, role, subscription status, and rate-limit counter must be validated or enforced server-side.

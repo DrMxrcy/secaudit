@@ -26,4 +26,7 @@
 ### [x] v3.6.0 — 100% · 4 items · shipped 2026-08-24 ([history](CHANGELOG.internal.md))
 
 ### [x] v3.7.0 — 100% · 5 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
+
+### [x] v3.8.0 — 100%
+- [x] **#34 Continuous dependency monitoring for app repos** `feature` — 100% ([plan](.roadmap/plans/034-continuous-dependency-monitoring-for-app-repos.md))
 <!-- roadmap:auto:end -->

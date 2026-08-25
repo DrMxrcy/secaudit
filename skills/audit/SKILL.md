@@ -151,6 +151,11 @@ worker result.
 
 ### After the static sweep
 
+An audit is a point-in-time result. Before finishing, mention that
+`docs/monitoring.md` sets up a scheduled dependency check for the repo — a new advisory can land
+against an already-pinned version with nothing in the code changing, so today's clean dependency
+result has a short shelf life.
+
 Static analysis produces *candidate* findings. When the sweep finishes, **offer**
 `secaudit:dynamic-verification` explicitly rather than waiting to be asked — it is opt-in by
 design, which in practice means it never runs. Name what it would settle for this specific

@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.8.0",
-  "nextId": 34,
+  "nextId": 35,
   "items": [
     {
       "id": 1,
@@ -333,6 +333,16 @@
       "file": "plans/033-add-object-storage-security-skill-r2-s3-supabase-storage.md",
       "note": "New checks for file and image storage, covering who can read uploaded files and for how long.",
       "audience": "public"
+    },
+    {
+      "id": 34,
+      "slug": "continuous-dependency-monitoring-for-app-repos",
+      "title": "Continuous dependency monitoring for app repos",
+      "type": "feature",
+      "version": "3.8.0",
+      "file": "plans/034-continuous-dependency-monitoring-for-app-repos.md",
+      "note": "A drop-in scheduled check that watches an app's own dependencies and tells you which issues are actually being exploited, instead of listing everything that could be updated.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -348,7 +358,8 @@
     "3.4.0": "2026-08-21",
     "3.5.0": "2026-08-24",
     "3.6.0": "2026-08-24",
-    "3.7.0": "2026-08-25"
+    "3.7.0": "2026-08-25",
+    "3.8.0": "2026-08-25"
   },
-  "last_seen_sha": "930d1c718b391e08ad1c3f6a001585de8ceb7425"
+  "last_seen_sha": "bd3a6dcdeeee5aec48d16babb3a065e457201d06"
 }

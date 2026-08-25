@@ -32,6 +32,17 @@ templates. A vulnerable framework version is often the single highest-impact iss
 6. Flag any match as **High** or **Critical** severity, and always report the **fixed version**
    to upgrade to (from the live advisory, not a guess).
 
+## Between audits — continuous monitoring
+
+Everything in this skill runs when someone invokes an audit. A new advisory can land against an
+already-pinned version at any time, with nothing in the repo changing, so an app is only as
+current as its last sweep.
+
+`scripts/monitor-deps.py` plus the reusable workflow in `docs/monitoring.md` run the same
+OSV → EPSS → KEV → EOL pass on a schedule against an app's own lockfile and open an issue when
+something crosses the threshold. It is a prioritisation layer over Dependabot rather than a
+replacement: Dependabot says what has an advisory, this says which one is being exploited today.
+
 ## Ranking by exploitation probability (EPSS)
 
 CVSS measures *potential impact*. CISA KEV records *confirmed* exploitation but is deliberately

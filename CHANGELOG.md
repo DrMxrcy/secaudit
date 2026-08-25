@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.8.0 — 2026-08-25
+
+### ✨ New
+- A drop-in scheduled check that watches an app's own dependencies and tells you which issues are actually being exploited, instead of listing everything that could be updated.
+
 ## v3.7.0 — 2026-08-25
 
 ### ✨ New

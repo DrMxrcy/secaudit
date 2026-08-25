@@ -1,0 +1,134 @@
+name: Dependency Monitor
+
+# Watches an app's own dependencies between audits and ranks what it finds by whether
+# it is actually being exploited (CISA KEV, then EPSS), plus whether the runtime is
+# end-of-life — which no advisory database reports, because none index runtimes.
+#
+# This does not replace Dependabot or osv-scanner. They tell you what has an advisory;
+# this tells you which of those to do first.
+#
+# App repos call this via workflow_call — see docs/monitoring.md.
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Repo-relative directory to scan"
+        type: string
+        default: "."
+      min-epss:
+        description: "Only report at or above this exploitation probability (0.0-1.0)"
+        type: number
+        default: 0
+      fail-on:
+        description: "any | kev | epss — what makes the job fail"
+        type: string
+        default: "any"
+      open-issue:
+        description: "Open/update a tracking issue when something is found"
+        type: boolean
+        default: true
+  workflow_dispatch:
+  schedule:
+    # Weekly. Dependency risk moves faster than the skills' own citations (which are
+    # checked monthly), because a new advisory can land against a pinned version at any
+    # time without anything in the repo changing.
+    - cron: "0 7 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      found: ${{ steps.scan.outputs.found }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # The script is stdlib-only, so there is no dependency to install here — and
+      # therefore no supply-chain surface introduced by the thing checking your
+      # supply chain.
+      - name: Scan dependencies
+        id: scan
+        env:
+          SCAN_PATH: ${{ inputs.path || '.' }}
+          MIN_EPSS: ${{ inputs.min-epss || 0 }}
+          FAIL_ON: ${{ inputs.fail-on || 'any' }}
+        run: |
+          set +e
+          python3 scripts/monitor-deps.py \
+            --path "$SCAN_PATH" --min-epss "$MIN_EPSS" --fail-on "$FAIL_ON" \
+            | tee monitor.txt
+          code=${PIPESTATUS[0]}
+          echo "found=$code" >> "$GITHUB_OUTPUT"
+          # exit 2 means the scan could not complete. That is NOT a clean result and
+          # must fail loudly rather than pass as "nothing found".
+          if [ "$code" = "2" ]; then
+            echo "::error::Dependency scan could not complete — treat as UNCHECKED, not clear."
+            exit 1
+          fi
+          exit 0
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-monitor-report
+          path: monitor.txt
+
+      - name: Fail when something is above threshold
+        if: steps.scan.outputs.found != '0'
+        run: exit 1
+
+  # Separate job so issues:write is never held while running repository code.
+  report:
+    needs: monitor
+    if: always() && needs.monitor.outputs.found != '0' && inputs.open-issue
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dependency-monitor-report
+
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '(report unavailable; see the run log)';
+            try { report = fs.readFileSync('monitor.txt', 'utf8').slice(0, 60000); } catch (e) {}
+
+            const body = [
+              'The dependency monitor found something worth looking at.',
+              '',
+              'Ordered by whether it is actually being exploited: CISA KEV entries first,',
+              'then by EPSS (probability of exploitation in the next 30 days). An',
+              'end-of-life runtime is listed first regardless — it will never be patched.',
+              '', '```', report, '```', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const existing = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'dependency-monitor',
+            });
+            // Update the existing issue rather than opening one per run — a new issue
+            // every week is how a monitor becomes noise people filter out.
+            if (existing.data.length) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: existing.data[0].number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner, repo, title: 'Dependency monitor: exploited or unpatchable dependencies',
+                body, labels: ['dependency-monitor'],
+              });
+            }

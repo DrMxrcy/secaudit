@@ -302,6 +302,11 @@ Detection: `grep -rn "experimental_telemetry\|langfuse\|langsmith\|LANGCHAIN_TRA
 MCP connectors give AI agents access to external services (Supabase, GitHub, Slack, etc.). This is
 powerful but creates new attack surfaces.
 
+This section is the entry point: enough for an app that *consumes* a couple of MCP servers. If the
+project **builds an agent loop or hosts an MCP server**, use `secaudit:mcp-agent-security` as well
+— it covers per-tool-call authorization, human-in-the-loop that actually gates, tool-result
+provenance, server-side handler authorization, agent memory poisoning, and blast radius.
+
 ### Tool poisoning / shadowing
 
 A malicious tool's *description or metadata* can manipulate the model — a semantic attack that

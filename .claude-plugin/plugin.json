@@ -28,6 +28,9 @@
     "python",
     "fastapi",
     "django",
-    "rag"
+    "rag",
+    "mcp",
+    "agents",
+    "tool-calling"
   ]
 }

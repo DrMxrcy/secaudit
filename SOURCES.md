@@ -27,6 +27,11 @@ Last verified: 2026-08-21.
 - https://github.com/advisories/GHSA-399j-vxmf-hjvr — CVE-2025-11953 React Native CLI Metro dev-server RCE (CISA KEV 2026-02-05)
 - https://github.com/advisories/GHSA-4r4m-qw57-chr8 — CVE-2025-31125 Vite server.fs.deny bypass (CISA KEV 2026-01-22)
 - https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json — CISA KEV feed (machine-readable; check dateAdded)
+- https://github.com/advisories/GHSA-qwww-vcr4-c8h2 — React Router RSC-mode CSRF bypass
+- https://nodejs.org/en/blog/vulnerability/ — Node.js security releases (the runtime is not OSV-indexed)
+- https://nuxt.com/blog — Nuxt release and security announcements
+- https://github.com/remix-run/react-router/security — React Router / Remix advisories
+- https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)
 - https://nextjs.org/blog — official Next.js security releases
 - https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape
@@ -191,6 +196,22 @@ Last verified: 2026-08-21.
 - https://ai-sdk.dev/docs/ai-sdk-ui/error-handling — stream errors masked by default
 - https://ai-sdk.dev/docs/ai-sdk-core/telemetry — recordInputs / recordOutputs
 - https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA (chat-thread IDOR)
+
+## MCP & agents (`mcp-agent-security`)
+- https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization — MCP authorization (current revision)
+- https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations — token audience, confused deputy
+- https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices — MCP security best practices
+- https://modelcontextprotocol.io/specification/2026-07-28/server/tools — tool definitions and handler responsibilities
+- https://modelcontextprotocol.io/specification/2026-07-28/server/resources — resource URIs (traversal surface)
+- https://modelcontextprotocol.io/specification/2026-07-28/basic/index — protocol basics; stateless, no protocol-level sessions
+- https://ts.sdk.modelcontextprotocol.io/v2/serving/authorization — server-side authorization in the TS SDK
+- https://ts.sdk.modelcontextprotocol.io/v2/serving/http — HTTP transport
+- https://ai-sdk.dev/docs/agents/overview — agent loops
+- https://ai-sdk.dev/docs/agents/loop-control — step limits and loop control
+- https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent — ToolLoopAgent
+- https://ai-sdk.dev/docs/agents/workflow-agent — workflow agents
+- https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling — tool definitions, approval
+- https://datatracker.ietf.org/doc/html/rfc8707 — RFC 8707 resource indicators (token audience binding)
 
 ## Deployment (`deployment`)
 - https://owasp.org/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)

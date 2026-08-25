@@ -139,6 +139,32 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   becomes clean: `5.20.0` still carries 8. Current clean floor is **`astro@7.1.0`**. Astro accrues
   advisories faster than most of this list, so re-derive from step 2 rather than trusting this line.
 - **Vue 2:** EOL — `vue-template-compiler` XSS (`CVE-2024-6783`); migrate to Vue 3.
+- **Nuxt:** 21 advisories, **16 of them published in 2026** — an actively-hunted surface, not a
+  dormant entry. Server Islands are the hot spot: `CVE-2026-71320` (server-side RCE via runtime
+  template injection in island props), `CVE-2026-71318` (unauthorized component instantiation via
+  island props), `CVE-2026-71321` (unauthenticated CPU exhaustion parsing island payloads). Also
+  `CVE-2026-72744`, where the dev server discloses the project root and workspace UUID. Current
+  clean floor **`nuxt@4.5.1`** — 4.4.7 still carries 7 open advisories and 4.4.6 carries 11, so
+  "on the latest 4.4.x" is not good enough.
+- **React Router / Remix:** 20 advisories, **18 published in 2026**. Open redirects
+  (`CVE-2026-53668` leading to XSS, `CVE-2026-53669` via a backslash in `<Link>`/`useNavigate`),
+  CSRF in action and document request processing (`CVE-2026-22030`, `CVE-2026-53663`, plus an
+  RSC-mode CSRF bypass), and unauthenticated DoS via inefficient route matching
+  (`CVE-2026-55685`). Current clean floor **`react-router@7.18.2`** or **`react-router@8.3.0`**.
+  **Check `@remix-run/*` too** — those packages carry the same advisories under a different name,
+  so a Remix app is in scope and a grep for "react-router" alone will miss it.
+- **Vite:** `server.fs.deny` is a repeat-offender control, and that pattern is the finding rather
+  than any single CVE. Beyond the KEV-listed `CVE-2025-31125` above, the same guard has been
+  bypassed by `CVE-2025-32395`, `CVE-2025-46565`, and `CVE-2026-53571` (Windows alternate paths);
+  `CVE-2026-39365` is a path traversal in optimized-deps `.map` handling. Current clean floors
+  **`vite@7.3.5`** or **`vite@8.0.16`** (8.0.5 still carries 2). Treat a project relying on
+  `server.fs.deny` to protect anything sensitive as a design problem, not a patching problem.
+- **Node.js (the runtime, not a package):** check `node --version` against the official security
+  releases. **No version is named here on purpose** — OSV indexes npm packages, not the Node.js
+  runtime (an `ecosystem: "Node.js"` query returns HTTP 400), so the automated freshness check
+  cannot police a hardcoded Node version and it would silently rot. Read the current advisory
+  from <https://nodejs.org/en/blog/vulnerability/> and confirm the running major is still
+  supported; an EOL major receives no patches at all, which is the more common finding.
 
 ## What to Check
 

@@ -115,6 +115,9 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
     unsafe output rendering. → `secaudit:ai-integration`
 13. **Deployment configuration** — production settings, security headers, source maps, preview
     deployment isolation, environment separation. → `secaudit:deployment`
+    - If the project builds an agent loop or hosts an MCP server, also →
+      `secaudit:mcp-agent-security` (per-tool-call authorization, tool-result provenance, agent
+      memory poisoning, blast radius).
 14. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
     image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
     Docker socket mounted in. → `secaudit:docker-security`
@@ -140,10 +143,12 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–20 read code and produce *candidate* findings. When a running instance of the app
-is available **and the user authorizes active testing of their own app**, follow the static sweep
-with `secaudit:dynamic-verification` to confirm or refute findings against the live app (security
-headers, CORS, unauthenticated routes, IDOR, reflected XSS). It upgrades a suspected finding to
+Static tiers 1–20 read code and produce *candidate* findings. When a running instance **or a
+running container** is available and the user authorizes testing of their own system, follow the
+static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
+browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
+XSS) and read-only Docker probes for container findings (secrets in image layers, root
+containers, socket mounts, ports published on 0.0.0.0). It upgrades a suspected finding to
 **Confirmed** with reproduction evidence, or **Refutes** it when a runtime control already handles
 it. This phase is optional and off by default — it requires the authorization gate in that skill.
 If no running app is available, leave unconfirmed findings tagged **Needs verification**.
@@ -164,7 +169,7 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 | A08 Software or Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |
-| OWASP LLM Top 10 | `ai-integration` |
+| OWASP LLM Top 10 | `ai-integration`, `mcp-agent-security` |
 | OWASP Mobile Top 10 | `react-native-security`, `expo-security` |
 
 Note the 2025 edition renumbered most categories: SSRF was merged into A01, "Vulnerable

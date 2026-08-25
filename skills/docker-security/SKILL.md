@@ -541,6 +541,19 @@ container boundary itself, and each deserves its own finding well above checklis
 - No `cap_drop` / `read_only` / `no-new-privileges` / `pids_limit` on production services.
 - `privileged: true`, `network_mode: host`, `pid: host` — the boundary is gone, not just weakened.
 
+## Confirming these findings at runtime
+
+Every section above is read from a `Dockerfile` or compose file, and static reading has two blind
+spots here: a `USER` directive can be overridden by `docker run --user`, and a compose file with
+no `ports:` says nothing about a container someone started by hand with `-p`. Equally, an
+`ARG NPM_TOKEN` that looks damning is a false positive if CI passed the value as a BuildKit
+secret.
+
+When the container is actually running, `secaudit:dynamic-verification` carries read-only probes
+(`docker inspect`, `docker image history`, `docker exec <c> id`, `ss -lntp`) that confirm or
+refute each of the eight sections above. Note the redaction rule: `.Config.Env` is exactly where
+the credentials from §7 live, so report the variable name and never the value.
+
 ## Sources
 
 - https://docs.docker.com/build/building/best-practices/ -- Dockerfile best practices, non-root USER

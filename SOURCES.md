@@ -4,7 +4,7 @@ Every claim in the secaudit skills is backed by a primary source: official docum
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 
-Last verified: 2026-08-21.
+Last verified: 2026-09-15.
 
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/cve-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
@@ -36,6 +36,23 @@ Last verified: 2026-08-21.
 - https://github.com/remix-run/react-router/security — React Router / Remix advisories
 - https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)
 - https://nextjs.org/blog — official Next.js security releases
+- https://github.com/advisories/GHSA-crvj-82cr-hjcx — CVE-2026-84363 Hono query parser reads past the URL fragment; the 2026-09-08 trio sets the 4.13.5 floor
+- https://github.com/advisories/GHSA-f23p-vx2j-j53r — CVE-2026-71850 Hono `memo()` cross-user SSR disclosure, fixed 4.12.34
+- https://github.com/advisories/GHSA-w332-q679-j88p — CVE-2026-24473 Hono serve-static env-key read; its fix release 4.11.7 still carries 33 open advisories
+- https://github.com/advisories/GHSA-x445-f3h2-j279 — CVE-2026-73419 Auth.js OAuth check cookies not bound to the provider (account-linking takeover)
+- https://github.com/advisories/GHSA-8fpg-xm3f-6cx3 — CVE-2026-73421 NextAuth config errors make existence-based auth checks fail open (5.x only)
+- https://github.com/advisories/GHSA-gpj5-g38j-94v9 — CVE-2026-39356 Drizzle ORM identifier injection via `escapeName()` in every SQL dialect
+- https://github.com/advisories/GHSA-7gcc-r8m5-44qm — CVE-2026-27959 Koa Host header injection via `ctx.hostname`
+- https://github.com/advisories/GHSA-3m5p-2c4r-xxw2 — CVE-2026-16732 Fastify `X-Forwarded-*` spoofing under trustProxy hop-count
+- https://github.com/advisories/GHSA-444r-cwp2-x5xf — CVE-2026-3635 Fastify request.protocol/host spoofable from an untrusted peer
+- https://github.com/advisories/GHSA-8hq9-phh3-p2wp — CVE-2026-31865 Elysia cookie value prototype pollution
+- https://github.com/advisories/GHSA-g7cv-rxg3-hmpx — CVE-2026-45321 malware in 42 @tanstack/* releases (credential/token/SSH-key exfiltration)
+- https://github.com/advisories/GHSA-6384-m2mw-rf54 — CVE-2026-35051 Traefik ForwardAuth bypass via X-Forwarded-Prefix
+- https://github.com/advisories/GHSA-5m6w-wvh7-57vm — CVE-2026-39858 Traefik forwarded alias-header bypass (same middleware)
+- https://github.com/advisories/GHSA-3q9r-p662-5j8m — CVE-2026-54764 Traefik ForwardAuth X-Forwarded-Port spoofing
+- https://github.com/advisories/GHSA-6765-c87h-8mrf — CVE-2026-71326 Traefik BasicAuth singleflight identity spoof
+- https://github.com/advisories/GHSA-2xp9-vwfh-vxw4 — Next.js AVIF image-optimization RCE, 2026-09-08
+- https://github.com/advisories/GHSA-26w7-cxv4-gfx2 — Astro AVIF image-optimization RCE, same day; the shared sharp/libvips pipeline
 - https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape
 - https://github.com/google/osv-scanner — osv-scanner CLI for lockfile scanning

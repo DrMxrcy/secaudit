@@ -38,6 +38,14 @@
     "r2",
     "s3",
     "object-storage",
-    "epss"
+    "epss",
+    "hono",
+    "fastify",
+    "koa",
+    "elysia",
+    "drizzle",
+    "next-auth",
+    "tanstack",
+    "traefik"
   ]
 }

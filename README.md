@@ -41,7 +41,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | Skill | Covers |
 |-------|--------|
 | `secaudit:audit` | Orchestrator: runs the full security sweep and dispatches to the domain skills |
-| `secaudit:framework-versions` | Known-vulnerable framework versions and critical CVEs (Next.js, React, and more) |
+| `secaudit:framework-versions` | Known-vulnerable framework versions and critical CVEs (Next.js, React, Astro, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js, Drizzle, Traefik) |
 | `secaudit:secrets` | Hardcoded keys, client-exposed env prefixes, default credentials, `.gitignore` hygiene |
 | `secaudit:database` | Supabase RLS, Firebase Security Rules, storage policies, Edge Functions, the new key model |
 | `secaudit:convex-security` | Convex: public vs internal functions, validators, auth in handlers, file-storage access |

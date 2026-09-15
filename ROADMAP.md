@@ -27,9 +27,9 @@
 
 ### [x] v3.8.0 — 100% · 2 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.9.0 — 7%
+### [ ] v3.9.0 — 15%
 - [ ] **#36 Freshness fix-claim check pairs every CVE on a line with every fixed clause; pair with nearest CVE** `bug` — 67% ([plan](.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md))
-- [ ] **#37 framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern** `feature` — 0% ([plan](.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md))
+- [x] **#37 framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern** `feature` — 100% ([plan](.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md))
 - [ ] **#38 Add ci-cd-security skill: GitHub Actions pwn-requests, SHA pinning, permissions, run: injection, keyless cosign** `feature` — 0% ([plan](.roadmap/plans/038-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md))
 - [ ] **#39 Add cloudflare-workers-security skill: Hono (CVE-2026-24473), D1/KV/R2 bindings, wrangler secrets vs [vars]** `feature` — 0% ([plan](.roadmap/plans/039-add-cloudflare-workers-security-skill-hono-cve-2026-24473-d1-kv-r2-bindings-wrangler-secrets-vs-vars.md))
 - [ ] **#40 Extend data-access with Drizzle (CVE-2026-39356 identifier injection, sql.raw) and SQLite/Turso/D1 file and tenancy specifics** `feature` — 0% ([plan](.roadmap/plans/040-extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics.md))

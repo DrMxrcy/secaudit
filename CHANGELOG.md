@@ -3,7 +3,7 @@
 ## v3.9.0 — (in progress)
 
 ### ✨ New
-- (pending) Version checks now cover several more widely used web frameworks, ORMs and proxies.
+- Version checks now cover several more widely used web frameworks, ORMs and proxies.
 - (pending) New checks for GitHub Actions workflows, covering workflows that hand secrets to untrusted pull requests, unpinned third-party actions and over-broad token permissions.
 - (pending) New checks for apps deployed on Cloudflare Workers with Hono, D1, KV and R2 bindings.
 - (pending) Data-access checks now recognise Drizzle ORM and SQLite-based databases such as Turso and D1.

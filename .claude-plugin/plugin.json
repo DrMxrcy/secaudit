@@ -1,7 +1,7 @@
 {
   "name": "secaudit",
   "version": "3.8.0",
-  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (Clerk, Better Auth), client-side trust, insecure payments (Stripe and mobile in-app purchase), object storage and presigned URLs, supply-chain risks, CI/CD pipelines (GitHub Actions pwn requests, unpinned actions, workflow token scope), AI/LLM, RAG, MCP and agent risks, container hardening, and Expo / React Native / Python specifics. Whole-app audits fan out across parallel workers and rank findings by live advisory, exploitation-probability and end-of-life data.",
+  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (Clerk, Better Auth), client-side trust, insecure payments (Stripe and mobile in-app purchase), object storage and presigned URLs, supply-chain risks, CI/CD pipelines (GitHub Actions pwn requests, unpinned actions, workflow token scope), Cloudflare Workers and Pages with Hono (wrangler `[vars]` vs secrets, D1/KV/R2 binding scope, middleware ordering), AI/LLM, RAG, MCP and agent risks, container hardening, and Expo / React Native / Python specifics. Whole-app audits fan out across parallel workers and rank findings by live advisory, exploitation-probability and end-of-life data.",
   "author": {
     "name": "DrMxrcy"
   },
@@ -50,6 +50,10 @@
     "github-actions",
     "ci-cd",
     "workflows",
-    "cosign"
+    "cosign",
+    "cloudflare",
+    "workers",
+    "d1",
+    "wrangler"
   ]
 }

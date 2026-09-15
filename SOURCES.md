@@ -301,6 +301,52 @@ Last verified: 2026-09-15.
 - https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/ — A03:2025, where §3, §6, §9 and §10 land
 - https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — A08:2025, where §1, §6, §8 and §9 land
 
+## Cloudflare Workers (`cloudflare-workers-security`)
+- https://developers.cloudflare.com/workers/configuration/environment-variables/ — `[vars]` are plaintext; "Do not use plaintext environment variables to store sensitive information"
+- https://developers.cloudflare.com/workers/configuration/secrets/ — `wrangler secret put`; secrets not visible in Wrangler or dashboard; `.dev.vars` gitignore guidance
+- https://developers.cloudflare.com/workers/wrangler/environments/ — non-inheritable keys; secrets per environment; environment-specific `.dev.vars.<name>`
+- https://developers.cloudflare.com/workers/wrangler/configuration/ — the non-inheritable key list (bindings, environment variables)
+- https://developers.cloudflare.com/workers/runtime-apis/bindings/ — `env` passed to every handler; "the permission is embedded within the API itself"
+- https://developers.cloudflare.com/workers/runtime-apis/nodejs/ — the `nodejs_compat` compatibility flag and dates
+- https://developers.cloudflare.com/workers/runtime-apis/nodejs/process/ — `nodejs_compat_populate_process_env` puts secrets in `process.env`
+- https://developers.cloudflare.com/r2/api/workers/workers-api-usage/ — an unguarded Worker makes the bucket public; authorization logic lives in your Worker
+- https://developers.cloudflare.com/d1/worker-api/prepared-statements/ — `prepare()` + `bind()` prevents SQL injection
+- https://developers.cloudflare.com/kv/concepts/how-kv-works/ — eventual consistency, up-to-60s staleness, write-heavy workloads, "consider using Durable Objects"
+- https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/ — transactional, strongly consistent, single-threaded storage
+- https://developers.cloudflare.com/ai-gateway/configuration/authentication/ — `cf-aig-authorization`; an `AI Gateway Run` token reaches every gateway and BYOK key
+- https://developers.cloudflare.com/workers-ai/ — the `env.AI` binding
+- https://developers.cloudflare.com/fundamentals/reference/http-headers/ — `CF-Connecting-IP` vs appended `X-Forwarded-For`
+- https://developers.cloudflare.com/workers/runtime-apis/request/ — `request.cf` and where it is unavailable
+- https://developers.cloudflare.com/fundamentals/concepts/cloudflare-ip-addresses/ — origin IP discovery bypasses Cloudflare; block non-Cloudflare traffic
+- https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/ — AOP ensures requests come from the Cloudflare network
+- https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/ — `Cf-Access-Jwt-Assertion`, team JWKS endpoint, `aud` claim, Workers example
+- https://developers.cloudflare.com/pages/functions/bindings/ — Pages Functions read bindings from `context.env`; Production and Preview are separate
+- https://hono.dev/docs/guides/middleware — middleware executes in registration order
+- https://hono.dev/docs/getting-started/cloudflare-workers — `c.env` bindings, typed `Bindings`, local `.dev.vars`
+- https://hono.dev/docs/middleware/builtin/cors — `origin` defaults to `*`
+- https://hono.dev/docs/middleware/builtin/csrf — Origin / `Sec-Fetch-Site` checks; form-submittable content types only
+- https://hono.dev/docs/middleware/builtin/secure-headers — default header pack; CSP is "No Setting" by default
+- https://hono.dev/docs/middleware/builtin/jwt — `secret`, `alg`, `Authorization` handling, `c.get('jwtPayload')`
+- https://hono.dev/docs/middleware/builtin/ip-restriction — requires the environment's `getConnInfo`
+- https://hono.dev/docs/helpers/conninfo — `getConnInfo` from `hono/cloudflare-workers`
+- https://raw.githubusercontent.com/honojs/hono/main/src/adapter/cloudflare-workers/conninfo.ts — the Workers adapter reads `cf-connecting-ip`
+- https://github.com/advisories/GHSA-w332-q679-j88p — CVE-2026-24473 serveStatic Workers-env key disclosure
+- https://github.com/advisories/GHSA-gqvv-2mrq-wpjv — CVE-2026-84365 `toSSG()` writes outside the output directory
+- https://github.com/advisories/GHSA-88fw-hqm2-52qc — CVE-2026-54290 cors() reflected origin with credentials
+- https://github.com/advisories/GHSA-f23p-vx2j-j53r — CVE-2026-71850 `memo()` cross-user SSR disclosure
+- https://github.com/advisories/GHSA-f67f-6cw9-8mq4 — CVE-2026-22817 JWK algorithm confusion
+- https://github.com/advisories/GHSA-r354-f388-2fhh — CVE-2026-24398 ipRestriction IPv4 range bypass
+- https://github.com/advisories/GHSA-xpcf-pg52-r92g — CVE-2026-39409 ipRestriction IPv4-mapped-IPv6 bypass
+- https://github.com/advisories/GHSA-xrhx-7g5j-rcj5 — CVE-2026-47674 ipRestriction non-canonical IPv6 bypass
+- https://github.com/advisories/GHSA-f577-qrjj-4474 — CVE-2026-47673 jwt middleware accepts any Authorization scheme
+- https://github.com/advisories/GHSA-hm8q-7f3q-5f36 — CVE-2026-44459 improper exp/nbf/iat validation
+- https://github.com/advisories/GHSA-p77w-8qqv-26rm — CVE-2026-44457 cache middleware ignores Vary
+- https://github.com/advisories/GHSA-q5qw-h33p-qvwr — CVE-2026-29045 serveStatic arbitrary file access
+- https://github.com/advisories/GHSA-wmmm-f939-6g9c — CVE-2026-39407 serveStatic middleware bypass via repeated slashes
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where §2, §3 and §7 land
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where §1, §3, §4 and §5 land
+- https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025, where §6 lands
+
 ## Deployment (`deployment`)
 - https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP

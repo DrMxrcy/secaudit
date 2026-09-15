@@ -62,6 +62,10 @@ the bundle is visible to anyone:
 
 ## .gitignore
 
+On Cloudflare Workers the same mistake wears a different name: a `[vars]` block in `wrangler.toml`
+/ `wrangler.jsonc` is plaintext committed config, not a secret store, and `.dev.vars` is a
+credential file that must be gitignored — see `secaudit:cloudflare-workers-security`.
+
 Ensure `.env`, `.env.local`, `.env.*.local`, and any file containing secrets is in `.gitignore`
 **before the first commit**. Check that `.env.example` or `.env.sample` files contain only
 placeholder values, not real keys.

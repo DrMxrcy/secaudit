@@ -35,6 +35,11 @@ REST API. Use:
 - **Middleware-level limiting** — At the edge or API gateway
 - **In-memory stores** — For single-server deployments (Redis for multi-server)
 
+On Cloudflare Workers, Workers KV is the wrong store for a counter: it is eventually consistent
+(changes can take 60 seconds or more to propagate) and has no atomic increment, so concurrent
+requests overwrite each other's count. Use a Durable Object instead — see
+`secaudit:cloudflare-workers-security`.
+
 ## Combine Per-IP and Per-User Limiting
 
 - IP-only limits are defeated by rotating IPs (trivial with VPNs or botnets)

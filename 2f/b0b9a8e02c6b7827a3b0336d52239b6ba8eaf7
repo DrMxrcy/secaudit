@@ -1,0 +1,53 @@
+.roadmap/plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md
+  s_2eb785847a60dc::t_4d1e0b330bb26d 1-29
+.roadmap/plans/038-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-31
+.roadmap/plans/041-add-oauth-oidc-security-skill-client-flows-lucia-arctic-sign-in-with-x-and-provider-side.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-29
+.roadmap/plans/040-extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-27
+.roadmap/plans/039-add-cloudflare-workers-security-skill-hono-cve-2026-24473-d1-kv-r2-bindings-wrangler-secrets-vs-vars.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-29
+.roadmap/plans/042-add-auth-js-nextauth-coverage-to-auth.md
+  s_2eb785847a60dc::t_3bb79b831ca194 1-27
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_3bb79b831ca194 13-15
+  s_2eb785847a60dc::t_4d1e0b330bb26d 16
+  s_2eb785847a60dc::t_69ac851a2e00f7 5-12,17-20
+CHANGELOG.md
+  s_2eb785847a60dc::t_4d1e0b330bb26d 14
+  s_2eb785847a60dc::t_69ac851a2e00f7 3-10,15-18
+  s_2eb785847a60dc::t_3bb79b831ca194 11-13
+.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-30
+.roadmap/config.json
+  s_2eb785847a60dc::t_3bb79b831ca194 415-444
+  s_2eb785847a60dc::t_4d1e0b330bb26d 4,445-455
+  s_2eb785847a60dc::t_69ac851a2e00f7 356-414
+.roadmap/plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md
+  s_2eb785847a60dc::t_3bb79b831ca194 1-29
+.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md
+  s_2eb785847a60dc::t_69ac851a2e00f7 1-28
+.roadmap/plans/044-add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy.md
+  s_2eb785847a60dc::t_3bb79b831ca194 1-29
+ROADMAP.md
+  s_2eb785847a60dc::t_3bb79b831ca194 37-39
+  s_2eb785847a60dc::t_69ac851a2e00f7 29-36
+  s_2eb785847a60dc::t_4d1e0b330bb26d 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2fb0b9a8e02c6b7827a3b0336d52239b6ba8eaf7",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

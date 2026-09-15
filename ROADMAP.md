@@ -1,9 +1,17 @@
 # 🗺️ Roadmap: Secaudit
 
 ## 💡 Idea Incubator
+- framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern
+- Freshness fix-claim check pairs every CVE on a line with every fixed clause; pair with nearest CVE
+- Add kubernetes-security skill or docker-security section: Helm values secrets, RBAC wildcards, securityContext, hostPath, NetworkPolicy
+- Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay
+- Add oauth-oidc-security skill: client flows (Lucia/Arctic, Sign in with X) and provider side (redirect_uri, token vault, JWKS rotation)
+- Extend data-access with Drizzle (CVE-2026-39356 identifier injection, sql.raw) and SQLite/Turso/D1 file and tenancy specifics
+- Add cloudflare-workers-security skill: Hono (CVE-2026-24473), D1/KV/R2 bindings, wrangler secrets vs [vars]
+- Add proxy-trust skill: X-Forwarded-* and Host trust, forward-auth identity-header injection, Traefik CVE-2026-35051/39858, Cloudflare Access JWT verification
+- Add Auth.js/NextAuth coverage to auth (CVE-2026-73419 state/nonce/PKCE binding, account linking, AUTH_SECRET, trustHost)
+- Add ci-cd-security skill: GitHub Actions pwn-requests, SHA pinning, permissions, run: injection, keyless cosign ([notes](.roadmap/notes/2026-09-15-coverage-gap-research.md))
 <!-- Free-form. Drop loose ideas here; scripts never touch this region. -->
-- (add ideas here)
-
 <!-- roadmap:auto:start -->
 **Current version: v3.9.0**
 

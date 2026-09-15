@@ -3,7 +3,7 @@ id: 41
 title: Add oauth-oidc-security skill: client flows (Lucia/Arctic, Sign in with X) and provider side
 type: feature
 version: 3.9.0
-status: planned
+status: done
 created: 2026-09-15
 ---
 
@@ -24,6 +24,9 @@ created: 2026-09-15
 - **Fails if:** a version, advisory ID or provider capability is asserted that OSV or the provider's docs do not confirm; or the freshness check reports drift.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/oauth-oidc-security/SKILL.md`
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/oauth-oidc-security/SKILL.md`
+  > evidence: reviewer PARTIAL: all RFC 9700/7636/8252/OIDC Core section cites match fact sheet, TS APIs real, 0 CVE strings; only gap = forward refs to plan 42 Auth.js section (next item) (2026-09-15)
+- [x] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: audit Tier 1 item 6 dispatch bullet + A01/A07 rows; auth + cryptography cross-refs; README; plugin/marketplace byte-identical (2026-09-15)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: python3 scripts/check-freshness.py: All current. Checks run: cves, eol, fixclaims, kev, links, manifests, versions (2026-09-15)

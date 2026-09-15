@@ -200,6 +200,8 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
 6. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
    Server Action protection, session management. → `secaudit:auth`
    - If `better-auth` is in `package.json`, also → `secaudit:better-auth-security`
+   - If the app implements OAuth/OIDC itself (`openid-client`, `oidc-provider`, a hand-written
+     callback), also → `secaudit:oauth-oidc-security`
 7. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
    the client, broken function-level authorization, role mass-assignment. → `secaudit:privilege-escalation`
 8. **Payments** — client-side price manipulation, webhook signature verification, subscription
@@ -278,13 +280,13 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
 | A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
 | A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A07 Authentication Failures | `auth`, `better-auth-security` |
+| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking) |
 | A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |

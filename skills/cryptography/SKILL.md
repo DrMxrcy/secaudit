@@ -123,6 +123,10 @@ into images. Use distinct keys per environment, tag ciphertext with a key ID, an
 procedure before you need it (rotate on suspected compromise or cryptoperiod expiry). Prefer envelope
 encryption (separate data-encryption and key-encryption keys). See `secaudit:secrets`.
 
+For the concrete token-vault pattern — AES-256-GCM with the row's identity as AAD so ciphertext
+cannot be moved between rows, and HKDF `info` purpose separation so the token key is not the cookie
+key — see `secaudit:oauth-oidc-security` §5 (storing provider access/refresh tokens at rest).
+
 ## Sources
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html -- Argon2id/scrypt/bcrypt parameters

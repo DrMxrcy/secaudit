@@ -7,7 +7,7 @@
 - New checks for GitHub Actions workflows, covering workflows that hand secrets to untrusted pull requests, unpinned third-party actions and over-broad token permissions.
 - New checks for apps deployed on Cloudflare Workers with Hono, D1, KV and R2 bindings.
 - Data-access checks now recognise Drizzle ORM and SQLite-based databases such as Turso and D1.
-- (pending) New checks for social sign-in and OAuth flows, on both the app side and the identity-provider side.
+- New checks for social sign-in and OAuth flows, on both the app side and the identity-provider side.
 - (pending) New checks for apps that let users sign in through NextAuth, including how linked accounts are matched.
 - (pending) New checks for apps served through a reverse proxy or tunnel, covering which forwarded request details the app should believe.
 - (pending) New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.

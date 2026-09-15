@@ -59,6 +59,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:mcp-agent-security` | Agents and MCP servers: per-tool-call authorization, tool-result laundering, memory poisoning, blast radius |
 | `secaudit:deployment` | Production config, security headers, source maps, preview-deployment isolation, clickjacking |
 | `secaudit:docker-security` | Secrets in image layers, root containers, unpinned bases, docker.sock mounts, ports on 0.0.0.0 |
+| `secaudit:oauth-oidc-security` | OAuth/OIDC you implement: per-flow `state` + PKCE S256, exact `redirect_uri`, ID-token validation and mix-up, account linking on unverified email, provider tokens at rest, refresh rotation, and the provider side (`oidc-provider`) |
 | `secaudit:object-storage-security` | R2/S3: presigned URLs as bearer credentials, client-minted keys, public buckets, read authorization |
 | `secaudit:ci-cd-security` | GitHub Actions: pwn requests, `run:` expression injection, unpinned actions, token permissions, cache/artifact poisoning, OIDC scope, cosign verification |
 | `secaudit:cloudflare-workers-security` | Workers/Pages + Hono: `[vars]` vs `wrangler secret`, binding blast radius (D1/KV/R2/Durable Objects), middleware ordering, `serveStatic` paths, `cf-connecting-ip` trust, Access JWT |

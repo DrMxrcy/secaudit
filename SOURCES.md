@@ -249,6 +249,30 @@ Last verified: 2026-09-15.
 - https://www.revenuecat.com/docs/test-and-launch/sandbox — sandbox environment flag
 - https://www.revenuecat.com/docs/test-and-launch/sandbox/apple-app-store — sandbox receipts
 
+## OAuth / OIDC (`oauth-oidc-security`)
+- https://www.rfc-editor.org/rfc/rfc9700.txt — OAuth 2.0 Security BCP: §2.1.1 PKCE and transaction-bound challenges, §4.1.3 exact redirect matching, §4.4.2 mix-up, §4.5 code injection, §4.7.1 CSRF/state, §4.11.1 open redirectors, §4.14.2 refresh rotation and reuse detection
+- https://www.rfc-editor.org/rfc/rfc7636.txt — PKCE: §4.2 S256 is mandatory to implement, §4.3 `code_challenge_method` defaults to `plain`, §7.2 no downgrade
+- https://www.rfc-editor.org/rfc/rfc9207.txt — the `iss` authorization response parameter (mix-up countermeasure)
+- https://www.rfc-editor.org/rfc/rfc8252.txt — OAuth for native apps: §6 PKCE required, §8.12 no embedded user-agents
+- https://openid.net/specs/openid-connect-core-1_0.html — OIDC Core: §3.1.3.7 ID token validation, §5.1 `email_verified` semantics, §8.1 pairwise subject identifiers
+- https://openid.net/specs/openid-connect-backchannel-1_0.html — Back-Channel Logout §2.6 logout token validation rules
+- https://www.descope.com/blog/post/noauth — nOAuth: mutable, unverified `email` claims and account takeover by email linking
+- https://next-auth.js.org/faq — why automatic account linking between arbitrary providers is unsafe
+- https://developer.okta.com/docs/guides/add-an-external-idp/openidconnect/main/ — match on email if you must, but key the user on the static `sub` claim
+- https://arcticjs.dev/ — Arctic deprecated July 2026; replacement code published in the repository
+- https://pilcrowonpaper.com/blog/18 — the deprecation announcement for Arctic and most Oslo packages
+- https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_request-pkce.ts — the hand-rolled authorization request: 32-byte hex verifier, S256 challenge, scoped `HttpOnly; Secure; SameSite=Lax; Max-Age=600` cookie
+- https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_code_exchange-pkce.ts — reading the stored verifier back and aborting when it is missing
+- https://lucia-auth.com/ — Lucia deprecated March 2025; the site now hosts single-file replacement code
+- https://raw.githubusercontent.com/panva/openid-client/main/docs/functions/authorizationCodeGrant.md — `authorizationCodeGrant(config, currentUrl, checks?, ...)`; the checks argument is optional
+- https://raw.githubusercontent.com/panva/openid-client/main/docs/interfaces/AuthorizationCodeGrantChecks.md — `expectedState` / `expectedNonce` semantics when undefined; `skipStateCheck`
+- https://raw.githubusercontent.com/panva/node-oidc-provider/main/docs/README.md — `pkce.required` default, `clientAuthMethods`, `rotateRefreshToken` chain revocation, `subjectTypes` / `pairwiseIdentifier` placeholder, the four-step JWKS rotation
+- https://nodejs.org/api/crypto.html — `createCipheriv`, `setAAD`, `getAuthTag` after `final()`, `hkdfSync`
+- https://www.rfc-editor.org/rfc/rfc5869.txt — HKDF extract-then-expand; `info` for purpose separation
+- https://csrc.nist.gov/pubs/sp/800/38/d/final — NIST SP 800-38D, GCM authenticated encryption with associated data
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025, where §1, §3, §4 and §7 land
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where §2, §5, §6 and §8 land
+
 ## Object storage (`object-storage-security`)
 - https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html — presigned URLs are bearer credentials
 - https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html — presigned PUT

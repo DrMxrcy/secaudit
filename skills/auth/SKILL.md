@@ -150,6 +150,11 @@ export async function transfer(formData: FormData) {
 OWASP order: use the framework's built-in CSRF protection; else a synchronizer token; for stateless,
 the signed/HMAC double-submit (never the naive one). Always pair with `SameSite`.
 
+If the app runs its own OAuth/OIDC flow ("Sign in with X" via `openid-client`, `arctic`/`lucia`
+patterns, or a hand-written `/callback`), the login-CSRF defence is the `state` parameter bound
+per flow rather than a form token, and it pairs with PKCE, ID-token validation and account-linking
+rules — see `secaudit:oauth-oidc-security`.
+
 ## Passkeys / WebAuthn
 
 **What to look for:** password-only login, or "MFA" that is SMS/TOTP only (phishable via real-time

@@ -359,6 +359,18 @@ Last verified: 2026-09-15.
 - https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries — $queryRaw vs $queryRawUnsafe
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html — mass assignment
 - https://zod.dev/ — runtime validation
+- https://orm.drizzle.team/docs/sql — Drizzle sql template parameterization vs sql.raw()
+- https://github.com/drizzle-team/drizzle-orm/security/advisories/GHSA-gpj5-g38j-94v9 — Drizzle identifier escaping (CVE-2026-39356)
+- https://osv.dev/vulnerability/GHSA-gpj5-g38j-94v9 — affected and fixed versions
+- https://orm.drizzle.team/docs/dynamic-query-building — $dynamic() conditional query building
+- https://orm.drizzle.team/docs/perf-queries — sql.placeholder in prepared statements
+- https://sqlite.org/wal.html — the -wal and -shm sibling files
+- https://sqlite.org/backup.html — file-copy backups can be corrupt
+- https://sqlite.org/uri.html — mode=ro and immutable=1
+- https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md — .prepare() binding vs .exec()
+- https://docs.turso.tech/sdk/ts/reference — libSQL execute() with bound args
+- https://docs.turso.tech/cli/db/tokens/create — --read-only and --expiration token flags
+- https://developers.cloudflare.com/d1/worker-api/prepared-statements/ — D1 prepare().bind()
 
 ## Web vulnerabilities (`web-vulns`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html — XSS

@@ -15,6 +15,7 @@ generate database schemas without proper access control, leaving entire tables e
 - Writing or reviewing RLS policies, Firebase Security Rules, or SQL migrations.
 - Auditing row/field ownership, storage bucket access, or Edge Function auth.
 - (For Convex backends, use `secaudit:convex-security` — Convex has no RLS.)
+- (For SQLite, Turso/libSQL or Cloudflare D1, use `secaudit:data-access` — SQLite has no RLS either, so every tenant predicate is application code.)
 
 ## Supabase Row-Level Security (RLS)
 

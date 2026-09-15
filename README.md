@@ -62,7 +62,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:object-storage-security` | R2/S3: presigned URLs as bearer credentials, client-minted keys, public buckets, read authorization |
 | `secaudit:ci-cd-security` | GitHub Actions: pwn requests, `run:` expression injection, unpinned actions, token permissions, cache/artifact poisoning, OIDC scope, cosign verification |
 | `secaudit:cloudflare-workers-security` | Workers/Pages + Hono: `[vars]` vs `wrangler secret`, binding blast radius (D1/KV/R2/Durable Objects), middleware ordering, `serveStatic` paths, `cf-connecting-ip` trust, Access JWT |
-| `secaudit:data-access` | SQL injection, ORM operator injection, runtime input validation, mass assignment |
+| `secaudit:data-access` | SQL injection, ORM operator injection, Drizzle `sql.raw()` / identifier injection, SQLite / Turso / D1 file and tenancy specifics, runtime input validation, mass assignment |
 | `secaudit:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |

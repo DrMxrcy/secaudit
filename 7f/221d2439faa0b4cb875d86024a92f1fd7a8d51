@@ -1,0 +1,28 @@
+scripts/check-freshness.py
+  s_2eb785847a60dc::t_2208479fa37ab3 319-341,344-352,354-358,390
+  s_2eb785847a60dc::t_1902e2a3a38e49 353
+  s_2eb785847a60dc::t_819a211fbc1485 305-318,342-343,359-361,391-392
+  s_2eb785847a60dc::t_fcfa138b437577 711,713-715
+.roadmap/config.json
+  s_2eb785847a60dc::t_fef8a146883e08 474
+.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md
+  s_2eb785847a60dc::t_7bca882f650859 6,28-31
+ROADMAP.md
+  s_2eb785847a60dc::t_b616606da1fea6 30-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7f221d2439faa0b4cb875d86024a92f1fd7a8d51",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.roadmap/notes/2026-09-15-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md
+  s_2eb785847a60dc::t_0ef5812ea9a9c0 1-28
+ROADMAP.md
+  s_2eb785847a60dc::t_0ef5812ea9a9c0 4-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d16eb03883cf392a1929e147f03c05e64b14b8e0",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

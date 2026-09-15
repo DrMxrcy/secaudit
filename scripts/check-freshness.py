@@ -302,6 +302,63 @@ def _packages_for(cve: str) -> set[str]:
     return set()
 
 
+def _nearest_cve(cve_spans: list[tuple[int, str]], pos: int) -> str:
+    """The CVE a "fixed X" clause is talking about.
+
+    One unwrapped paragraph can name two CVEs with two different fixes ("CVE-A ... fixed
+    1.0.1. CVE-B ... fixed 2.0.1."). Pairing every clause with the first CVE on the line
+    reported 2.0.1 as a wrong fix for CVE-A. Prose names the CVE and then its fix, so the
+    nearest CVE *before* the clause is the subject; fall back to the nearest one after it.
+    """
+    before = [(pos - start, cve) for start, cve in cve_spans if start <= pos]
+    if before:
+        return min(before)[1]
+    return min((start - pos, cve) for start, cve in cve_spans)[1]
+
+
+def _claims_for_line(line: str) -> dict[str, set[str]]:
+    """CVE -> versions named as its fix on this (unwrapped) line.
+
+    Suppression is scoped to the fix CLAUSE, not the whole line. A good entry discusses its
+    own caveats ("4.19.2 is not a clean floor: ..."), and matching those against the line
+    would exempt the very entries that explain themselves best. Each *version* is paired by
+    its own position, because one clause can run past a second CVE ("CVE-A fixed 1.0.1 and
+    CVE-B fixed 2.0.1" is a single clause).
+    """
+    cve_spans = [(m.start(), m.group(0)) for m in CVE_RE.finditer(line)]
+    by_cve: dict[str, set[str]] = {}
+    if not cve_spans:
+        return by_cve
+    for m in FIX_CLAIM_RE.finditer(line):
+        clause = _before_not(m.group(0))
+        if NEGATIVE_CONTEXT.search(clause):
+            continue
+        for vm in BARE_VERSION_RE.finditer(clause):
+            cve = _nearest_cve(cve_spans, m.start() + vm.start())
+            by_cve.setdefault(cve, set()).add(vm.group(0))
+    return by_cve
+
+
+def _self_check() -> None:
+    """Smallest thing that fails if the pairing logic breaks. `--self-check` runs it."""
+    cases = {
+        "CVE-2000-0001 is bad, fixed 1.0.1. Sibling CVE-2000-0002 fixed 2.0.1, not 2.0.0.":
+            {"CVE-2000-0001": {"1.0.1"}, "CVE-2000-0002": {"2.0.1"}},
+        # One clause running past a second CVE: each version binds to its own nearest CVE.
+        "`CVE-2000-0001` fixed 1.0.1 and `CVE-2000-0002` fixed 2.0.1":
+            {"CVE-2000-0001": {"1.0.1"}, "CVE-2000-0002": {"2.0.1"}},
+        # A clause before any CVE binds to the first CVE after it.
+        "Fixed 1.0.1 for CVE-2000-0001.": {"CVE-2000-0001": {"1.0.1"}},
+        # Negative context still suppresses the clause.
+        "CVE-2000-0001 was patched in 1.0.0, which is still in range": {},
+        "no cve here, fixed 9.9.9": {},
+    }
+    for line, want in cases.items():
+        got = _claims_for_line(line)
+        assert got == want, (line, got, want)
+    print("self-check OK")
+
+
 def _before_not(clause: str) -> str:
     """Drop the trailing counter-example in "fixed in X, not Y".
 
@@ -330,19 +387,9 @@ def check_fix_claims() -> list[dict]:
         for line in text.split("\n"):
             if not FIX_CLAIM_RE.search(line):
                 continue
-            cves = CVE_RE.findall(line)
-            # Suppression is scoped to the fix CLAUSE, not the whole line. A good entry
-            # discusses its own caveats ("4.19.2 is not a clean floor: ..."), and matching
-            # those against the line would exempt the very entries that explain themselves
-            # best — leaving the actual "fixed in X" claim unchecked.
-            versions = set()
-            for m in FIX_CLAIM_RE.finditer(line):
-                clause = _before_not(m.group(0))
-                if NEGATIVE_CONTEXT.search(clause):
-                    continue
-                versions.update(BARE_VERSION_RE.findall(clause))
-            if cves and versions:
-                claims.append((str(f.relative_to(ROOT)), cves[0], tuple(sorted(versions))))
+            by_cve = _claims_for_line(line)
+            for cve, versions in by_cve.items():
+                claims.append((str(f.relative_to(ROOT)), cve, tuple(sorted(versions))))
 
     cves = sorted({c for _, c, _ in claims})
     advisories: dict[str, dict | None] = {}
@@ -661,7 +708,11 @@ def main() -> int:
     ap.add_argument("--only", choices=sorted(CHECKS), action="append",
                     help="run only this check (repeatable)")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
+    ap.add_argument("--self-check", action="store_true", help="run the fix-claim pairing self-check")
     args = ap.parse_args()
+    if args.self_check:
+        _self_check()
+        return 0
 
     selected = args.only or sorted(CHECKS)
     findings: list[dict] = []

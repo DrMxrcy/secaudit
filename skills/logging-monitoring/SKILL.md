@@ -192,8 +192,8 @@ Detection: `grep -rn "shell=True\|os.system(\|os.popen(\|\beval(\|\bexec(" --inc
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- Python deserialization
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html -- what to log, what to exclude
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html -- safe error responses
-- https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/ -- OWASP A09:2025 overview
+- https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/ -- OWASP A09:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- insecure deserialization
-- https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/ -- OWASP A08:2025 overview
+- https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ -- OWASP A08:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html -- command injection defense
 - https://nodejs.org/api/child_process.html -- execFile/spawn (args as array, no shell)

@@ -305,4 +305,4 @@ packages, `pip-audit` — belongs to `secaudit:supply-chain`.
 - https://docs.djangoproject.com/en/6.0/ref/checks/ -- what `check --deploy` does (and does not) cover
 - https://requests.readthedocs.io/en/latest/user/advanced/ -- SSL verification, custom CA bundles
 - https://cheatsheetseries.owasp.org/cheatsheets/Django_Security_Cheat_Sheet.html -- Django hardening checklist
-- https://owasp.org/Top10/2025/ -- A01:2025 Broken Access Control, A02:2025 Security Misconfiguration
+- https://top10.owasp.org/2025/ -- A01:2025 Broken Access Control, A02:2025 Security Misconfiguration

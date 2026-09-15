@@ -592,7 +592,7 @@ grep -rn "experimental_telemetry\|langfuse\|langsmith\|helicone" src/     # reco
 - https://ai-sdk.dev/docs/agents/loop-control -- stopWhen, isStepCount, hasToolCall, prepareStep, activeTools
 - https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling -- tool definition and execute
 - https://datatracker.ietf.org/doc/html/rfc8707 -- Resource Indicators for OAuth 2.0
-- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ -- A01:2025, the category per-tool-call authorization failures land in
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ -- A01:2025, the category per-tool-call authorization failures land in
 - https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html -- SSRF controls for URL-taking tools
 - https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (landing page; may lag the current edition)
 - https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ -- current edition (2026); categories cited by name because numbering changed

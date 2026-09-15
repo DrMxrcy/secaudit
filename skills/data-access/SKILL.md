@@ -171,6 +171,6 @@ and `grep -rn "(\*\*request\|(\*\*body\|(\*\*data\|setattr(" --include="*.py"`
 - https://docs.sqlalchemy.org/en/20/core/sqlelement.html -- text(), bindparam(), TextClause.bindparams()
 - https://pydantic.dev/docs/validation/latest/concepts/models/ -- extra='forbid' and undeclared-field handling
 - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html -- parameterized queries
-- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries -- $queryRaw vs $queryRawUnsafe
+- https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries -- $queryRaw vs $queryRawUnsafe
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html -- allow-list fields
 - https://zod.dev/ -- runtime schema validation at boundaries

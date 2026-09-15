@@ -368,7 +368,7 @@ Beyond per-provider spending caps, implement application-level controls:
 - https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage -- server-side tools, step limits, tool approval
 - https://ai-sdk.dev/docs/ai-sdk-ui/error-handling -- stream errors masked by default
 - https://ai-sdk.dev/docs/ai-sdk-core/telemetry -- recordInputs / recordOutputs
-- https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ -- BOLA, for chat-thread IDOR
+- https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ -- BOLA, for chat-thread IDOR
 - https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (landing page; may lag the current edition)
 - https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ -- current edition (2026, published 2026-08-03; numbering changed from 2025)
 - https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices -- MCP security best practices (2026-07-28 revision)

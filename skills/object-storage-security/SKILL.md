@@ -608,5 +608,5 @@ wrangler r2 bucket lifecycle list user-uploads
 - https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html -- why SVG/HTML uploads execute in your origin
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition -- forcing download instead of inline render
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options -- `nosniff`
-- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ -- A01:2025, where §2, §7, and §3 land
-- https://owasp.org/Top10/2025/A02_2025-Security_Misconfiguration/ -- A02:2025, where §3, §5, and §6 land
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ -- A01:2025, where §2, §7, and §3 land
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ -- A02:2025, where §3, §5, and §6 land

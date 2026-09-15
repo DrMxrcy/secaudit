@@ -494,7 +494,7 @@ permissions are not in the session token, so check the role for those.
 
 ## Sources
 
-- https://nvd.nist.gov/vuln/detail/CVE-2025-29927 -- Next.js middleware authorization bypass
+- https://nvd.nist.gov/vuln/detail/cve-2025-29927 -- Next.js middleware authorization bypass
 - https://vercel.com/blog/postmortem-on-next-js-middleware-bypass -- middleware bypass mechanism + fixed versions
 - https://nextjs.org/blog/security-nextjs-server-components-actions -- treat Server Actions as public endpoints
 - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html -- cookies, timeouts, session fixation

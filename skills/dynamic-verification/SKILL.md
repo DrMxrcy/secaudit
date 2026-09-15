@@ -146,8 +146,8 @@ Fold these verdicts back into the audit report so the user sees which suspected 
 
 ## Sources
 
-- https://owasp.org/www-project-web-security-testing-guide/latest/ -- OWASP Web Security Testing Guide (WSTG)
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security -- WSTG HSTS test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing -- WSTG CORS test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References -- WSTG IDOR test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting -- WSTG reflected XSS test
+- https://owasp.github.io/www-project-web-security-testing-guide/latest/ -- OWASP Web Security Testing Guide (WSTG)
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security -- WSTG HSTS test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing -- WSTG CORS test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References -- WSTG IDOR test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting -- WSTG reflected XSS test

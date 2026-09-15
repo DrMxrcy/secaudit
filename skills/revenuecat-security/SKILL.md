@@ -510,6 +510,6 @@ abuse), and `secaudit:data-access` (mass assignment).
 - https://www.revenuecat.com/docs/getting-started/entitlements -- entitlement model
 - https://www.revenuecat.com/docs/test-and-launch/sandbox -- Test Store vs platform sandboxes; same App User ID holds both
 - https://www.revenuecat.com/docs/test-and-launch/sandbox/apple-app-store -- TestFlight and StoreKit local testing behaviour
-- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ -- A01:2025 Broken Access Control
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ -- A01:2025 Broken Access Control
 - https://supabase.com/docs/guides/database/postgres/row-level-security -- RLS policies; service role bypasses RLS
 - https://firebase.google.com/docs/rules/basics -- Firebase Security Rules; Admin SDK bypasses rules

@@ -175,8 +175,8 @@ list. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
 - https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html -- DOM-based XSS sinks and fixes
 - https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html -- SSRF allowlisting, IP/DNS validation
 - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html -- upload validation, storage, re-encoding
-- https://owasp.org/www-community/attacks/Path_Traversal -- path traversal mechanics
+- https://community.owasp.org/attacks/Path_Traversal -- path traversal mechanics
 - https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html -- IDOR prevention
-- https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ -- OWASP API #1 (BOLA)
+- https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ -- OWASP API #1 (BOLA)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP -- Content-Security-Policy as defense-in-depth
 - https://portswigger.net/web-security -- worked examples (XSS, SSRF, file upload, access control)

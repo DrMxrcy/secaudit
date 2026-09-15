@@ -498,6 +498,6 @@ vulnerability in the first place. Prevention is better than detection.
 
 ## Sources
 
-- https://owasp.org/Top10/2025/ -- OWASP Top 10 (2025), the backbone this audit maps to
+- https://top10.owasp.org/2025/ -- OWASP Top 10 (2025), the backbone this audit maps to
 - https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
-- https://owasp.org/www-project-mobile-top-10/ -- OWASP Mobile Top 10
+- https://owasp.github.io/www-project-mobile-top-10/ -- OWASP Mobile Top 10

@@ -181,7 +181,7 @@ and strip console logs.
 ## Sources
 
 - https://reactnative.dev/docs/security -- official RN security guide (keys, storage, deep links, PKCE, pinning)
-- https://owasp.org/www-project-mobile-top-10/ -- OWASP Mobile Top 10 (2024)
+- https://owasp.github.io/www-project-mobile-top-10/ -- OWASP Mobile Top 10 (2024)
 - https://mas.owasp.org/MASVS/ -- OWASP MASVS
 - https://github.com/oblador/react-native-keychain -- Keychain/Keystore-backed storage
 - https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md -- WebView security props

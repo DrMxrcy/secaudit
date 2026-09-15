@@ -127,6 +127,6 @@ encryption (separate data-encryption and key-encryption keys). See `secaudit:sec
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html -- Argon2id/scrypt/bcrypt parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html -- algorithms, modes, secure random, key management
-- https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/ -- OWASP A04:2025 overview
+- https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/ -- OWASP A04:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html -- key/secret storage and rotation
 - https://nodejs.org/api/crypto.html -- Node crypto (randomBytes, createCipheriv, randomUUID)

@@ -128,9 +128,14 @@ payloads in React Server Components. Actively exploited (listed in CISA KEV).
 - **Patched by (Next.js):** 15.0.5, 15.1.9, 15.2.6, 15.3.6, 15.4.8, 15.5.7, 16.0.7.
 - **Do not stop there.** These are the releases that fixed *this* CVE, not versions that are
   safe today — later advisories landed on the same lines. As of 2026-08-21, OSV reports 28 open
-  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.21`**
-  or **`next@16.2.11`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
+  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.24`**
+  or **`next@16.3.3`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
   not trust the numbers on this line to still be clean when you read them.
+- **2026-09-08 pair of unauthenticated RCEs** moved the floor from 15.5.21 / 16.2.11:
+  `GHSA-2xp9-vwfh-vxw4` (RCE in the Image Optimization API when an AVIF file is processed,
+  affects 10.0.0+) and `CVE-2026-75604` (RCE on Windows-hosted servers, affects 13.4.0+). Both
+  fixed in **15.5.24 / 16.3.3**. Astro shipped an AVIF image-optimization RCE the same day
+  (see below) — when one framework's image pipeline gets a CVE, check the others.
 - **Sibling CVEs are patched one release later**, so upgrading to the -55182 fix leaves both
   open: `CVE-2025-55183` (source exposure) and `CVE-2025-55184` (DoS) are fixed in
   **19.0.2 / 19.1.3 / 19.2.2**, not 19.0.1 / 19.1.2 / 19.2.1.
@@ -210,8 +215,14 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
 - **Astro:** `CVE-2024-56159` (server source-code exposure via public `.map` files) was patched by
   4.16.18 / 5.0.8. **Those are not safe versions today** — as of 2026-08-24 OSV reports **17 open
   advisories** for each, including middleware auth bypasses via URL encoding. The 5.x line never
-  becomes clean: `5.20.0` still carries 8. Current clean floor is **`astro@7.1.0`**. Astro accrues
+  becomes clean: `5.20.0` still carries 8. Current clean floor is **`astro@7.2.8`**. Astro accrues
   advisories faster than most of this list, so re-derive from step 2 rather than trusting this line.
+- **Astro, 2026-09-08:** `7.1.0` was the clean floor until two advisories landed the same day as
+  the Next.js pair above. `GHSA-26w7-cxv4-gfx2` is an unauthenticated RCE through AVIF image
+  optimization, fixed 7.2.8.
+- Same day: `CVE-2026-84376`, an authorization bypass from a missing path-segment boundary check
+  when stripping the configured `base` (so `/admin` protection can be skipped via
+  `/adminX`-style paths), fixed 7.2.4.
 - **Vue 2:** EOL — `vue-template-compiler` XSS (`CVE-2024-6783`); migrate to Vue 3.
 - **Nuxt:** 21 advisories, **16 of them published in 2026** — an actively-hunted surface, not a
   dormant entry. Server Islands are the hot spot: `CVE-2026-71320` (server-side RCE via runtime
@@ -276,8 +287,8 @@ every room inside must still have its own lock. See `secaudit:auth`.
 
 ## Sources
 
-- https://nvd.nist.gov/vuln/detail/CVE-2025-55182 -- React2Shell RSC RCE (CVSS 10.0)
-- https://nvd.nist.gov/vuln/detail/CVE-2025-66478 -- confirms the Next.js-side ID is a rejected duplicate
+- https://nvd.nist.gov/vuln/detail/cve-2025-55182 -- React2Shell RSC RCE (CVSS 10.0)
+- https://nvd.nist.gov/vuln/detail/cve-2025-66478 -- confirms the Next.js-side ID is a rejected duplicate
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog -- CISA KEV (React2Shell actively exploited)
 - https://github.com/advisories/GHSA-f82v-jwr5-mffw -- CVE-2025-29927 middleware bypass advisory
 - https://github.com/advisories/GHSA-67rr-84xm-4c7r -- CVE-2025-49826 cache-poisoning DoS advisory

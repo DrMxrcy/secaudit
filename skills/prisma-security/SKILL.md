@@ -445,12 +445,12 @@ grep -rnE "prisma (db push|migrate dev)" package.json Dockerfile* .github/ scrip
 
 ## Sources
 
-- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries -- $queryRaw, Prisma.raw, Prisma.join
-- https://www.prisma.io/docs/orm/prisma-client/client-extensions/query -- query extensions cannot mutate include/select
+- https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries -- $queryRaw, Prisma.raw, Prisma.join
+- https://www.prisma.io/docs/orm/v7/prisma-client/client-extensions/query -- query extensions cannot mutate include/select
 - https://www.prisma.io/docs/guides/upgrade-prisma-orm/v7 -- $use middleware removed in Prisma 7
-- https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields -- global omit at client construction
-- https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql -- sslaccept defaults to accept_invalid_certs; directUrl
-- https://www.prisma.io/docs/orm/more/best-practices -- migrate deploy in production
+- https://www.prisma.io/docs/orm/v7/prisma-client/queries/excluding-fields -- global omit at client construction
+- https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/postgresql -- sslaccept defaults to accept_invalid_certs; directUrl
+- https://www.prisma.io/docs/orm/v7/more/best-practices -- migrate deploy in production
 - https://www.postgresql.org/docs/current/ddl-rowsecurity.html -- owners/BYPASSRLS bypass RLS; constraints bypass RLS
 - https://www.postgresql.org/docs/current/functions-admin.html -- set_config is_local; current_setting missing_ok
 - https://github.com/pgvector/pgvector -- HNSW filtering, hnsw.ef_search, iterative scan

@@ -7,8 +7,8 @@ skill also lists its own sources in a `## Sources` section. This file is the con
 Last verified: 2026-08-21.
 
 ## Frameworks (`framework-versions`)
-- https://nvd.nist.gov/vuln/detail/CVE-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
-- https://nvd.nist.gov/vuln/detail/CVE-2025-66478 — confirms the Next.js-side ID is a rejected duplicate of CVE-2025-55182
+- https://nvd.nist.gov/vuln/detail/cve-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
+- https://nvd.nist.gov/vuln/detail/cve-2025-66478 — confirms the Next.js-side ID is a rejected duplicate of CVE-2025-55182
 - https://api.first.org/data/v1/epss — EPSS exploitation-probability API (no key, batched)
 - https://www.first.org/epss/ — EPSS model documentation
 - https://endoflife.date/ — runtime and framework end-of-life dates (no key)
@@ -68,7 +68,7 @@ Last verified: 2026-08-21.
 - https://docs.convex.dev/ai/agent-skills — official Convex agent-skills (build patterns)
 
 ## Authentication (`auth`)
-- https://nvd.nist.gov/vuln/detail/CVE-2025-29927 — Next.js middleware authorization bypass
+- https://nvd.nist.gov/vuln/detail/cve-2025-29927 — Next.js middleware authorization bypass
 - https://vercel.com/blog/postmortem-on-next-js-middleware-bypass — bypass mechanism + fixed versions
 - https://nextjs.org/blog/security-nextjs-server-components-actions — Server Actions are public endpoints
 - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html — cookies, timeouts, session fixation
@@ -79,11 +79,11 @@ Last verified: 2026-08-21.
 - https://www.w3.org/TR/webauthn-2/ — passkeys / WebAuthn
 
 ## Privilege escalation (`privilege-escalation`)
-- https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/ — OWASP API A05 (BFLA)
-- https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/ — OWASP A01:2025 Broken Access Control (absorbs SSRF as of 2025)
+- https://api-security.owasp.org/editions/2023/en/0xa5-broken-function-level-authorization/ — OWASP API A05 (BFLA)
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — OWASP A01:2025 Broken Access Control (absorbs SSRF as of 2025)
 - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html — authorization design, default-deny
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html — mass assignment / allowlisting
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation — WSTG privilege-escalation testing
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation — WSTG privilege-escalation testing
 
 ## Rate limiting (`rate-limiting`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html — rate limiting
@@ -103,12 +103,12 @@ Last verified: 2026-08-21.
 - https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks — Socket
 - https://snyk.io/articles/slopsquatting-mitigation-strategies/ — mitigation
 - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ — lockfiles
-- https://www.elastic.co/security-labs/shai-hulud-chaindrop-npm-supply-chain — CHAINDROP/Shai-Hulud npm worm (2026-08-04): preinstall-hook delivery, 400+ packages, 300+ credential patterns, self-propagation via npm publish tokens
+- https://www.elastic.co/security-labs/threat-command/shai-hulud-chaindrop-npm-supply-chain — CHAINDROP/Shai-Hulud npm worm (2026-08-04): preinstall-hook delivery, 400+ packages, 300+ credential patterns, self-propagation via npm publish tokens
 - https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack — same incident, independent analysis: keyv/cacheable ecosystem, IDE persistence attempts, no CVE assigned
 
 ## React Native (`react-native-security`)
 - https://reactnative.dev/docs/security — official RN security guide
-- https://owasp.org/www-project-mobile-top-10/ — OWASP Mobile Top 10 (2024)
+- https://owasp.github.io/www-project-mobile-top-10/ — OWASP Mobile Top 10 (2024)
 - https://mas.owasp.org/MASVS/ — OWASP MASVS
 - https://github.com/oblador/react-native-keychain — Keychain/Keystore storage
 - https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md — WebView security props
@@ -128,12 +128,12 @@ Last verified: 2026-08-21.
 - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization — MCP token-audience binding (2026-07-28)
 
 ## Prisma & Postgres (`prisma-security`)
-- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries — $queryRaw vs Prisma.raw / Prisma.join
-- https://www.prisma.io/docs/orm/prisma-client/client-extensions/query — query extensions cannot mutate include/select
+- https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries — $queryRaw vs Prisma.raw / Prisma.join
+- https://www.prisma.io/docs/orm/v7/prisma-client/client-extensions/query — query extensions cannot mutate include/select
 - https://www.prisma.io/docs/guides/upgrade-prisma-orm/v7 — $use middleware removed in Prisma 7
-- https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields — omit, local and global
-- https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql — sslaccept defaults to accept_invalid_certs
-- https://www.prisma.io/docs/orm/more/best-practices — migrate deploy only in production
+- https://www.prisma.io/docs/orm/v7/prisma-client/queries/excluding-fields — omit, local and global
+- https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/postgresql — sslaccept defaults to accept_invalid_certs
+- https://www.prisma.io/docs/orm/v7/more/best-practices — migrate deploy only in production
 - https://www.postgresql.org/docs/current/ddl-rowsecurity.html — table owners bypass RLS; FORCE ROW LEVEL SECURITY; constraint checks always bypass RLS
 - https://www.postgresql.org/docs/current/functions-admin.html — set_config is_local transaction scope; current_setting missing_ok
 - https://github.com/pgvector/pgvector — filtered search, partial HNSW indexes, hnsw.iterative_scan
@@ -199,7 +199,7 @@ Last verified: 2026-08-21.
 - https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage — server-side tools, step limits, approval
 - https://ai-sdk.dev/docs/ai-sdk-ui/error-handling — stream errors masked by default
 - https://ai-sdk.dev/docs/ai-sdk-core/telemetry — recordInputs / recordOutputs
-- https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA (chat-thread IDOR)
+- https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA (chat-thread IDOR)
 
 ## MCP & agents (`mcp-agent-security`)
 - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization — MCP authorization (current revision)
@@ -250,7 +250,7 @@ Last verified: 2026-08-21.
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition — forcing download instead of inline render
 
 ## Deployment (`deployment`)
-- https://owasp.org/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
+- https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security — HSTS
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS — CORS
@@ -258,7 +258,7 @@ Last verified: 2026-08-21.
 
 ## Data access (`data-access`)
 - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html — parameterized queries
-- https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries — $queryRaw vs $queryRawUnsafe
+- https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries — $queryRaw vs $queryRawUnsafe
 - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html — mass assignment
 - https://zod.dev/ — runtime validation
 
@@ -267,35 +267,35 @@ Last verified: 2026-08-21.
 - https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html — DOM XSS
 - https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html — SSRF
 - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html — file upload
-- https://owasp.org/www-community/attacks/Path_Traversal — path traversal
+- https://community.owasp.org/attacks/Path_Traversal — path traversal
 - https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html — IDOR
-- https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA
+- https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA
 - https://portswigger.net/web-security — worked examples
 
 ## Cryptography (`cryptography`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html — hashing parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html — algorithms, randomness, keys
-- https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/ — OWASP A04:2025 Cryptographic Failures
+- https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/ — OWASP A04:2025 Cryptographic Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html — key management
 - https://nodejs.org/api/crypto.html — Node crypto
 
 ## Logging & monitoring (`logging-monitoring`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html — what to log / exclude
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html — safe error responses
-- https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/ — OWASP A09:2025 Security Logging and Alerting Failures
+- https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/ — OWASP A09:2025 Security Logging and Alerting Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html — insecure deserialization
-- https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/ — OWASP A08:2025 Software or Data Integrity Failures
+- https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — OWASP A08:2025 Software or Data Integrity Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html — command injection
 - https://nodejs.org/api/child_process.html — execFile/spawn
 
 ## Dynamic verification (`dynamic-verification`)
-- https://owasp.org/www-project-web-security-testing-guide/latest/ — OWASP Web Security Testing Guide (WSTG)
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security — WSTG HSTS test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing — WSTG CORS test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References — WSTG IDOR test
-- https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting — WSTG reflected XSS test
+- https://owasp.github.io/www-project-web-security-testing-guide/latest/ — OWASP Web Security Testing Guide (WSTG)
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security — WSTG HSTS test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing — WSTG CORS test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References — WSTG IDOR test
+- https://owasp.github.io/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting — WSTG reflected XSS test
 
 ## Orchestrator (`audit`)
-- https://owasp.org/Top10/2025/ — OWASP Top 10 (2025)
+- https://top10.owasp.org/2025/ — OWASP Top 10 (2025)
 - https://genai.owasp.org/llm-top-10/ — OWASP LLM Top 10
-- https://owasp.org/www-project-mobile-top-10/ — OWASP Mobile Top 10
+- https://owasp.github.io/www-project-mobile-top-10/ — OWASP Mobile Top 10

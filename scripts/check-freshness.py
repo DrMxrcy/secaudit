@@ -55,6 +55,8 @@ PLACEHOLDER_PATTERNS = [
     r"GHSA-xxxx", r"api\.openai\.com", r"localhost", r"127\.0\.0\.1",
     r"registry\.npmjs\.org/:_authToken",
     r"pypi\.company\.com",           # fictional private index in a dependency-confusion example
+    r"\.\*",                          # a URL containing regex metacharacters is a cosign
+                                      # --certificate-identity-regexp pattern, not a citation
 ]
 
 # Hosts/URLs that legitimately answer non-200 to this script. Each needs a reason.
@@ -66,6 +68,9 @@ URL_ALLOWLIST = {
     "https://api.osv.dev/v1/querybatch": "POST-only by design",
     # Cloudflare-protected root; the specific article links in the same file resolve.
     "https://socket.dev": "Cloudflare challenge on root",
+    # An OIDC issuer identifier, cited as a value to configure; it serves discovery
+    # documents under /.well-known/, not a page at the root.
+    "https://token.actions.githubusercontent.com": "OIDC issuer ID, not a web page",
 }
 
 

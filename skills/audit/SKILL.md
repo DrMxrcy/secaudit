@@ -229,20 +229,25 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
 15. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
     image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
     Docker socket mounted in. → `secaudit:docker-security`
+16. **CI/CD pipelines** — if the project has `.github/workflows/` (or any pipeline config): pwn
+    requests (`pull_request_target` / `workflow_run` + a PR-head checkout), expression injection
+    into `run:`, actions on mutable tags, default `GITHUB_TOKEN` permissions, secrets in logs,
+    cache/artifact poisoning, self-hosted runners, OIDC trust scope, artifact signature
+    verification. → `secaudit:ci-cd-security`
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-16. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+17. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-17. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+18. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-18. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+19. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-19. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+20. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-20. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+21. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-21. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+22. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -251,7 +256,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–21 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–22 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -269,12 +274,12 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 |---|---|
 | A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
 | A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `python-web-security` (Django settings) |
-| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `docker-security` (base images) |
+| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
 | A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `logging-monitoring` (command injection) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
 | A07 Authentication Failures | `auth`, `better-auth-security` |
-| A08 Software or Data Integrity Failures | `supply-chain`, `expo-security` (OTA), `logging-monitoring` (deserialization) |
+| A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |
 | OWASP LLM Top 10 | `ai-integration`, `mcp-agent-security` |

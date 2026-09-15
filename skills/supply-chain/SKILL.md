@@ -193,6 +193,12 @@ and injected itself, bumping the patch version.
 
 **No CVE was assigned.** `npm audit`, `audit-ci`, and OSV.dev had nothing to report.
 
+The same shape reaches you from the workflow side: a GitHub Action pinned to a mutable tag is an
+unreviewed dependency that runs with your CI secrets, and a compromised pipeline is how several of
+these npm compromises were published in the first place (tj-actions/changed-files, AsyncAPI,
+TanStack). For the pipeline itself — action pinning, privileged triggers, token scope, cache and
+artifact poisoning — see `secaudit:ci-cd-security`.
+
 So do not treat a clean scan as a result. Use the controls that hold when no advisory exists:
 
 ```bash

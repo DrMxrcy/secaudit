@@ -266,6 +266,41 @@ Last verified: 2026-09-15.
 - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html — upload validation
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition — forcing download instead of inline render
 
+## CI/CD (`ci-cd-security`)
+- https://docs.github.com/en/actions/reference/security/secure-use — privileged triggers, SHA pinning, redaction limits, self-hosted runner guidance
+- https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows — `pull_request_target`, `workflow_run`, `issue_comment` semantics
+- https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/ — pwn requests and the artifact/`workflow_run` split
+- https://securitylab.github.com/resources/github-actions-untrusted-input/ — the attacker-controlled context list; env-indirection fix
+- https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax — `permissions: {}`; fork tokens cannot be granted write
+- https://docs.github.com/en/actions/tutorials/authenticate-with-github_token — least-privilege `GITHUB_TOKEN` pattern
+- https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository — default workflow permissions and org inheritance
+- https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets — secrets are not passed to fork-triggered runs
+- https://docs.github.com/en/actions/how-tos/monitor-workflows/enable-debug-logging — `ACTIONS_STEP_DEBUG` / `ACTIONS_RUNNER_DEBUG`
+- https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching — cache scopes, untrusted triggers, the `cache-mode: write` opt-out
+- https://github.com/advisories/GHSA-mrrh-fwg8-r2c3 — CVE-2025-30066, tj-actions/changed-files tag repointing
+- https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV: CVE-2025-30066 listed 2025-03-18
+- https://www.wiz.io/blog/m-red-team-asyncapi-supply-chain-compromise-via-github-actions — AsyncAPI, July 2026: `pull_request_target` + PR-head checkout
+- https://tanstack.com/blog/npm-supply-chain-compromise-postmortem — TanStack, May 2026: pwn request, cache poisoning, OIDC token theft
+- https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised — secondary analysis of the TanStack compromise
+- https://adnanthekhan.com/2024/05/06/the-monsters-in-your-build-cache-github-actions-cache-poisoning/ — branches as the cache security boundary
+- https://www.legitsecurity.com/blog/artifact-poisoning-vulnerability-discovered-in-rust — artifact poisoning via `workflow_run` + `download-artifact`
+- https://unit42.paloaltonetworks.com/github-repo-artifacts-leak-tokens/ — ArtiPACKED: `persist-credentials` leaking tokens through artifacts
+- https://docs.github.com/en/actions/reference/security/oidc — `id-token: write`, `sub` formats, immutable subject claims, Dependabot `event_name`
+- https://docs.github.com/en/actions/concepts/security/openid-connect — how the cloud side evaluates OIDC claims
+- https://raw.githubusercontent.com/sigstore/cosign/main/doc/cosign_verify.md — `--certificate-identity-regexp`, `--certificate-oidc-issuer`
+- https://docs.sigstore.dev/cosign/verifying/verify/ — cosign keyless verification walkthrough
+- https://github.com/actions/attest-build-provenance — producing signed build provenance; required permissions
+- https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations — artifact attestations end to end
+- https://cli.github.com/manual/gh_attestation_verify — `--signer-workflow` / `--signer-repo`
+- https://github.com/zizmorcore/zizmor — static analysis for CI/CD
+- https://docs.zizmor.sh/audits/ — the audit list mapped to sections 1-7
+- https://github.com/rhysd/actionlint — workflow linter with script-injection checks
+- https://github.com/ossf/scorecard/blob/main/docs/checks.md — Dangerous-Workflow, Token-Permissions, Pinned-Dependencies
+- https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/ — fork MR pipelines run in the parent project
+- https://docs.gitlab.com/ci/jobs/ci_job_token/ — `CI_JOB_TOKEN` scope and the job-token allowlist
+- https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/ — A03:2025, where §3, §6, §9 and §10 land
+- https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — A08:2025, where §1, §6, §8 and §9 land
+
 ## Deployment (`deployment`)
 - https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP

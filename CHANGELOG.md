@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.9.0 — (in progress)
+
+### ✨ New
+- (pending) Version checks now cover several more widely used web frameworks, ORMs and proxies.
+- (pending) New checks for GitHub Actions workflows, covering workflows that hand secrets to untrusted pull requests, unpinned third-party actions and over-broad token permissions.
+- (pending) New checks for apps deployed on Cloudflare Workers with Hono, D1, KV and R2 bindings.
+- (pending) Data-access checks now recognise Drizzle ORM and SQLite-based databases such as Turso and D1.
+- (pending) New checks for social sign-in and OAuth flows, on both the app side and the identity-provider side.
+- (pending) New checks for apps that let users sign in through NextAuth, including how linked accounts are matched.
+- (pending) New checks for apps served through a reverse proxy or tunnel, covering which forwarded request details the app should believe.
+- (pending) New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.
+- (pending) Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.
+
+### 🐛 Fixed
+- (pending) The automated freshness check no longer raises a false alarm when one paragraph names fixes for two different issues.
+
 ## v3.8.0 — 2026-08-25
 
 ### ✨ New

@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.9.0",
-  "nextId": 36,
+  "nextId": 46,
   "items": [
     {
       "id": 1,
@@ -352,6 +352,106 @@
       "version": "3.8.0",
       "file": "plans/035-close-verified-gaps-in-payments-and-supply-chain.md",
       "note": "Payment webhook checks now cover replayed and duplicated events, sender verification, and secret rotation; dependency checks verify lockfiles use secure download URLs.",
+      "audience": "public"
+    },
+    {
+      "id": 36,
+      "slug": "freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve",
+      "title": "Freshness fix-claim check pairs every CVE on a line with every fixed clause; pair with nearest CVE",
+      "type": "bug",
+      "version": "3.9.0",
+      "file": "plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md",
+      "note": "The automated freshness check no longer raises a false alarm when one paragraph names fixes for two different issues.",
+      "audience": "public"
+    },
+    {
+      "id": 37,
+      "slug": "framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern",
+      "title": "framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md",
+      "note": "Version checks now cover several more widely used web frameworks, ORMs and proxies.",
+      "audience": "public"
+    },
+    {
+      "id": 38,
+      "slug": "add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign",
+      "title": "Add ci-cd-security skill: GitHub Actions pwn-requests, SHA pinning, permissions, run: injection, keyless cosign",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/038-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md",
+      "note": "New checks for GitHub Actions workflows, covering workflows that hand secrets to untrusted pull requests, unpinned third-party actions and over-broad token permissions.",
+      "audience": "public"
+    },
+    {
+      "id": 39,
+      "slug": "add-cloudflare-workers-security-skill-hono-cve-2026-24473-d1-kv-r2-bindings-wrangler-secrets-vs-vars",
+      "title": "Add cloudflare-workers-security skill: Hono (CVE-2026-24473), D1/KV/R2 bindings, wrangler secrets vs [vars]",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/039-add-cloudflare-workers-security-skill-hono-cve-2026-24473-d1-kv-r2-bindings-wrangler-secrets-vs-vars.md",
+      "note": "New checks for apps deployed on Cloudflare Workers with Hono, D1, KV and R2 bindings.",
+      "audience": "public"
+    },
+    {
+      "id": 40,
+      "slug": "extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics",
+      "title": "Extend data-access with Drizzle (CVE-2026-39356 identifier injection, sql.raw) and SQLite/Turso/D1 file and tenancy specifics",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/040-extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics.md",
+      "note": "Data-access checks now recognise Drizzle ORM and SQLite-based databases such as Turso and D1.",
+      "audience": "public"
+    },
+    {
+      "id": 41,
+      "slug": "add-oauth-oidc-security-skill-client-flows-lucia-arctic-sign-in-with-x-and-provider-side",
+      "title": "Add oauth-oidc-security skill: client flows (Lucia/Arctic, Sign in with X) and provider side",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/041-add-oauth-oidc-security-skill-client-flows-lucia-arctic-sign-in-with-x-and-provider-side.md",
+      "note": "New checks for social sign-in and OAuth flows, on both the app side and the identity-provider side.",
+      "audience": "public"
+    },
+    {
+      "id": 42,
+      "slug": "add-auth-js-nextauth-coverage-to-auth",
+      "title": "Add Auth.js/NextAuth coverage to auth",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/042-add-auth-js-nextauth-coverage-to-auth.md",
+      "note": "New checks for apps that let users sign in through NextAuth, including how linked accounts are matched.",
+      "audience": "public"
+    },
+    {
+      "id": 43,
+      "slug": "add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification",
+      "title": "Add proxy-trust skill: X-Forwarded-* and Host trust, forward-auth identity-header injection, Traefik CVE-2026-35051/39858, Cloudflare Access JWT verification",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md",
+      "note": "New checks for apps served through a reverse proxy or tunnel, covering which forwarded request details the app should believe.",
+      "audience": "public"
+    },
+    {
+      "id": 44,
+      "slug": "add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy",
+      "title": "Add kubernetes-security skill or docker-security section: Helm values secrets, RBAC wildcards, securityContext, hostPath, NetworkPolicy",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/044-add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy.md",
+      "note": "New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.",
+      "audience": "public"
+    },
+    {
+      "id": 45,
+      "slug": "generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay",
+      "title": "Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay",
+      "type": "feature",
+      "version": "3.9.0",
+      "file": "plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md",
+      "note": "Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.",
       "audience": "public"
     }
   ],

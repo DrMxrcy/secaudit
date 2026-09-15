@@ -1,0 +1,42 @@
+.roadmap/config.json
+  s_2eb785847a60dc::t_0cea6f936fa8c9 474
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_0cea6f936fa8c9 8
+CHANGELOG.md
+  s_2eb785847a60dc::t_0cea6f936fa8c9 6
+ROADMAP.md
+  s_2eb785847a60dc::t_0cea6f936fa8c9 30,32
+.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md
+  s_2eb785847a60dc::t_0cea6f936fa8c9 6,27-30
+README.md
+  s_2eb785847a60dc::t_a7b55a7e4ec0c8 44
+skills/framework-versions/SKILL.md
+  s_2eb785847a60dc::t_a4f02e6e5cacbc 295,298
+  s_2eb785847a60dc::t_a7b55a7e4ec0c8 3
+  s_2eb785847a60dc::t_6cbd28c400fee5 254-294,296-297,299,301-314,324-337
+  s_2eb785847a60dc::t_558773a689fee6 300,315,322-323,380-411
+  s_2eb785847a60dc::t_effa6c38b71716 316-321
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_a7b55a7e4ec0c8 48-56
+SOURCES.md
+  s_2eb785847a60dc::t_558773a689fee6 7
+  s_2eb785847a60dc::t_a7b55a7e4ec0c8 39-55
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_a7b55a7e4ec0c8 41-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "511a36c5a2ac3a97efe3822e2ee30253679f52c3",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

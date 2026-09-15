@@ -1,0 +1,58 @@
+skills/dynamic-verification/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 149-153
+skills/framework-versions/SKILL.md
+  s_2eb785847a60dc::t_cccc3184b9684b 222-225
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 290-291
+  s_2eb785847a60dc::t_67484d01308eea 131-132,134-138
+  s_2eb785847a60dc::t_fc8857a25a1993 218,220-221
+SOURCES.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 10-11,71,82-83,86,106,111,131-132,134-136,202,253,261,270,272,278,285,287,292-296,299,301
+skills/deployment/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 109
+skills/prisma-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 448-449,451-453
+skills/react-native-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 184
+skills/web-vulns/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 178,180
+skills/data-access/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 174
+skills/logging-monitoring/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 195,197
+skills/revenuecat-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 513
+skills/privilege-escalation/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 159-160,163
+skills/cryptography/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 130
+skills/auth/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 497
+skills/mcp-agent-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 595
+skills/python-web-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 308
+skills/ai-integration/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 371
+skills/supply-chain/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 303
+skills/object-storage-security/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 611-612
+skills/audit/SKILL.md
+  s_2eb785847a60dc::t_5b8e52f60b2f9a 501,503
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "62ccb9e25a1e341528595975938d041f4421f242",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

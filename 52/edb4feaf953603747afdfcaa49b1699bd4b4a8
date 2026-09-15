@@ -1,0 +1,41 @@
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_ea196c91ab46ad 4,57-59
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_ea196c91ab46ad 11,64-66
+README.md
+  s_2eb785847a60dc::t_bffafb0e407ac0 65
+skills/database/SKILL.md
+  s_2eb785847a60dc::t_bffafb0e407ac0 18
+skills/data-access/SKILL.md
+  s_2eb785847a60dc::t_27b49b468701df 3,14,105-129,144-183,187-208,226-270,272-273,345-356
+  s_2eb785847a60dc::t_d55e7b2e7edd30 130-143,184-186,209-225
+  s_2eb785847a60dc::t_9368ee164cc2ad 271
+SOURCES.md
+  s_2eb785847a60dc::t_bffafb0e407ac0 362-373
+.roadmap/config.json
+  s_2eb785847a60dc::t_05cfd3132d2246 474
+.roadmap/plans/040-extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics.md
+  s_2eb785847a60dc::t_267e42ed03b616 6,26-29
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_f8cb09da4d1cb4 11
+CHANGELOG.md
+  s_2eb785847a60dc::t_3eae64a39e25f2 9
+ROADMAP.md
+  s_2eb785847a60dc::t_74edd044fe261c 30,35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "52edb4feaf953603747afdfcaa49b1699bd4b4a8",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

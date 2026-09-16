@@ -46,7 +46,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:database` | Supabase RLS, Firebase Security Rules, storage policies, Edge Functions, the new key model |
 | `secaudit:convex-security` | Convex: public vs internal functions, validators, auth in handlers, file-storage access |
 | `secaudit:prisma-security` | Prisma has no RLS: tenant scoping in every query, Postgres RLS silently bypassed by the table owner, pgvector retrieval |
-| `secaudit:auth` | JWT verification, why middleware is not a security boundary, Server Actions, sessions, Clerk |
+| `secaudit:auth` | JWT verification, why middleware is not a security boundary, Server Actions, sessions, Clerk, Auth.js/NextAuth (July 2026 advisories, unbound check cookies, `!!auth` fail-open, account linking, `AUTH_SECRET`, adapter tables) |
 | `secaudit:better-auth-security` | Better Auth: getSessionCookie is not a gate, cookieCache vs revocation, org/admin roles, account linking |
 | `secaudit:privilege-escalation` | Admin-surface review: unprotected admin routes/actions, roles trusted from the client, broken function-level authorization, role mass-assignment |
 | `secaudit:rate-limiting` | Where limits are required, tamper-proof counters, billing and spend caps |

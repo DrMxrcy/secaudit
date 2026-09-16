@@ -199,6 +199,9 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
    → `secaudit:prisma-security`
 6. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
    Server Action protection, session management. → `secaudit:auth`
+   - If `next-auth` or `@auth/*` is in `package.json`, the Auth.js section of `secaudit:auth`
+     applies: the July 2026 advisory set and its fixed versions, provider-unbound check cookies,
+     the `!!auth` fail-open, `allowDangerousEmailAccountLinking`, `AUTH_SECRET`, and adapter tables.
    - If `better-auth` is in `package.json`, also → `secaudit:better-auth-security`
    - If the app implements OAuth/OIDC itself (`openid-client`, `oidc-provider`, a hand-written
      callback), also → `secaudit:oauth-oidc-security`

@@ -1,6 +1,6 @@
 ---
 name: auth
-description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints, session management, the auth-vs-authorization distinction, and Clerk specifics (where auth() and clerkMiddleware checks belong, unsafeMetadata as a client-writable role store, Svix webhook verification, Clerk with Convex). Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, when the project uses Clerk (@clerk/nextjs, clerkMiddleware, ClerkProvider), or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see secaudit:rate-limiting.
+description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints, session management, the auth-vs-authorization distinction, Clerk specifics (where auth() and clerkMiddleware checks belong, unsafeMetadata as a client-writable role store, Svix webhook verification, Clerk with Convex), and Auth.js/NextAuth specifics (the July 2026 advisory set and its fixed versions, provider-unbound state/nonce/PKCE check cookies, the !!auth fail-open, allowDangerousEmailAccountLinking, trustHost, AUTH_SECRET, JWT-claim roles and callbacks leaking provider tokens, the Credentials provider, adapter Account tables). Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, when the project uses Clerk (@clerk/nextjs, clerkMiddleware, ClerkProvider) or Auth.js/NextAuth (next-auth, @auth/core, NextAuth(, AUTH_SECRET), or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see secaudit:rate-limiting.
 license: MIT
 ---
 
@@ -497,6 +497,272 @@ return Response.json(await db.invoice.findMany({ where: { orgId } }));
 One wrinkle: server-side `has({ permission })` resolves custom permissions only — Clerk's system
 permissions are not in the session token, so check the role for those.
 
+## Auth.js / NextAuth
+
+Auth.js is the library formerly called NextAuth.js: `next-auth` v4, `next-auth` v5 (still shipping
+as `5.0.0-beta.x`), both on `@auth/core`. Its docs now banner "The Auth.js project is now part of
+Better Auth", and its security policy is narrow — "Security updates are only released for the
+current latest version. Old releases are not maintained and do not receive updates." A
+`5.0.0-beta.x` pinned months ago is a standing exposure, not a safe pin. Generic OAuth mechanics
+live in `secaudit:oauth-oidc-security`; this section covers what Auth.js decides on your behalf,
+and where its own defaults and documented examples are the finding.
+
+Review grep heuristics: `next-auth`, `@auth/core`, `NextAuth(`, `auth()`, `!!auth`, `authorized:`,
+`allowDangerousEmailAccountLinking`, `trustHost`, `AUTH_TRUST_HOST`, `AUTH_URL`, `AUTH_SECRET`,
+`NEXTAUTH_SECRET`, `strategy: "jwt"`, `callbacks:`, `Credentials(`, `getToken(`,
+`normalizeIdentifier`, `PrismaAdapter`, `SupabaseAdapter`.
+
+### 1. The July 2026 Advisory Set: Check the Installed Version First
+
+**What to look for:** in `package.json` or the lock file, `next-auth` below `4.24.15`, any
+`next-auth` `5.0.0-beta.0` through `5.0.0-beta.31`, or `@auth/core` below `0.41.3` — four
+advisories published together on 2026-08-12, two of them critical.
+
+- **`CVE-2026-73419`** (`GHSA-x445-f3h2-j279`, moderate) — the OAuth `state`, `nonce` and PKCE
+  check cookies are global and "not bound to the provider that created them", so "a check value
+  minted during a sign-in started with one provider can satisfy the callback for a different
+  provider"; fixed 4.24.15 / 5.0.0-beta.32, and 0.41.3 on `@auth/core`. See §2.
+- **`CVE-2026-73421`** (`GHSA-8fpg-xm3f-6cx3`, critical) — a server configuration error makes
+  existence checks on the `auth()` result fail open; `next-auth` 5.0.0-beta.0 through beta.31 only
+  (v4 and `@auth/core` are not in range); fixed 5.0.0-beta.32. See §3.
+- **`CVE-2026-73420`** (`GHSA-7rqj-j65f-68wh`, critical) — the built-in `defaultNormalizer`
+  "validates an address before applying Unicode normalization", so `U+FF20` FULLWIDTH COMMERCIAL AT
+  survives validation and then "canonicalizes to an ASCII at-sign under NFKC or NFKD", which can
+  "deliver the passwordless sign-in link to an attacker-controlled recipient"; fixed 4.24.15 /
+  5.0.0-beta.32, and 0.41.3 on `@auth/core`. Only where the built-in normalizer is used instead of a
+  custom `normalizeIdentifier` *and* the sender normalizes — treat the version as the fix.
+- **`CVE-2026-73418`** (`GHSA-xmf8-cvqr-rfgj`, high) — `getToken()` URL-decodes the bearer value
+  before validating it, so "a single unauthenticated request" with malformed percent-encoding makes
+  `decodeURIComponent()` throw: "per-request denial of service without exposing tokens"; fixed
+  4.24.15 / 5.0.0-beta.32, and 0.41.3 on `@auth/core`.
+
+Clean floors: **`next-auth@4.24.15`** or **`next-auth@5.0.0-beta.32`**, with **`@auth/core@0.41.3`**
+underneath — adapters pull it transitively, so check the lock file, not just `package.json`.
+`secaudit:framework-versions` carries the same floors.
+
+### 2. Multi-Provider Account Linking on Unbound Check Cookies
+
+**What to look for:** two or more OAuth providers in the `providers` array; a "connect another
+account" / "link GitHub" flow that a signed-in user can start; any provider config with
+`checks: ["none"]` or an OIDC provider whose `checks` no longer include `"pkce"`/`"nonce"`; a
+version in the CVE-2026-73419 range from §1.
+
+**Why it's exploitable:** the anti-CSRF values are meant to be transaction-specific — RFC 9700
+requires the challenge or nonce to be bound "to the client and the user agent in which the
+transaction was started" — and the binding to *which provider* was missing. The advisory's own
+exploit conditions: "In a multi-provider
+application that permits account linking while logged in, when one provider's authorization request
+is observable and a target provider callback can be satisfied without a PKCE verifier, an attacker
+can lure a victim into starting a legitimate same-origin flow and link the attacker's
+target-provider account to the victim's Auth.js user. The linked provider grants the attacker
+persistent sign-in to the victim's account, while cross-site request forgery alone is
+insufficient." The result is a permanent second front door on someone else's account.
+
+```typescript
+// auth.ts — BAD: checks disabled to "fix" a callback error, on a version in range
+providers: [GitHub({ ...creds, checks: ["none"] }), Google({ ...creds })]  // no state, no PKCE
+
+// GOOD: on 4.24.15 / 5.0.0-beta.32, with the defaults left alone
+providers: [GitHub({ ...creds }), Google({ ...creds })]
+// Default is checks: ["pkce"] (plus "nonce" on OIDC, "state" when redirectProxyUrl is set). A
+// callback that only works with checks: ["none"] is a wrong redirect_uri, not a checks bug.
+```
+
+Hand-rolled parts of the flow: `secaudit:oauth-oidc-security` §1 (per-flow binding), §4 (linking).
+
+### 3. `!!auth` and `if (session)` Fail Open on a Config Error
+
+**What to look for:** the documented `authorized` callback shape
+`authorized: async ({ auth }) => !!auth`, `if (req.auth)`, `if (session)` — any gate that tests
+only that the object *exists*; `next-auth` 5.0.0-beta.0 through beta.31.
+
+**Why it's exploitable:** per CVE-2026-73421, "a non-OK session response is parsed into a truthy
+error object instead of null, so checks such as `!!auth` and `if (req.auth)` evaluate to true for
+unauthenticated requests." The trigger is not an attack — it is your own misconfiguration: "A
+provider missing both the issuer and authorization endpoint triggers InvalidEndpoints, and an unset
+`AUTH_SECRET` or another server configuration error can produce the same behavior." So a deploy that
+forgets one environment variable does not break login loudly; it opens every gate quietly, and the
+pattern that opens is the one the official protecting-routes page tells you to write.
+
+```typescript
+// auth.ts — BAD: the documented shape and the fail-open shape are the same line
+export const { auth } = NextAuth({ providers: [GitHub],
+  callbacks: { authorized: async ({ auth }) => !!auth } });   // truthy error object === "signed in"
+
+// GOOD: upgrade, then assert on a field only a real session has
+export const { auth } = NextAuth({ providers: [GitHub],
+  callbacks: { authorized: async ({ auth }) => Boolean(auth?.user?.id) } });
+
+// app/api/projects/route.ts — the same rule where the data actually moves
+const session = await auth();
+if (!session?.user?.id) return new Response("Unauthorized", { status: 401 });
+```
+
+Fail closed on the config error too: validate `AUTH_SECRET` and every provider's credentials at
+boot and refuse to start without them, rather than degrading into a truthy error object.
+
+### 4. `allowDangerousEmailAccountLinking: true`
+
+**What to look for:** the flag on any provider; a `signIn` callback that looks up an existing user
+by `profile.email` and links; a provider with the flag whose `email_verified` claim is never read.
+
+**Why it's exploitable:** the name is the warning, and the docs spell it out — "Automatic account
+linking on sign in is not secure between arbitrary providers and is disabled by default ... it may
+be desirable to allow automatic account linking if you trust that the provider involved has securely
+verified the email address associated with the account." Some providers let a user edit their own
+email claim without re-verification (nOAuth): the attacker sets their profile email to the
+victim's, signs in, and lands inside the victim's account.
+
+```typescript
+// BAD: linking on an email the provider may never have verified
+providers: [Google({ allowDangerousEmailAccountLinking: true })]
+
+// GOOD: off; link only behind an explicit signed-in confirmation, and read the claim
+providers: [Google({})]
+callbacks: { async signIn({ profile }) { return profile?.email_verified === true; } }
+```
+
+Identity keys on `(issuer, sub)`, never on the email string — `secaudit:oauth-oidc-security` §4.
+
+### 5. `trustHost` / `AUTH_TRUST_HOST` / `AUTH_URL`
+
+**What to look for:** `trustHost: true` in the config, or `AUTH_TRUST_HOST=true` in the
+environment, on a deployment that is not actually behind a proxy you control; `AUTH_URL` unset on a
+non-Vercel host; v4's `NEXTAUTH_URL` missing in production.
+
+**Why it matters:** "Auth.js relies on the incoming request's host header to function correctly",
+and `AUTH_TRUST_HOST` "tells Auth.js to trust the `X-Forwarded-Host` header from the reverse proxy"
+(only `VERCEL` and `CF_PAGES` are auto-detected). If that header can reach the app from anywhere but
+a proxy that overwrites it, the attacker picks the host Auth.js thinks it is running on — the host
+callback URLs and email links are built against. Set it only where a proxy strips and re-sets the
+forwarded headers, and pin `AUTH_URL` to the canonical origin so the value never comes from the
+request. The proxy side — which hops to trust, header stripping, forward-auth identity headers — is
+`secaudit:proxy-trust`.
+
+### 6. `AUTH_SECRET` Strength and Rotation
+
+**What to look for:** a short, guessable, or committed `AUTH_SECRET` / `NEXTAUTH_SECRET`; the same
+secret shared across preview and production; no secret at all in a v4 dev deployment.
+
+**Why it matters:** the secret "is used to encrypt cookies and tokens. It should be a
+cryptographically secure random string of at least 32 characters" (`npx auth secret`, or
+`openssl rand -base64 33`). Under a JWT session strategy it is the *only* thing between an attacker
+and a forged session cookie; in v4 the development fallback is a hash of the options object —
+deterministic, derivable from config. Rotate through the array form rather than swapping the value:
+`secret: [NEW, OLD]` — "the first secret that successfully decrypts the JWT will be used ... The
+newer secret should be added to the start of the array" — then drop the old one once your session
+lifetime has elapsed. Preview deployments get their own secret (`secaudit:deployment`).
+
+### 7. JWT Claims as Roles, and Callbacks That Ship Provider Tokens to the Browser
+
+**What to look for:** `session: { strategy: "jwt" }` plus a `role`, `plan` or `isAdmin` read off
+`session.user` as the authorization decision; a `jwt` callback copying `account.access_token` into
+the token and a `session` callback copying it onward; the `update` trigger writing client `session`
+data into the token.
+
+**Why it's exploitable:** a JWT session is a snapshot — the role in it was true when the token was
+minted, so a user demoted, banned or downgraded mid-session keeps the old claim until it expires:
+fine as a UI hint, wrong as the gate on a destructive action. And the `session` callback's return
+value "will be exposed to the client, so be careful what you return here!", while the official
+example for passing provider data through is literally `session.accessToken = token.accessToken` —
+a live provider credential handed to the browser. Data from `useSession().update()` lands in the
+`jwt` callback's `session` parameter, where the docs are explicit: "you should validate this data
+before using it."
+
+```typescript
+// auth.ts — BAD: provider token forwarded to the browser, role trusted from the token
+callbacks: {
+  async jwt({ token, account }) { if (account) token.accessToken = account.access_token; return token; },
+  async session({ session, token }) { session.accessToken = token.accessToken; return session; },
+}                                        // ^ the doc's own example: "exposed to the client"
+// app/actions/delete-org.ts
+if (session.user.role !== "admin") throw new Error("Forbidden");   // stale claim, minted at login
+
+// GOOD: token stays server-side; authority re-read at the point of use
+callbacks: {
+  async jwt({ token, account, user }) {
+    if (account?.access_token && user) await vault.put(user.id, account.provider, account.access_token);
+    return token;                              // no provider credential in the cookie
+  },
+  async session({ session, token }) { session.user.id = token.sub!; return session; },
+}
+// app/actions/delete-org.ts — current authority, read server-side
+const member = await db.member.findUnique({ where: { userId: session.user.id, orgId } });
+if (member?.role !== "admin") throw new Error("Forbidden");
+```
+
+Encrypting a stored provider token and binding it to its row: `secaudit:oauth-oidc-security` §5.
+
+### 8. Credentials Provider: The Security Parts Are Yours
+
+**What to look for:** a `Credentials` provider whose `authorize()` compares passwords with `===`
+or a plain string compare; no throttling in front of `signIn("credentials", ...)`; `authorize()`
+returning a user object on a lookup miss; a distinct error for "no such user".
+
+**Why it matters:** Auth.js says so directly — "By default, the Credentials provider does not
+persist data in the database. However, you can still create and save any data in your database, you
+just have to provide the necessary logic, eg. to encrypt passwords, add rate-limiting, add password
+reset functionality, etc." Nothing in the library hashes, throttles or locks out, and the provider
+is JWT-sessions-only, so a weak `AUTH_SECRET` (§6) compounds with it. The account-enumeration and
+session-fixation sections above apply verbatim.
+
+```typescript
+// auth.ts — BAD: plaintext compare, unlimited attempts
+Credentials({
+  async authorize(c) {
+    const user = await db.user.findUnique({ where: { email: c.email as string } });
+    return user && user.password === c.password ? user : null;      // plaintext + timing oracle
+  },
+})
+// GOOD: throttled, constant-work verification, one failure shape
+Credentials({
+  async authorize(c, req) {
+    const parsed = credentialsSchema.safeParse(c);
+    if (!parsed.success) return null;
+    if (!(await limiter.allow(`login:${ipOf(req)}:${parsed.data.email}`))) return null; // IP + user
+    const user = await db.user.findUnique({ where: { email: parsed.data.email } });
+    const ok = await argon2.verify(user?.hash ?? DUMMY_ARGON2_HASH, parsed.data.password);
+    return user && ok ? { id: user.id, email: user.email } : null;
+  },
+})
+```
+
+Hash parameters: `secaudit:cryptography`; limiter placement: `secaudit:rate-limiting`.
+
+### 9. `auth()` in Middleware (or `proxy.ts`) Is Still Not the Boundary
+
+**What to look for:** `export { auth as middleware } from "@/auth"` (Next.js 16: `proxy.ts`,
+`export { auth as proxy }`) with a `config.matcher`, and route handlers, Server Actions and data
+functions underneath that never call `auth()` again.
+
+**Why it matters:** this is the middleware section at the top of this file wearing Auth.js's API.
+Auth.js's own protecting-routes page: "You should not rely on the proxy exclusively for
+authorization. Always ensure that the session is verified as close to your data fetching as
+possible." Next.js agrees: "it should not be your only line of defense in protecting your data."
+CVE-2025-29927 bypassed Next.js middleware outright with a spoofed header, and on an affected v5
+beta the `authorized` callback it runs is the §3 fail-open shape. Keep it for redirects; put the
+real check in every Server Action, route handler and data function, scoped to `session.user.id`.
+
+### 10. Adapter Tables Hold Provider Tokens, and Sit in Your Database
+
+**What to look for:** an adapter (`PrismaAdapter`, `SupabaseAdapter`, Drizzle) with the default
+schema; an `Account` table reachable through a client-side Supabase key or a PostgREST-exposed
+schema; no RLS on `accounts` / `sessions` / `users` / `verification_tokens`.
+
+**Why it's exploitable:** the default `Account` row stores "`access_token`, `expires_at`,
+`refresh_token`, `id_token`, `token_type`, `scope` and `session_state`" — live provider credentials,
+as returned, with no encryption anywhere in the library. One over-broad Supabase policy, one SQL
+injection, or one leaked read-only database URL therefore yields every user's Google or GitHub
+token, not just session rows. The adapter also links accounts "automatically, only when they have
+the same e-mail address, and the user is currently signed in" — the flow §2 and §4 describe.
+
+Two fixes, in order: don't store what you don't use (trim the columns in the provider's `account()`
+callback), and encrypt what remains before it reaches the table, bound to its row — AEAD with the
+user id and provider as associated data. Then treat the adapter tables like any other sensitive
+table: service-role access only, RLS denying the anonymous and authenticated roles, never reachable
+through a client-side key. `secaudit:database` covers the policy side, and
+`secaudit:oauth-oidc-security` §5 the token vault.
+
 ## Sources
 
 - https://nvd.nist.gov/vuln/detail/cve-2025-29927 -- Next.js middleware authorization bypass
@@ -521,3 +787,18 @@ permissions are not in the session token, so check the role for those.
 - https://clerk.com/docs/guides/development/integrations/databases/convex -- Clerk + Convex; ctx.auth.getUserIdentity()
 - https://clerk.com/docs/guides/organizations/control-access/roles-and-permissions -- org roles/permissions; system permissions are not in the token
 - https://clerk.com/docs/guides/development/clerk-environment-variables -- publishable key ships to the client; secret key does not
+- https://github.com/advisories/GHSA-x445-f3h2-j279 -- CVE-2026-73419 Auth.js OAuth state/nonce/PKCE check cookies not bound to their provider; the account-linking exploit conditions
+- https://github.com/advisories/GHSA-8fpg-xm3f-6cx3 -- CVE-2026-73421 config errors make existence checks on the auth() result fail open (next-auth 5 betas)
+- https://github.com/advisories/GHSA-7rqj-j65f-68wh -- CVE-2026-73420 email normalizer validates before Unicode normalization (fullwidth @ magic-link hijack)
+- https://github.com/advisories/GHSA-xmf8-cvqr-rfgj -- CVE-2026-73418 getToken() throws on a malformed Bearer header (per-request DoS)
+- https://authjs.dev/security -- security updates only for the current latest version
+- https://authjs.dev/reference/core/providers -- allowDangerousEmailAccountLinking; the default checks array
+- https://authjs.dev/reference/core -- trustHost; secret as an array for rotation; jwt/session callback semantics
+- https://authjs.dev/getting-started/deployment -- AUTH_SECRET length, AUTH_TRUST_HOST trusts X-Forwarded-Host, AUTH_URL
+- https://authjs.dev/concepts/session-strategies -- JWT vs database sessions
+- https://authjs.dev/concepts/database-models -- the Account row stores access_token / refresh_token / id_token; automatic linking by email
+- https://authjs.dev/guides/extending-the-session -- what the session object does and does not persist
+- https://authjs.dev/getting-started/authentication/credentials -- password hashing and rate limiting are the app's job
+- https://authjs.dev/getting-started/session-management/protecting -- the authorized: !!auth pattern; do not rely on the proxy exclusively
+- https://next-auth.js.org/configuration/options -- v4 NEXTAUTH_SECRET / NEXTAUTH_URL and the development secret fallback
+- https://nextjs.org/docs/app/guides/authentication -- proxy/middleware should not be your only line of defense

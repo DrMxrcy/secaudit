@@ -3,7 +3,7 @@ id: 42
 title: Add Auth.js/NextAuth coverage to auth
 type: feature
 version: 3.9.0
-status: planned
+status: done
 created: 2026-09-15
 ---
 
@@ -23,5 +23,7 @@ created: 2026-09-15
 - **Fails if:** a version, advisory ID or provider capability is asserted that OSV or the provider's docs do not confirm; or the freshness check reports drift.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write the new section(s), verifying every advisory ID and fixed version against OSV / live docs -> target: `skills/auth/SKILL.md`
-- [ ] Step 2: Update description/keywords, cross-references, sources, and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`, `README.md`, `.claude-plugin/plugin.json`
+- [x] Step 1: Write the new section(s), verifying every advisory ID and fixed version against OSV / live docs -> target: `skills/auth/SKILL.md`
+  > evidence: reviewer CONFIRMED: 4 CVE fixed versions match OSV, 3 floors return {}, 9 quotes verbatim vs fact sheet (2026-09-16)
+- [x] Step 2: Update description/keywords, cross-references, sources, and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: python3 scripts/check-freshness.py: All current. Checks run: cves, eol, fixclaims, kev, links, manifests, versions; manifests byte-identical (2026-09-16)

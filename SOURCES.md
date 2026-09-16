@@ -94,6 +94,21 @@ Last verified: 2026-09-15.
 - https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html — enumeration-safe reset
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie — cookie attributes
 - https://www.w3.org/TR/webauthn-2/ — passkeys / WebAuthn
+- https://github.com/advisories/GHSA-x445-f3h2-j279 — CVE-2026-73419 Auth.js check cookies not bound to their provider
+- https://github.com/advisories/GHSA-8fpg-xm3f-6cx3 — CVE-2026-73421 auth() existence checks fail open on a config error
+- https://github.com/advisories/GHSA-7rqj-j65f-68wh — CVE-2026-73420 email normalizer fullwidth-@ bypass
+- https://github.com/advisories/GHSA-xmf8-cvqr-rfgj — CVE-2026-73418 getToken() malformed Bearer DoS
+- https://authjs.dev/security — updates only for the current latest version
+- https://authjs.dev/reference/core/providers — allowDangerousEmailAccountLinking; default checks
+- https://authjs.dev/reference/core — trustHost; secret array rotation; jwt/session callbacks
+- https://authjs.dev/getting-started/deployment — AUTH_SECRET, AUTH_TRUST_HOST, AUTH_URL
+- https://authjs.dev/concepts/session-strategies — JWT vs database sessions
+- https://authjs.dev/concepts/database-models — Account stores provider tokens; linking by email
+- https://authjs.dev/guides/extending-the-session — what the session object persists
+- https://authjs.dev/getting-started/authentication/credentials — hashing and rate limiting are yours
+- https://authjs.dev/getting-started/session-management/protecting — authorized: !!auth; proxy is not the boundary
+- https://next-auth.js.org/configuration/options — v4 NEXTAUTH_SECRET / NEXTAUTH_URL
+- https://nextjs.org/docs/app/guides/authentication — proxy is not your only line of defense
 
 ## Privilege escalation (`privilege-escalation`)
 - https://api-security.owasp.org/editions/2023/en/0xa5-broken-function-level-authorization/ — OWASP API A05 (BFLA)

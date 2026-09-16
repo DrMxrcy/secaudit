@@ -1,0 +1,46 @@
+skills/kubernetes-security/SKILL.md
+  s_2eb785847a60dc::t_24c9387743f448 1-609
+README.md
+  s_2eb785847a60dc::t_43127899ffe464 63
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_9180d1ded989c2 4,77-82
+SOURCES.md
+  s_2eb785847a60dc::t_06f4f4ffbe26e8 225-259
+  s_2eb785847a60dc::t_d43299d1255da5 7
+skills/docker-security/SKILL.md
+  s_2eb785847a60dc::t_9e2e3fae8b9d8b 562-567
+skills/secrets/SKILL.md
+  s_2eb785847a60dc::t_00fa749ce9edfb 115-121
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_9180d1ded989c2 11,84-89
+skills/audit/SKILL.md
+  s_2eb785847a60dc::t_122e95c37c8cf0 255,261,272,274,276,278,280,282,291
+  s_2eb785847a60dc::t_073a9e3faa29b6 307-309,311
+  s_2eb785847a60dc::t_2513360eb2c100 237-244,249
+.roadmap/config.json
+  s_2eb785847a60dc::t_a9148e8d77d934 474
+.roadmap/plans/044-add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy.md
+  s_2eb785847a60dc::t_028f0e08189d2a 6,27-32
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_16efb29a206cd5 15
+CHANGELOG.md
+  s_2eb785847a60dc::t_9b73bce3cf762b 13
+ROADMAP.md
+  s_2eb785847a60dc::t_2df1e9a49acf41 30,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "13c938b1eb39774758917ac46d54c878fd531a3b",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

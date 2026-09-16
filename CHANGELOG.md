@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.9.0 — (in progress)
+## v3.9.0 — 2026-09-16
 
 ### ✨ New
 - Version checks now cover several more widely used web frameworks, ORMs and proxies.
@@ -14,7 +14,7 @@
 - Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.
 
 ### 🐛 Fixed
-- (pending) The automated freshness check no longer raises a false alarm when one paragraph names fixes for two different issues.
+- The automated freshness check no longer raises a false alarm when one paragraph names fixes for two different issues.
 
 ## v3.8.0 — 2026-08-25
 

@@ -4,7 +4,7 @@ Every claim in the secaudit skills is backed by a primary source: official docum
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 
-Last verified: 2026-09-15.
+Last verified: 2026-09-16.
 
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/cve-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
@@ -221,6 +221,41 @@ Last verified: 2026-09-15.
 - https://docs.docker.com/engine/network/packet-filtering-firewalls/ — Docker bypasses host firewall rules
 - https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html — OWASP Docker cheat sheet
 - https://www.cisecurity.org/benchmark/docker — CIS Docker Benchmark
+
+## Kubernetes (`kubernetes-security`)
+- https://kubernetes.io/docs/concepts/security/pod-security-standards/ — Privileged/Baseline/Restricted profile definitions and required fields
+- https://kubernetes.io/docs/concepts/security/pod-security-admission/ — enforce/audit/warn labels; enforce not applied to workload resources
+- https://kubernetes.io/docs/concepts/security/rbac-good-practices/ — wildcard, cluster-admin, system:masters, automountServiceAccountToken guidance
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/ — default ServiceAccount, token mount path, automount precedence
+- https://kubernetes.io/docs/concepts/configuration/secret/ — Secrets stored unencrypted in etcd by default; Pod-creation read access
+- https://kubernetes.io/docs/concepts/security/secrets-good-practices/ — base64 is not encryption; manifest sharing; list-implies-read
+- https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/ — EncryptionConfiguration; identity provider gives no confidentiality
+- https://external-secrets.io/latest/ — External Secrets Operator
+- https://github.com/bitnami/sealed-secrets — Sealed Secrets
+- https://github.com/jkroepke/helm-secrets — helm-secrets plugin (sops/vals backends)
+- https://helm.sh/docs/chart_template_guide/values_files/ — values.yaml precedence order
+- https://helm.sh/docs/chart_template_guide/functions_and_pipelines/ — lookup() behavior under helm template vs install
+- https://kubernetes.io/docs/concepts/services-networking/network-policies/ — default-allow ingress/egress; default-deny examples
+- https://kubernetes.io/docs/concepts/containers/images/ — digest pinning; imagePullPolicy defaults
+- https://kubernetes.io/docs/concepts/policy/limit-range/ — unbounded resources by default; LimitRange
+- https://kubernetes.io/docs/concepts/policy/resource-quotas/ — ResourceQuota, aggregate and object-count limits
+- https://kubernetes.io/docs/concepts/services-networking/service/ — NodePort/LoadBalancer exposure mechanics
+- https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/ — Dashboard not default; sample user is admin-privileged; deprecated/unmaintained
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/ — --read-only-port default and no-auth behavior
+- https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/ — readOnlyPort / anonymous.enabled config-file defaults
+- https://kubernetes.io/docs/reference/access-authn-authz/authentication/ — anonymous-auth default, system:anonymous/system:unauthenticated, explicit-authorization requirement
+- https://www.cisecurity.org/benchmark/kubernetes — CIS Kubernetes Benchmark
+- https://github.com/aquasecurity/kube-bench — CIS Benchmark automated checks
+- https://github.com/kubescape/kubescape — Kubernetes security platform (IDE/CI/cluster)
+- https://trivy.dev/docs/latest/target/kubernetes/ — Trivy Kubernetes target (images, manifests, cluster components)
+- https://github.com/FairwindsOps/polaris — policy engine for resource configuration
+- https://github.com/stackrox/kube-linter — static analysis for Kubernetes YAML and Helm charts
+- https://helm.sh/docs/helm/helm_template/ — helm template: local render, no server-side validation
+- https://helm.sh/docs/helm/helm_lint/ — helm lint: well-formedness, not a security check
+- https://helm.sh/docs/topics/provenance/ — .prov files, helm verify, chart integrity
+- https://helm.sh/docs/topics/registries/ — OCI chart registries; helm-sigstore signing
+- https://kubernetes-top10.owasp.org/ — OWASP Kubernetes Top 10 (K01-K10)
+- https://top10.owasp.org/2025/ — OWASP Top 10 (2025): A02 Security Misconfiguration, A05 Injection
 
 ## Python web (`python-web-security`)
 - https://fastapi.tiangolo.com/tutorial/response-model/ — response_model output filtering

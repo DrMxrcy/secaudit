@@ -112,6 +112,13 @@ in public GitHub repos — but neither stops an attacker using a leaked key via 
 stands: publishable keys go client-side, secret keys stay server-side only. See
 `secaudit:database`.
 
+## Cross-References
+
+- `secaudit:kubernetes-security` — the redaction rule and credential-hygiene patterns
+  above apply the same way inside a Helm `values.yaml` or a committed `Secret` manifest
+  as inside application source; see its §1 for the Kubernetes-specific failure mode
+  (base64 is not encryption, Secrets are unencrypted in etcd by default).
+
 ## Sources
 
 - https://nextjs.org/docs/app/guides/environment-variables -- NEXT_PUBLIC_ inlined into the client bundle

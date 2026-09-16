@@ -559,6 +559,12 @@ When the container is actually running, `secaudit:dynamic-verification` carries 
 refute each of the eight sections above. Note the redaction rule: `.Config.Env` is exactly where
 the credentials from §7 live, so report the variable name and never the value.
 
+## Cross-References
+
+- `secaudit:kubernetes-security` — if this image is deployed to a cluster: the pod
+  `securityContext` a manifest sets (or fails to set) is the same root-user and
+  capability-drop argument as §3 and §8 here, one layer up the stack.
+
 ## Sources
 
 - https://docs.docker.com/build/building/best-practices/ -- Dockerfile best practices, non-root USER

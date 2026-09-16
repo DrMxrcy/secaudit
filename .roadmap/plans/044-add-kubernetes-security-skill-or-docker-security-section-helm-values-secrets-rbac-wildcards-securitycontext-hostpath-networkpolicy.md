@@ -3,7 +3,7 @@ id: 44
 title: Add kubernetes-security skill or docker-security section: Helm values secrets, RBAC wildcards, securityContext, hostPath, NetworkPolicy
 type: feature
 version: 3.9.0
-status: planned
+status: done
 created: 2026-09-15
 ---
 
@@ -24,6 +24,9 @@ created: 2026-09-15
 - **Fails if:** a version, advisory ID or provider capability is asserted that OSV or the provider's docs do not confirm; or the freshness check reports drift.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/kubernetes-security/SKILL.md`
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/kubernetes-security/SKILL.md`
+  > evidence: reviewer CONFIRMED: 13/13 yaml blocks parse, 33 URLs 200 no-redirect, NSA/CISA PDF not cited, quotes trace to fact sheet (2026-09-16)
+- [x] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: audit Tier 2 item 16 + A01/A02/A03/A05; docker-security and secrets cross-refs; README; manifests byte-identical (2026-09-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: python3 scripts/check-freshness.py: All current. Checks run: cves, eol, fixclaims, kev, links, manifests, versions (2026-09-16)

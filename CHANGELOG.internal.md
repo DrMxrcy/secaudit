@@ -12,7 +12,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - New checks for social sign-in and OAuth flows, on both the app side and the identity-provider side.
 - New checks for apps that let users sign in through NextAuth, including how linked accounts are matched.
 - New checks for apps served through a reverse proxy or tunnel, covering which forwarded request details the app should believe.
-- (pending) New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.
+- New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.
 - Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.
 
 ### 🐛 Fixed

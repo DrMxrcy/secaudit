@@ -234,24 +234,31 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
 15. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
     image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
     Docker socket mounted in. → `secaudit:docker-security`
-16. **CI/CD pipelines** — if the project has `.github/workflows/` (or any pipeline config): pwn
+16. **Kubernetes & Helm** — if the project has a `Chart.yaml`, `kustomization.yaml`, or a
+    manifest declaring `apiVersion: apps/v1`: secrets in `values.yaml` or committed
+    `Secret` manifests, RBAC wildcards and `cluster-admin`/`system:masters` bindings, pod
+    `securityContext` against the Restricted profile, Pod Security Admission labels that
+    silently don't apply to Deployments, `NetworkPolicy` default-allow, image digest
+    pinning and resource limits, and NodePort/kubelet/API-server exposure.
+    → `secaudit:kubernetes-security`
+17. **CI/CD pipelines** — if the project has `.github/workflows/` (or any pipeline config): pwn
     requests (`pull_request_target` / `workflow_run` + a PR-head checkout), expression injection
     into `run:`, actions on mutable tags, default `GITHUB_TOKEN` permissions, secrets in logs,
     cache/artifact poisoning, self-hosted runners, OIDC trust scope, artifact signature
     verification. → `secaudit:ci-cd-security`
-17. **Cloudflare Workers / Pages** — if the project has a `wrangler.toml` / `wrangler.jsonc` or a
+18. **Cloudflare Workers / Pages** — if the project has a `wrangler.toml` / `wrangler.jsonc` or a
     `hono` dependency: secrets in `[vars]` instead of `wrangler secret`, `.dev.vars` hygiene and
     per-environment non-inheritance, binding blast radius (every route reaches every D1/KV/R2/
     Durable Object binding), Hono middleware ordering and CORS defaults, `serveStatic` path
     handling, `cf-connecting-ip` vs `x-forwarded-for`, D1 prepared statements, KV as a rate-limit
     store, and Cloudflare Access JWT verification. → `secaudit:cloudflare-workers-security`
-18. **Webhook verification** — any route receiving a third-party webhook (`/api/webhooks/`,
+19. **Webhook verification** — any route receiving a third-party webhook (`/api/webhooks/`,
     `/interactions`): per-sender signature verification (GitHub, Slack, Discord, Svix-backed
     senders like Clerk/Resend, Telegram, Twilio, Shopify, Linear, Vercel), raw body before JSON
     parsing, constant-time comparison, replay/idempotency by delivery id, and failing closed when
     the signing secret is unset. → `secaudit:webhook-security`
     - Stripe and RevenueCat webhooks stay in `secaudit:payments` / `secaudit:revenuecat-security`.
-19. **Reverse proxies and edge auth** — if the project sets a framework's `trust proxy`/
+20. **Reverse proxies and edge auth** — if the project sets a framework's `trust proxy`/
     `trustProxy`/`app.proxy` option, reads `X-Forwarded-*`, defines a `forwardAuth`/
     `forward_auth`/`auth_request` block, or runs a Traefik/Caddy/nginx/nginx-proxy-manager compose
     service: which forwarded headers a framework actually trusts and at what hop count, IP-keyed
@@ -262,17 +269,17 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-20. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+21. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-21. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+22. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-22. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+23. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-23. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+24. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-24. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+25. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-25. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+26. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -281,7 +288,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–25 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–26 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -297,11 +304,11 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection) |
-| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers) |
-| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection), `kubernetes-security` (RBAC wildcards, default ServiceAccount) |
+| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers), `kubernetes-security` (securityContext, Pod Security Admission, NetworkPolicy, exposure) |
+| A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images), `kubernetes-security` (image digest pinning, Helm chart provenance) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
-| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection) |
+| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection), `kubernetes-security` (untrusted values interpolated into container command/args) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
 | A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification), `proxy-trust` (unverified forward-auth identity headers, unverified Cloudflare Access JWT) |
 | A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization), `webhook-security` (replay/idempotency, unverified-payload-field trust) |

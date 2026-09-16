@@ -408,6 +408,46 @@ Last verified: 2026-09-15.
 - https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where §1, §3, §4 and §5 land
 - https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025, where §6 lands
 
+## Reverse proxies and edge auth (`proxy-trust`)
+- https://expressjs.com/en/guide/behind-proxies/ — `trust proxy` boolean/number/IP forms; header-stripping warning
+- https://express-rate-limit.mintlify.app/reference/error-codes — `ERR_ERL_PERMISSIVE_TRUST_PROXY`, `ERR_ERL_UNEXPECTED_X_FORWARDED_FOR`
+- https://express-rate-limit.mintlify.app/guides/troubleshooting-proxy-issues — verifying the hop count against a real request
+- https://koajs.com/ — `app.proxy`, `app.proxyIpHeader`, `app.maxIpsCount`, `ctx.hostname`/`ctx.protocol` semantics
+- https://fastify.dev/docs/latest/Reference/Server/ — `trustProxy` forms; numeric hop-count trust disabled
+- https://api.osv.dev/v1/vulns/CVE-2026-3635 — Fastify request.protocol/host spoofable under a restrictive trustProxy; fixed 5.8.3
+- https://github.com/advisories/GHSA-444r-cwp2-x5xf — CVE-2026-3635 advisory
+- https://api.osv.dev/v1/vulns/CVE-2026-16732 — Fastify numeric trustProxy still spoofable after the 3635 fix; fixed 5.12.1
+- https://github.com/fastify/fastify/security/advisories/GHSA-3m5p-2c4r-xxw2 — CVE-2026-16732 advisory
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions — Origin vs `x-forwarded-host`/`host` comparison; no-Origin-allowed-with-warning; `allowedOrigins`
+- https://www.rfc-editor.org/info/rfc7239/ — RFC 7239 `Forwarded` header; cannot be relied upon to be correct
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-For — security-use rule; leftmost values untrustworthy; trusted-proxy-count/list selection
+- https://portswigger.net/web-security/host-header — Host header attacks; password-reset poisoning; config-not-request mitigation
+- https://docs.djangoproject.com/en/6.1/ref/settings/ — `ALLOWED_HOSTS`, `get_host()` scope, `USE_X_FORWARDED_HOST` opt-in
+- https://api.osv.dev/v1/vulns/CVE-2026-27959 — Koa `ctx.hostname` Host-header injection; fixed 3.1.2 / 2.16.4
+- https://github.com/advisories/GHSA-7gcc-r8m5-44qm — CVE-2026-27959 advisory
+- https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/forwardauth/ — ForwardAuth headers, `authResponseHeaders`/`authRequestHeaders`, `trustForwardHeader` deprecation
+- https://api.osv.dev/v1/vulns/CVE-2026-35051 — Traefik ForwardAuth X-Forwarded-Prefix bypass; fixed 2.11.43/3.6.14/3.7.0-rc.2
+- https://github.com/traefik/traefik/security/advisories/GHSA-6384-m2mw-rf54 — CVE-2026-35051 advisory
+- https://api.osv.dev/v1/vulns/CVE-2026-39858 — Traefik underscore-alias header bypass; fixed 2.11.43/3.6.14/3.7.0-rc.2
+- https://github.com/advisories/GHSA-5m6w-wvh7-57vm — CVE-2026-39858 advisory
+- https://api.osv.dev/v1/vulns/CVE-2026-54764 — Traefik X-Forwarded-Port derived from unsanitized request; fixed v2.11.51/v3.6.22/v3.7.6
+- https://github.com/traefik/traefik/security/advisories/GHSA-3q9r-p662-5j8m — CVE-2026-54764 advisory
+- https://caddyserver.com/docs/caddyfile/directives/forward_auth — `forward_auth`, `copy_headers`, success-status header copy behavior
+- https://nginx.org/en/docs/http/ngx_http_auth_request_module.html — `auth_request`, `auth_request_set`, 2xx/401/403 semantics
+- https://www.authelia.com/integration/trusted-header-sso/introduction/ — `Remote-User`/`Remote-Groups`/`Remote-Email`; proxy must set these exclusively
+- https://www.authelia.com/integration/proxies/forwarded-headers/ — forwarded headers must come from trusted sources
+- https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/ — `--pass-user-headers`, `--set-xauthrequest`, `--reverse-proxy`/`--trusted-proxy-ip` warning
+- https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/ — Tunnel blocks inbound traffic except via Cloudflare
+- https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/ — origin token validation requirement; tunnel-optional-if-public caveat
+- https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/ — `Cf-Access-Jwt-Assertion`, team JWKS endpoint, `aud` claim, key rotation
+- https://developers.cloudflare.com/fundamentals/reference/http-headers/ — `CF-Connecting-IP` vs appended `X-Forwarded-For`
+- https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/ — `set_real_ip_from`/`real_ip_header`; prefix list must stay current
+- https://www.cloudflare.com/ips/ — current Cloudflare IP ranges (definitive source)
+- https://tailscale.com/docs/features/tailscale-serve — identity headers on Serve vs absent on Funnel; header stripping on ingress; tagged-device and shared-device behavior
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where §2 and §4's forward-auth bypass land
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where §1, §3, §5 and §6 land
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025, where §4's identity-header trust and §5's Access JWT verification land
+
 ## Deployment (`deployment`)
 - https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP

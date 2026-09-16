@@ -1,7 +1,7 @@
 {
   "name": "secaudit",
   "version": "3.8.0",
-  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (Clerk, Better Auth, Auth.js/NextAuth), OAuth/OIDC flows the app implements itself (per-flow state and PKCE binding, ID-token validation, account linking, provider-token storage), client-side trust, insecure payments (Stripe and mobile in-app purchase), inbound webhook verification beyond payment providers (GitHub, Slack, Discord, Svix/Clerk/Resend, Telegram, Twilio, Shopify, Linear, Vercel), object storage and presigned URLs, supply-chain risks, CI/CD pipelines (GitHub Actions pwn requests, unpinned actions, workflow token scope), Cloudflare Workers and Pages with Hono (wrangler `[vars]` vs secrets, D1/KV/R2 binding scope, middleware ordering), Drizzle and SQLite/Turso/D1 data access (identifier injection, raw SQL, database-file exposure), AI/LLM, RAG, MCP and agent risks, container hardening, and Expo / React Native / Python specifics. Whole-app audits fan out across parallel workers and rank findings by live advisory, exploitation-probability and end-of-life data.",
+  "description": "Audits codebases for security vulnerabilities that AI coding assistants introduce in vibe-coded apps: exposed secrets, broken database access control (Supabase RLS, Firebase rules, Convex, Prisma tenant scoping), missing auth (Clerk, Better Auth, Auth.js/NextAuth), OAuth/OIDC flows the app implements itself (per-flow state and PKCE binding, ID-token validation, account linking, provider-token storage), client-side trust, insecure payments (Stripe and mobile in-app purchase), inbound webhook verification beyond payment providers (GitHub, Slack, Discord, Svix/Clerk/Resend, Telegram, Twilio, Shopify, Linear, Vercel), object storage and presigned URLs, supply-chain risks, CI/CD pipelines (GitHub Actions pwn requests, unpinned actions, workflow token scope), Cloudflare Workers and Pages with Hono (wrangler `[vars]` vs secrets, D1/KV/R2 binding scope, middleware ordering), Drizzle and SQLite/Turso/D1 data access (identifier injection, raw SQL, database-file exposure), AI/LLM, RAG, MCP and agent risks, container hardening, and Expo / React Native / Python specifics, reverse-proxy and forward-auth trust boundaries (Express/Koa/Fastify trust-proxy settings, Traefik/Caddy/nginx forward-auth identity-header injection, Cloudflare Access/Tunnel JWT verification, Tailscale Serve headers). Whole-app audits fan out across parallel workers and rank findings by live advisory, exploitation-probability and end-of-life data.",
   "author": {
     "name": "DrMxrcy"
   },
@@ -68,6 +68,12 @@
     "d1",
     "wrangler",
     "sqlite",
-    "turso"
+    "turso",
+    "reverse-proxy",
+    "forward-auth",
+    "caddy",
+    "nginx",
+    "cloudflare-access",
+    "tailscale"
   ]
 }

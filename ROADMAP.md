@@ -27,7 +27,7 @@
 
 ### [x] v3.8.0 — 100% · 2 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.9.0 — 74%
+### [ ] v3.9.0 — 85%
 - [ ] **#36 Freshness fix-claim check pairs every CVE on a line with every fixed clause; pair with nearest CVE** `bug` — 67% ([plan](.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md))
 - [x] **#37 framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern** `feature` — 100% ([plan](.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md))
 - [x] **#38 Add ci-cd-security skill: GitHub Actions pwn-requests, SHA pinning, permissions, run: injection, keyless cosign** `feature` — 100% ([plan](.roadmap/plans/038-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md))
@@ -35,7 +35,7 @@
 - [x] **#40 Extend data-access with Drizzle (CVE-2026-39356 identifier injection, sql.raw) and SQLite/Turso/D1 file and tenancy specifics** `feature` — 100% ([plan](.roadmap/plans/040-extend-data-access-with-drizzle-cve-2026-39356-identifier-injection-sql-raw-and-sqlite-turso-d1-file-and-tenancy-specifics.md))
 - [x] **#41 Add oauth-oidc-security skill: client flows (Lucia/Arctic, Sign in with X) and provider side** `feature` — 100% ([plan](.roadmap/plans/041-add-oauth-oidc-security-skill-client-flows-lucia-arctic-sign-in-with-x-and-provider-side.md))
 - [x] **#42 Add Auth.js/NextAuth coverage to auth** `feature` — 100% ([plan](.roadmap/plans/042-add-auth-js-nextauth-coverage-to-auth.md))
-- [ ] **#43 Add proxy-trust skill: X-Forwarded-* and Host trust, forward-auth identity-header injection, Traefik CVE-2026-35051/39858, Cloudflare Access JWT verification** `feature` — 0% ([plan](.roadmap/plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md))
+- [x] **#43 Add proxy-trust skill: X-Forwarded-* and Host trust, forward-auth identity-header injection, Traefik CVE-2026-35051/39858, Cloudflare Access JWT verification** `feature` — 100% ([plan](.roadmap/plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md))
 - [ ] **#44 Add kubernetes-security skill or docker-security section: Helm values secrets, RBAC wildcards, securityContext, hostPath, NetworkPolicy** `feature` — 0% ([plan](.roadmap/plans/044-add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy.md))
 - [x] **#45 Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay** `feature` — 100% ([plan](.roadmap/plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md))
 <!-- roadmap:auto:end -->

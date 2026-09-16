@@ -88,6 +88,10 @@ Content-Security-Policy: frame-ancestors 'none'
 X-Frame-Options: DENY
 ```
 
+For Host-header trust in absolute-URL generation (password-reset poisoning, the
+`ALLOWED_HOSTS`-style allowlist pattern, and failing closed with 421 on an unrecognized Host),
+see `secaudit:proxy-trust`.
+
 ## Pre-Ship Checks
 
 Before deploying:

@@ -251,20 +251,28 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
     parsing, constant-time comparison, replay/idempotency by delivery id, and failing closed when
     the signing secret is unset. → `secaudit:webhook-security`
     - Stripe and RevenueCat webhooks stay in `secaudit:payments` / `secaudit:revenuecat-security`.
+19. **Reverse proxies and edge auth** — if the project sets a framework's `trust proxy`/
+    `trustProxy`/`app.proxy` option, reads `X-Forwarded-*`, defines a `forwardAuth`/
+    `forward_auth`/`auth_request` block, or runs a Traefik/Caddy/nginx/nginx-proxy-manager compose
+    service: which forwarded headers a framework actually trusts and at what hop count, IP-keyed
+    rate limits/allowlists spoofable via `X-Forwarded-For`, Host-header trust in absolute-URL
+    generation, identity-header injection (`Remote-User`, `X-Forwarded-User`,
+    `X-Auth-Request-*`) when the gateway isn't the only path in, the Traefik ForwardAuth CVEs, and
+    Cloudflare Access/Tunnel JWT verification. → `secaudit:proxy-trust`
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-19. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+20. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-20. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+21. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-21. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+22. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-22. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+23. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-23. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+24. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-24. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+25. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -273,7 +281,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–24 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–25 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -289,13 +297,13 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off) |
-| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection) |
+| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
 | A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification) |
+| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification), `proxy-trust` (unverified forward-auth identity headers, unverified Cloudflare Access JWT) |
 | A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization), `webhook-security` (replay/idempotency, unverified-payload-field trust) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |

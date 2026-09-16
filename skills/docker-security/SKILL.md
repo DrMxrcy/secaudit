@@ -395,6 +395,11 @@ ss -lntp | grep -vE '127\.0\.0\.1|::1'     # anything on 0.0.0.0 is internet-fac
 Confirm from **off** the host (`nmap -Pn -p 5432,6379,27017 <public-ip>` from elsewhere) — a local
 check cannot tell you what the internet sees.
 
+If the compose file runs a Traefik, Caddy, or nginx service in front of the app (`forwardAuth`,
+`forward_auth`, `auth_request`), see `secaudit:proxy-trust` for whether the app trusts an
+identity header only the gateway should be able to set, and whether the app service itself is
+reachable on any path that bypasses that gateway.
+
 ## 7. Hardcoded Credentials in Compose Files
 
 `docker-compose.yml` is committed to the repo, so `POSTGRES_PASSWORD: postgres` is not a local

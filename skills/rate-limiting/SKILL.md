@@ -75,6 +75,10 @@ export async function POST(request: Request) {
 }
 ```
 
+For *which* client identifier is safe to key a limit on in the first place — matching a
+framework's `trust proxy`/`trustProxy` hop count to the real proxy chain before trusting
+`X-Forwarded-For` or `req.ip` — see `secaudit:proxy-trust`.
+
 ## Sources
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html -- rate limiting / resource exhaustion

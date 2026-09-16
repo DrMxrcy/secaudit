@@ -57,6 +57,7 @@ PLACEHOLDER_PATTERNS = [
     r"pypi\.company\.com",           # fictional private index in a dependency-confusion example
     r"\.\*",                          # a URL containing regex metacharacters is a cosign
                                       # --certificate-identity-regexp pattern, not a citation
+    r"\$\{",                          # template-literal interpolation: a code example, not a citation
 ]
 
 # Hosts/URLs that legitimately answer non-200 to this script. Each needs a reason.

@@ -128,6 +128,28 @@ Last verified: 2026-09-15.
 - https://docs.stripe.com/webhooks — constructEvent, endpoint secret
 - https://docs.stripe.com/products-prices/how-products-and-prices-work — server-side Price IDs
 
+## Webhooks (`webhook-security`)
+- https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries — `X-Hub-Signature-256`, HMAC-SHA256 hex, header absent when no secret configured
+- https://docs.slack.dev/authentication/verifying-requests-from-slack/ — `X-Slack-Signature`/`X-Slack-Request-Timestamp`, `v0:` basestring, 5-minute tolerance
+- https://docs.discord.com/developers/interactions/overview — `X-Signature-Ed25519`/`X-Signature-Timestamp`, Ed25519 over timestamp+body, 401 on failure, PING/PONG
+- https://docs.svix.com/receiving/verifying-payloads/how-manual — `svix-id`/`svix-timestamp`/`svix-signature`, `id.timestamp.body`, `v1,` prefix, `whsec_` secret
+- https://docs.svix.com/receiving/verifying-payloads/how — framework raw-body notes (Express, Next.js, NestJS, FastAPI, Django)
+- https://docs.svix.com/receiving/verifying-payloads/why — why raw-body and constant-time comparison matter
+- https://www.standardwebhooks.com/ — Standard Webhooks spec overview; Svix implements this spec
+- https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md — `webhook-id`/`webhook-timestamp`/`webhook-signature`, tolerance requirement
+- https://clerk.com/docs/guides/development/webhooks/overview — Clerk uses Svix; `verifyWebhook` helper
+- https://resend.com/docs/webhooks/verify-webhooks-requests — Resend's Svix-backed webhooks, raw-body requirement
+- https://core.telegram.org/bots/api — `setWebhook` `secret_token`: optional, shared secret via `X-Telegram-Bot-Api-Secret-Token`
+- https://www.twilio.com/docs/usage/webhooks/webhooks-security — Twilio webhook security overview, SDK validator recommendation
+- https://www.twilio.com/docs/usage/security — full URL + sorted POST params + HMAC-SHA1 + base64 steps
+- https://shopify.dev/docs/apps/build/webhooks/verify-deliveries — `X-Shopify-Hmac-SHA256`, verify-before-parsing, `X-Shopify-Webhook-Id` dedupe
+- https://linear.app/developers/webhooks — `Linear-Signature`/`Linear-Event`, in-body `webhookTimestamp`, 1-minute replay window
+- https://vercel.com/docs/webhooks/webhooks-api — `x-vercel-signature`, HMAC-SHA1 over raw body; sample compares with `===`
+- https://nodejs.org/api/crypto.html#cryptotimingsafeequala-b — `timingSafeEqual` is constant-time; throws on unequal byte length
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025 mapping
+- https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — A08:2025 mapping
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025 mapping
+
 ## Supply chain (`supply-chain`)
 - https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen — USENIX 2025 package-hallucination study
 - https://arxiv.org/abs/2406.10279 — preprint of the same study

@@ -52,6 +52,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:rate-limiting` | Where limits are required, tamper-proof counters, billing and spend caps |
 | `secaudit:payments` | Client-side price manipulation, webhook signature verification, subscription validation |
 | `secaudit:revenuecat-security` | Mobile in-app purchase: client-asserted entitlement, opt-in webhook auth, sandbox purchases, entitlement writes |
+| `secaudit:webhook-security` | Inbound webhook verification beyond Stripe/RevenueCat: GitHub, Slack, Discord (Ed25519), Svix-backed senders (Clerk, Resend), Telegram, Twilio, Shopify, Linear, Vercel — raw body, constant-time compare, replay/idempotency, fail-closed secrets |
 | `secaudit:supply-chain` | Slopsquatting / hallucinated packages, lock-file hygiene, weak default secrets |
 | `secaudit:react-native-security` | RN core: secure storage, deep links, WebView, native bridge, network/ATS, PKCE |
 | `secaudit:expo-security` | Expo/EAS: `EXPO_PUBLIC_` inlining, EAS secrets, secure-store, OTA code signing, config plugins |

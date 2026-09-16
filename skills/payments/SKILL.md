@@ -64,6 +64,11 @@ export async function POST(request: Request) {
 }
 ```
 
+For webhook verification on senders other than Stripe or RevenueCat — GitHub, Slack, Discord,
+Svix-backed senders (Clerk, Resend), Telegram, Twilio, Shopify, Linear, Vercel — see
+`secaudit:webhook-security`, which covers the same raw-body/constant-time/replay rules generalized
+across those senders.
+
 ### A verified signature is not the whole check
 
 Signature verification proves the payload came from Stripe. It does not prove this is the *first*

@@ -3,7 +3,7 @@ id: 45
 title: Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay
 type: feature
 version: 3.9.0
-status: planned
+status: done
 created: 2026-09-15
 ---
 
@@ -24,6 +24,9 @@ created: 2026-09-15
 - **Fails if:** a version, advisory ID or provider capability is asserted that OSV or the provider's docs do not confirm; or the freshness check reports drift.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/webhook-security/SKILL.md`
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 1: Write the skill, verifying every advisory ID, fixed version and provider claim against OSV / live docs -> target: `skills/webhook-security/SKILL.md`
+  > evidence: reviewer CONFIRMED: every header/algorithm matches sender docs fact sheet; tweetnacl Ed25519 API real; 10 URLs 200 no-redirect (2026-09-16)
+- [x] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json description/keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: audit Tier 2 item 18 + A01/A07/A08; payments and web-vulns cross-refs; README; manifests byte-identical (2026-09-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: python3 scripts/check-freshness.py: All current. Checks run: cves, eol, fixclaims, kev, links, manifests, versions (2026-09-16)

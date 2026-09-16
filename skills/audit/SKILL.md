@@ -245,20 +245,26 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
     Durable Object binding), Hono middleware ordering and CORS defaults, `serveStatic` path
     handling, `cf-connecting-ip` vs `x-forwarded-for`, D1 prepared statements, KV as a rate-limit
     store, and Cloudflare Access JWT verification. → `secaudit:cloudflare-workers-security`
+18. **Webhook verification** — any route receiving a third-party webhook (`/api/webhooks/`,
+    `/interactions`): per-sender signature verification (GitHub, Slack, Discord, Svix-backed
+    senders like Clerk/Resend, Telegram, Twilio, Shopify, Linear, Vercel), raw body before JSON
+    parsing, constant-time comparison, replay/idempotency by delivery id, and failing closed when
+    the signing secret is unset. → `secaudit:webhook-security`
+    - Stripe and RevenueCat webhooks stay in `secaudit:payments` / `secaudit:revenuecat-security`.
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-18. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+19. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-19. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+20. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-20. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+21. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-21. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+22. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-22. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+23. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-23. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+24. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -267,7 +273,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–23 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–24 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -283,14 +289,14 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off) |
 | A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images) |
 | A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
 | A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking) |
-| A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization) |
+| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification) |
+| A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization), `webhook-security` (replay/idempotency, unverified-payload-field trust) |
 | A09 Security Logging and Alerting Failures | `logging-monitoring` |
 | A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |
 | OWASP LLM Top 10 | `ai-integration`, `mcp-agent-security` |

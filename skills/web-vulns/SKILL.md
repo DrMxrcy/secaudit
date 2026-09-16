@@ -93,6 +93,10 @@ export async function fetchUrl(userUrl: string): Promise<Response> {
 }
 ```
 
+A user-configurable "outgoing webhook" or "custom notification URL" feature is this same SSRF
+problem, not a signature-verification one — see `secaudit:webhook-security` §9 for the hand-off
+from that skill's *inbound* verification recipes to this section's *outbound* fix.
+
 ## 3. File Upload + Path Traversal
 
 **What to look for:** upload handlers trusting `file.originalname`/`mimetype`/extension; building a

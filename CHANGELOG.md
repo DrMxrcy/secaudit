@@ -11,7 +11,7 @@
 - New checks for apps that let users sign in through NextAuth, including how linked accounts are matched.
 - (pending) New checks for apps served through a reverse proxy or tunnel, covering which forwarded request details the app should believe.
 - (pending) New checks for apps deployed to Kubernetes with Helm charts, covering cluster permissions, pod settings and chart values.
-- (pending) Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.
+- Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.
 
 ### 🐛 Fixed
 - (pending) The automated freshness check no longer raises a false alarm when one paragraph names fixes for two different issues.

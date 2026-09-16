@@ -27,7 +27,7 @@
 
 ### [x] v3.8.0 — 100% · 2 items · shipped 2026-08-25 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.9.0 — 63%
+### [ ] v3.9.0 — 74%
 - [ ] **#36 Freshness fix-claim check pairs every CVE on a line with every fixed clause; pair with nearest CVE** `bug` — 67% ([plan](.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md))
 - [x] **#37 framework-versions: add Hono, Auth.js, Drizzle, Traefik, Koa/Fastify/Elysia, TanStack Start floors and the shared image-pipeline CVE pattern** `feature` — 100% ([plan](.roadmap/plans/037-framework-versions-add-hono-auth-js-drizzle-traefik-koa-fastify-elysia-tanstack-start-floors-and-the-shared-image-pipeline-cve-pattern.md))
 - [x] **#38 Add ci-cd-security skill: GitHub Actions pwn-requests, SHA pinning, permissions, run: injection, keyless cosign** `feature` — 100% ([plan](.roadmap/plans/038-add-ci-cd-security-skill-github-actions-pwn-requests-sha-pinning-permissions-run-injection-keyless-cosign.md))
@@ -37,5 +37,5 @@
 - [x] **#42 Add Auth.js/NextAuth coverage to auth** `feature` — 100% ([plan](.roadmap/plans/042-add-auth-js-nextauth-coverage-to-auth.md))
 - [ ] **#43 Add proxy-trust skill: X-Forwarded-* and Host trust, forward-auth identity-header injection, Traefik CVE-2026-35051/39858, Cloudflare Access JWT verification** `feature` — 0% ([plan](.roadmap/plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md))
 - [ ] **#44 Add kubernetes-security skill or docker-security section: Helm values secrets, RBAC wildcards, securityContext, hostPath, NetworkPolicy** `feature` — 0% ([plan](.roadmap/plans/044-add-kubernetes-security-skill-or-docker-security-section-helm-values-secrets-rbac-wildcards-securitycontext-hostpath-networkpolicy.md))
-- [ ] **#45 Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay** `feature` — 0% ([plan](.roadmap/plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md))
+- [x] **#45 Generalize payments webhook section into webhook-security: Discord Ed25519, Slack, GitHub, Svix, Telegram verification and replay** `feature` — 100% ([plan](.roadmap/plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md))
 <!-- roadmap:auto:end -->

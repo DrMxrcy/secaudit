@@ -1,0 +1,31 @@
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_081dc90ca64eec 3
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_081dc90ca64eec 12
+.roadmap/config.json
+  s_2eb785847a60dc::t_48f3457b3dc19a 472-473,475
+.roadmap/plans/036-freshness-fix-claim-check-pairs-every-cve-on-a-line-with-every-fixed-clause-pair-with-nearest-cve.md
+  s_2eb785847a60dc::t_fc203fba1c23f0 6,32-33
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_d559322b84db84 5,19
+CHANGELOG.md
+  s_2eb785847a60dc::t_59c58b60c69aa2 3,17
+ROADMAP.md
+  s_2eb785847a60dc::t_9bd78945be54b2 30-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f722751eb4d448ed5d294e76dcd5f114570e8f96",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

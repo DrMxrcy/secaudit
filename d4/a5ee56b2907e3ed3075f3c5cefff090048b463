@@ -1,0 +1,51 @@
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_a45b7aadd49807 4
+  s_2eb785847a60dc::t_e5182b92cfd19c 42-48
+skills/web-vulns/SKILL.md
+  s_2eb785847a60dc::t_ff7e7ac95f6081 96-99
+README.md
+  s_2eb785847a60dc::t_3c1d1e1cc17c04 55
+skills/audit/SKILL.md
+  s_2eb785847a60dc::t_ddec05887c76c2 292
+  s_2eb785847a60dc::t_224eaa284396a4 248-253,257,259,261,263,265,267,276
+  s_2eb785847a60dc::t_67fe2b04254fe8 298-299
+skills/payments/SKILL.md
+  s_2eb785847a60dc::t_09552329327085 67-71
+skills/webhook-security/SKILL.md
+  s_2eb785847a60dc::t_9e9ee42c88084e 1-550,552-558,560-562,564-570
+  s_2eb785847a60dc::t_e9d4ebcb03cfde 551,559,563
+SOURCES.md
+  s_2eb785847a60dc::t_587cea089d6c17 131-132,134-140,142-144,146-152
+  s_2eb785847a60dc::t_e9d4ebcb03cfde 133,141,145
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_a454b143d0f973 11
+  s_2eb785847a60dc::t_252528a2fa27f6 49-55
+.roadmap/config.json
+  s_2eb785847a60dc::t_4039768726b5db 474
+.roadmap/plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md
+  s_2eb785847a60dc::t_e56ee39a61313e 6,27-32
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_f73922e893a4dc 16
+CHANGELOG.md
+  s_2eb785847a60dc::t_73e3ba666176c1 14
+ROADMAP.md
+  s_2eb785847a60dc::t_82c84520621cc1 30,40
+scripts/check-freshness.py
+  s_2eb785847a60dc::t_c0fa3fcc10d7f6 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d4a5ee56b2907e3ed3075f3c5cefff090048b463",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

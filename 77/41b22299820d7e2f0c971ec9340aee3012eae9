@@ -1,0 +1,39 @@
+SOURCES.md
+  s_2eb785847a60dc::t_9d15152695a13a 97-111
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_9d15152695a13a 4,52
+skills/auth/SKILL.md
+  s_2eb785847a60dc::t_559f4ce8a53970 3,500-765,790-804
+skills/audit/SKILL.md
+  s_2eb785847a60dc::t_9d15152695a13a 202-204
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_9d15152695a13a 11,59
+README.md
+  s_2eb785847a60dc::t_9d15152695a13a 49
+.roadmap/config.json
+  s_2eb785847a60dc::t_331a33a0ff8692 474
+.roadmap/plans/042-add-auth-js-nextauth-coverage-to-auth.md
+  s_2eb785847a60dc::t_7b1d964f86c42b 6,26-29
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_de1fecfdd13b54 13
+CHANGELOG.md
+  s_2eb785847a60dc::t_f1c5cf97b9d8d0 11
+ROADMAP.md
+  s_2eb785847a60dc::t_7fd3d5e1180e3f 30,37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7741b22299820d7e2f0c971ec9340aee3012eae9",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

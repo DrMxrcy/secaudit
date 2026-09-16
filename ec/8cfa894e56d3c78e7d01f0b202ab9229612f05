@@ -1,0 +1,48 @@
+SOURCES.md
+  s_2eb785847a60dc::t_200f6c7842eb92 411-450
+skills/rate-limiting/SKILL.md
+  s_2eb785847a60dc::t_d9b0aca18f0b56 78-81
+skills/audit/SKILL.md
+  s_2eb785847a60dc::t_92124eb11614fa 284
+  s_2eb785847a60dc::t_e6caac3911e68f 306
+  s_2eb785847a60dc::t_3239740a7df2d1 300-301
+  s_2eb785847a60dc::t_7a51d9a12a5ea2 254-261,265,267,269,271,273,275
+skills/deployment/SKILL.md
+  s_2eb785847a60dc::t_9a5caf2dc41013 91-94
+skills/proxy-trust/SKILL.md
+  s_2eb785847a60dc::t_31892f540f839e 1-650
+.claude-plugin/marketplace.json
+  s_2eb785847a60dc::t_ddffd4ee21210f 11,78-84
+.claude-plugin/plugin.json
+  s_2eb785847a60dc::t_ddffd4ee21210f 4,71-77
+skills/docker-security/SKILL.md
+  s_2eb785847a60dc::t_fb0de413a75e92 398-402
+README.md
+  s_2eb785847a60dc::t_ef819e4571dc9a 67
+.roadmap/config.json
+  s_2eb785847a60dc::t_64e890e9b3f4eb 474
+.roadmap/plans/043-add-proxy-trust-skill-x-forwarded-and-host-trust-forward-auth-identity-header-injection-traefik-cve-2026-35051-39858-cloudflare-access-jwt-verification.md
+  s_2eb785847a60dc::t_4280029f6205e4 6,27-32
+CHANGELOG.internal.md
+  s_2eb785847a60dc::t_91d3eb5f52b5fa 14
+CHANGELOG.md
+  s_2eb785847a60dc::t_b51aa07560a662 12
+ROADMAP.md
+  s_2eb785847a60dc::t_96a83ef1116f9e 30,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ec8cfa894e56d3c78e7d01f0b202ab9229612f05",
+  "prompts": {},
+  "sessions": {
+    "s_2eb785847a60dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "572aa98c-dc74-4c9e-92c5-6324120c9218",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

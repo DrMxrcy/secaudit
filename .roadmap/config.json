@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.11.0",
-  "nextId": 57,
+  "nextId": 58,
   "items": [
     {
       "id": 1,
@@ -563,6 +563,16 @@
       "file": "plans/056-tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com.md",
       "note": "The source link for the May 2026 TanStack supply-chain incident points to its current home again.",
       "audience": "public"
+    },
+    {
+      "id": 57,
+      "slug": "cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring",
+      "title": "Cover OpenTelemetry trace attributes leaking database usernames (CVE-2026-104872) in logging-monitoring",
+      "type": "feature",
+      "version": "3.11.0",
+      "file": "plans/057-cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring.md",
+      "note": "Logging checks now flag tracing setups that send your database account names to monitoring tools.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -584,5 +594,5 @@
     "3.10.0": "2026-10-16",
     "3.11.0": "2026-10-16"
   },
-  "last_seen_sha": "d3e5a42ff1da7f84594b6cc6e1478e2c1fcc7c3a"
+  "last_seen_sha": "80d19deef15209c7b490119f5e86e4136239a211"
 }

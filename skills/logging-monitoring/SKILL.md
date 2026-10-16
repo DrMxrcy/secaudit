@@ -61,6 +61,56 @@ export const logger = pino({
 
 See `secaudit:secrets` and `secaudit:react-native-security` (mobile log/crash leaks).
 
+### Tracing exporters: OpenTelemetry `db.user` (CVE-2026-104872)
+
+Traces are logs too. Until the coordinated 2026-07-23 release, eight OpenTelemetry JS database
+instrumentations set the `db.user` span attribute (the DB connection username) on every query span,
+unconditionally — no opt-in flag, no config to turn it off. Every exporter (OTLP collector, Jaeger,
+Datadog, Honeycomb...) received it. Role-encoded names like `app_readwrite_prod` or `migrator_owner`
+map the DB privilege layout for anyone with trace access (GHSA-qqmp-wf37-98f9, CWE-532, moderate).
+
+| Package | Fixed in |
+|---|---|
+| `@opentelemetry/instrumentation-pg` | 0.73.0 |
+| `@opentelemetry/instrumentation-mysql` / `-mysql2` / `-mongoose` | 0.67.0 |
+| `@opentelemetry/instrumentation-cassandra-driver` | 0.66.0 |
+| `@opentelemetry/instrumentation-knex` | 0.65.0 |
+| `@opentelemetry/instrumentation-oracledb` | 0.46.0 |
+| `@opentelemetry/instrumentation-tedious` | 0.40.0 |
+
+Most apps pull these through `@opentelemetry/auto-instrumentations-node`; 0.79.0 is the first release
+whose dependency ranges require every fixed version above.
+
+```bash
+# Resolved versions, including transitive ones; flag anything below the table
+npm ls --all @opentelemetry/auto-instrumentations-node @opentelemetry/instrumentation-pg \
+  @opentelemetry/instrumentation-mysql @opentelemetry/instrumentation-mysql2 \
+  @opentelemetry/instrumentation-mongoose @opentelemetry/instrumentation-knex \
+  @opentelemetry/instrumentation-tedious @opentelemetry/instrumentation-oracledb \
+  @opentelemetry/instrumentation-cassandra-driver
+```
+
+The fix ships in a breaking change (opentelemetry-js-contrib PR #3585: only stable HTTP, network and
+database attributes are emitted), so dashboards keyed on old attribute names can go blank after the
+upgrade. Upgrade anyway. If the upgrade must wait, strip the attribute in the Collector before export:
+
+```yaml
+# otel-collector config — stopgap until the instrumentations are upgraded
+processors:
+  attributes/strip-db-user:
+    actions:
+      - key: db.user
+        action: delete
+service:
+  pipelines:
+    traces:
+      processors: [attributes/strip-db-user, batch]
+```
+
+This only protects backends behind that Collector; an SDK exporting straight to a vendor bypasses it.
+Also check the rest of what spans carry: `db.statement` / `db.query.text` with inlined literals, and
+HTTP instrumentations capturing request headers, can export tokens and PII the same way.
+
 ## 3. Missing Audit Logging + Alerting
 
 **What to look for:** no logs around login success/failure, logout, password/email/MFA changes; no
@@ -191,6 +241,9 @@ Detection: `grep -rn "shell=True\|os.system(\|os.popen(\|\beval(\|\bexec(" --inc
 - https://docs.python.org/3/library/subprocess.html -- shell=True security considerations
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- Python deserialization
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html -- what to log, what to exclude
+- https://github.com/open-telemetry/opentelemetry-js-contrib/security/advisories/GHSA-qqmp-wf37-98f9 -- CVE-2026-104872 db.user span attribute in 8 DB instrumentations; fixed versions table
+- https://github.com/open-telemetry/opentelemetry-js-contrib/pull/3585 -- fix: only emit stable http, network and database attributes (breaking)
+- https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/attributesprocessor -- Collector attributes processor (delete action)
 - https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html -- safe error responses
 - https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/ -- OWASP A09:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html -- insecure deserialization

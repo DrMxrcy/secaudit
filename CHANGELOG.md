@@ -2,6 +2,9 @@
 
 ## v3.11.0 — 2026-10-16
 
+### ✨ New
+- Logging checks now flag tracing setups that send your database account names to monitoring tools.
+
 ### 🐛 Fixed
 - The source link for the May 2026 TanStack supply-chain incident points to its current home again.
 

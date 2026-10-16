@@ -794,6 +794,9 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — OWASP A08:2025 Software or Data Integrity Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html — command injection
 - https://nodejs.org/api/child_process.html — execFile/spawn
+- https://github.com/open-telemetry/opentelemetry-js-contrib/security/advisories/GHSA-qqmp-wf37-98f9 — CVE-2026-104872 db.user span attribute in 8 OTel DB instrumentations; fixed-version table
+- https://github.com/open-telemetry/opentelemetry-js-contrib/pull/3585 — fix: only emit stable http, network and database attributes (breaking)
+- https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/attributesprocessor — Collector attributes processor (delete action)
 
 ## Dynamic verification (`dynamic-verification`)
 - https://owasp.github.io/www-project-web-security-testing-guide/latest/ — OWASP Web Security Testing Guide (WSTG)

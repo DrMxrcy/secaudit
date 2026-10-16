@@ -33,4 +33,5 @@
 
 ### [x] v3.11.0 — 100%
 - [x] **#56 TanStack npm compromise postmortem link moved to old.tanstack.com** `bug` — 100% ([plan](.roadmap/plans/056-tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com.md))
+- [x] **#57 Cover OpenTelemetry trace attributes leaking database usernames (CVE-2026-104872) in logging-monitoring** `feature` — 100% ([plan](.roadmap/plans/057-cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring.md))
 <!-- roadmap:auto:end -->

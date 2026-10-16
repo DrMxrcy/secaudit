@@ -1,0 +1,49 @@
+skills/audit/SKILL.md
+  s_dc1f2fbe3ef106::t_267b2c1d3d16e9 129-130
+  s_dc1f2fbe3ef106::t_100650d4524270 465-468
+  s_dc1f2fbe3ef106::t_b16fc71a58a76e 167
+  s_dc1f2fbe3ef106::t_9bfe916c89bee8 529-531
+  s_dc1f2fbe3ef106::t_ab83d0caf08af1 103
+  s_dc1f2fbe3ef106::t_137640a5f9408c 138-142
+  s_dc1f2fbe3ef106::t_22b7dbf6596312 150-156
+  s_dc1f2fbe3ef106::t_5c826ef8e5cd1c 583-585
+  s_dc1f2fbe3ef106::t_7be73cb4aaac63 594-599
+  s_dc1f2fbe3ef106::t_bd3e2fd0dfca45 115-117
+  s_dc1f2fbe3ef106::t_b2607684a4453e 201,209
+  s_dc1f2fbe3ef106::t_955a669b49915f 410,417-418
+  s_dc1f2fbe3ef106::t_261f535a476d27 428-429
+  s_dc1f2fbe3ef106::t_b0cf8f770add51 60-62,101,157-159,203-208,412-416,430-433
+  s_dc1f2fbe3ef106::t_2f7843f390eccf 160,202,411,506,532
+skills/audit/references/methodology.md
+  s_dc1f2fbe3ef106::t_69a1f0598c09b5 50,60-61,64-66,71,73,75,79-86,88-90,92-93,95-98,100-106,109,126-149,154-156,158-161,163-165,168,170-175,178-183,186-189,191-194,204-207,211-213,221,248,250,252-257,259-266,270,272,276-277,280-281,284-285,290-292,297-298,310-313
+  s_dc1f2fbe3ef106::t_9b0de372d79e36 1,3-5
+  s_dc1f2fbe3ef106::t_e498d141c11ac2 222
+  s_dc1f2fbe3ef106::t_4cb4e683221ee1 55-59,63,67-70,72,74,91,94,99,107-108,110-119,124-125,157,162,166-167,169,176-177,190,198-203,208,220,223-234,240-244,249,251,258,271,273-275,278-279,286-289,293-296
+  s_dc1f2fbe3ef106::t_a720d50e3610b3 150-153,184-185,195-197,209-210,235-236,245-247,267-269,282-283
+  s_dc1f2fbe3ef106::t_6d4da97f1b7e30 26-28
+  s_dc1f2fbe3ef106::t_94b24d79ce792c 214-219,237-239
+  s_dc1f2fbe3ef106::t_dc2c0fda168068 76-78,87,120-123
+  s_dc1f2fbe3ef106::t_8a96b0b052cced 51-54,62
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_2fbddfbf36357a 575
+.roadmap/plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md
+  s_dc1f2fbe3ef106::t_758b586b6935a3 6,29-30
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_a8cd72a8bfc912 42,51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1006c76d08710802c47a128efa440023974e04b5",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

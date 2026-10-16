@@ -1,0 +1,23 @@
+.roadmap/plans/052-refresh-framework-versions-for-advisories-published-since-2026-09-16-next-js-hono-fastify-elysia-tanstack-start-and-fix-two-redirected-source-links.md
+  s_dc1f2fbe3ef106::t_b0001f957ae918 1-31
+.roadmap/plans/053-add-api-surface-skill-accidentally-exposed-backend-and-internal-apis-bff-open-proxies-docs-introspection-debug-endpoints-in-production-owasp-api-top-10-inventory.md
+  s_dc1f2fbe3ef106::t_6a346e8a3514ec 14-15,18-21,24-26,29-31
+.roadmap/plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md
+  s_dc1f2fbe3ef106::t_c209192ccacd1d 14-15,18-21,24-26,29-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1c29a94318f83079d8dcc7615a167ee0a926afb4",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_b1f260acb28955 4,566-575
+  s_dc1f2fbe3ef106::t_470b37319d0832 597
+.roadmap/plans/057-cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring.md
+  s_dc1f2fbe3ef106::t_5c6f3333b83aa8 6,29-30
+  s_dc1f2fbe3ef106::t_878f8f3438ba07 14-15,18-21,24-26,31
+  s_dc1f2fbe3ef106::t_b1f260acb28955 1-5,7-13,16-17,22-23,27-28
+  s_dc1f2fbe3ef106::t_11e8655fba0fca 32
+SOURCES.md
+  s_dc1f2fbe3ef106::t_5c6f3333b83aa8 797-799
+skills/logging-monitoring/SKILL.md
+  s_dc1f2fbe3ef106::t_34f62059bc26a8 64-113,244-246
+CHANGELOG.internal.md
+  s_dc1f2fbe3ef106::t_2f66c1ecc96bbc 7-9
+CHANGELOG.md
+  s_dc1f2fbe3ef106::t_5e1c97e51f4eb4 5-7
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_11aceb99ded726 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0247ae01462edb2153c1eab24d9bf7dc83b5884f",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

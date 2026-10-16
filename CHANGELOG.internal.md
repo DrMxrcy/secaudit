@@ -2,6 +2,11 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.11.0 — 2026-10-16
+
+### 🐛 Fixed
+- The source link for the May 2026 TanStack supply-chain incident points to its current home again.
+
 ## v3.10.0 — 2026-10-16
 
 ### ✨ New

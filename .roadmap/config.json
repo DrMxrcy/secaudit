@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.11.0",
-  "nextId": 56,
+  "nextId": 57,
   "items": [
     {
       "id": 1,
@@ -553,6 +553,16 @@
       "file": "plans/055-proxy-trust-grep-heuristics-use-quoted-brace-globs-in-include-that-never-expand.md",
       "note": "Some search commands in the proxy checks silently matched nothing; they now find what they are meant to.",
       "audience": "public"
+    },
+    {
+      "id": 56,
+      "slug": "tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com",
+      "title": "TanStack npm compromise postmortem link moved to old.tanstack.com",
+      "type": "bug",
+      "version": "3.11.0",
+      "file": "plans/056-tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com.md",
+      "note": "The source link for the May 2026 TanStack supply-chain incident points to its current home again.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -571,7 +581,8 @@
     "3.7.0": "2026-08-25",
     "3.8.0": "2026-08-25",
     "3.9.0": "2026-09-16",
-    "3.10.0": "2026-10-16"
+    "3.10.0": "2026-10-16",
+    "3.11.0": "2026-10-16"
   },
-  "last_seen_sha": "eebf3385a8bddbe032907655acbb0db3bf03d904"
+  "last_seen_sha": "d3e5a42ff1da7f84594b6cc6e1478e2c1fcc7c3a"
 }

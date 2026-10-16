@@ -528,7 +528,7 @@ Last verified: 2026-10-16.
 - https://github.com/advisories/GHSA-mrrh-fwg8-r2c3 — CVE-2025-30066, tj-actions/changed-files tag repointing
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV: CVE-2025-30066 listed 2025-03-18
 - https://www.wiz.io/blog/m-red-team-asyncapi-supply-chain-compromise-via-github-actions — AsyncAPI, July 2026: `pull_request_target` + PR-head checkout
-- https://tanstack.com/blog/npm-supply-chain-compromise-postmortem — TanStack, May 2026: pwn request, cache poisoning, OIDC token theft
+- https://old.tanstack.com/blog/npm-supply-chain-compromise-postmortem — TanStack, May 2026: pwn request, cache poisoning, OIDC token theft
 - https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised — secondary analysis of the TanStack compromise
 - https://adnanthekhan.com/2024/05/06/the-monsters-in-your-build-cache-github-actions-cache-poisoning/ — branches as the cache security boundary
 - https://www.legitsecurity.com/blog/artifact-poisoning-vulnerability-discovered-in-rust — artifact poisoning via `workflow_run` + `download-artifact`

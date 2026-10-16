@@ -30,4 +30,7 @@
 ### [x] v3.9.0 — 100% · 10 items · shipped 2026-09-16 ([history](CHANGELOG.internal.md))
 
 ### [x] v3.10.0 — 100% · 10 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
+
+### [x] v3.11.0 — 100%
+- [x] **#56 TanStack npm compromise postmortem link moved to old.tanstack.com** `bug` — 100% ([plan](.roadmap/plans/056-tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com.md))
 <!-- roadmap:auto:end -->

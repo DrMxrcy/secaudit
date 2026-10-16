@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.9.0",
-  "nextId": 55,
+  "nextId": 56,
   "items": [
     {
       "id": 1,
@@ -543,6 +543,16 @@
       "file": "plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md",
       "note": "Audits now hunt for repeats of every confirmed issue elsewhere in the code and check what happens when a setting is missing.",
       "audience": "public"
+    },
+    {
+      "id": 55,
+      "slug": "proxy-trust-grep-heuristics-use-quoted-brace-globs-in-include-that-never-expand",
+      "title": "proxy-trust grep heuristics use quoted brace globs in --include that never expand",
+      "type": "bug",
+      "version": "3.10.0",
+      "file": "plans/055-proxy-trust-grep-heuristics-use-quoted-brace-globs-in-include-that-never-expand.md",
+      "note": "Some search commands in the proxy checks silently matched nothing; they now find what they are meant to.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -562,5 +572,5 @@
     "3.8.0": "2026-08-25",
     "3.9.0": "2026-09-16"
   },
-  "last_seen_sha": "06f6a5bc1b68e376395ef66cd03ae0cff061f1bc"
+  "last_seen_sha": "32b60a1c55ca57416dd6ab74a961a5f29b0e9f6f"
 }

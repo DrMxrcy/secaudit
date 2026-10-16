@@ -48,11 +48,11 @@ authentication.
 Grep heuristics — these find most of it:
 
 ```bash
-grep -rnE "trust proxy|app\.proxy|trustProxy|trustHost|USE_X_FORWARDED_HOST" --include='*.{js,ts,py}' .
-grep -rniE 'x-forwarded-(for|proto|host|prefix)|forwarded:' --include='*.{js,ts,py,go}' .
+grep -rnE "trust proxy|app\.proxy|trustProxy|trustHost|USE_X_FORWARDED_HOST" --include='*.js' --include='*.ts' --include='*.py' .
+grep -rniE 'x-forwarded-(for|proto|host|prefix)|forwarded:' --include='*.js' --include='*.ts' --include='*.py' --include='*.go' .
 grep -rniE 'forwardAuth|forward_auth|auth_request' . --include='*.yml' --include='*.yaml' --include='Caddyfile' --include='*.conf'
 grep -rlE '^\s*(traefik|caddy|nginx|nginx-proxy-manager):' docker-compose*.yml compose*.yml 2>/dev/null
-grep -rniE 'remote-user|remote-email|x-forwarded-user|x-auth-request-' --include='*.{js,ts,py,go}' .
+grep -rniE 'remote-user|remote-email|x-forwarded-user|x-auth-request-' --include='*.js' --include='*.ts' --include='*.py' --include='*.go' .
 grep -rniE 'cf-access-jwt-assertion|cf-connecting-ip|cloudflared|tailscale.*serve' .
 ```
 
@@ -151,8 +151,8 @@ const app = Fastify({
 **Detection:**
 
 ```bash
-grep -rnE "trust proxy'\s*,\s*true|trustProxy:\s*true|trustProxy:\s*[0-9]+" --include='*.{js,ts}' .
-grep -rn "app.proxy\s*=\s*true" --include='*.{js,ts}' . ; grep -rn "maxIpsCount" --include='*.{js,ts}' .
+grep -rnE "trust proxy'\s*,\s*true|trustProxy:\s*true|trustProxy:\s*[0-9]+" --include='*.js' --include='*.ts' .
+grep -rn "app.proxy\s*=\s*true" --include='*.js' --include='*.ts' . ; grep -rn "maxIpsCount" --include='*.js' --include='*.ts' .
 node -p "require('./package.json').dependencies.fastify" 2>/dev/null   # compare against 5.12.5 floor
 grep -rn "allowedOrigins" next.config.* 2>/dev/null || echo "check: proxy behind Next.js forwarding its own host?"
 ```
@@ -214,7 +214,7 @@ app.use(rateLimit({
 **Detection:**
 
 ```bash
-grep -rnE "req\.headers\['x-forwarded-for'\]|request\.header\('x-forwarded-for'\)" --include='*.{js,ts,py}' . \
+grep -rnE "req\.headers\['x-forwarded-for'\]|request\.header\('x-forwarded-for'\)" --include='*.js' --include='*.ts' --include='*.py' . \
   | xargs -I{} echo "check: is trust proxy / trustProxy set to a matching hop count nearby?"
 grep -rn "ERR_ERL_PERMISSIVE_TRUST_PROXY\|ERR_ERL_UNEXPECTED_X_FORWARDED_FOR" .   # already firing?
 ```
@@ -284,7 +284,7 @@ app.post('/reset-password', async (req, res) => {
 **Detection:**
 
 ```bash
-grep -rnE 'req\.(hostname|headers\.host)|ctx\.(host|hostname)' --include='*.{js,ts}' . \
+grep -rnE 'req\.(hostname|headers\.host)|ctx\.(host|hostname)' --include='*.js' --include='*.ts' . \
   | grep -iE 'reset|invite|verify|callback|redirect'          # Host used to build a sensitive URL
 node -p "require('./package.json').dependencies.koa" 2>/dev/null   # compare against 3.1.2 / 2.16.4
 grep -rn "ALLOWED_HOSTS\|USE_X_FORWARDED_HOST" **/settings*.py 2>/dev/null
@@ -420,7 +420,7 @@ grep -rniE 'forwardauth|forward_auth|auth_request' -- docker-compose*.yml compos
 grep -rn "trustForwardHeader" docker-compose*.yml compose*.yml 2>/dev/null \
   | xargs -I{} echo "check: entryPoint forwardedHeaders.trustedIPs also set?"
 docker compose config 2>/dev/null | grep -A2 'image:.*traefik' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'   # compare to 2.11.51/3.6.22/3.7.6
-grep -rniE 'remote-user|remote-email|x-forwarded-user|x-auth-request-' --include='*.{go,py,js,ts}' . \
+grep -rniE 'remote-user|remote-email|x-forwarded-user|x-auth-request-' --include='*.go' --include='*.py' --include='*.js' --include='*.ts' . \
   | xargs -I{} echo "check: is this port bound to loopback/internal network only?"
 ```
 
@@ -504,9 +504,9 @@ real_ip_header CF-Connecting-IP;
 **Detection:**
 
 ```bash
-grep -rlniE 'cf-access-(jwt-assertion|authenticated-user-email)' --include='*.{js,ts,py,go}' . \
+grep -rlniE 'cf-access-(jwt-assertion|authenticated-user-email)' --include='*.js' --include='*.ts' --include='*.py' --include='*.go' . \
   | xargs grep -LiE 'jwtVerify|createRemoteJWKSet|jwks' 2>/dev/null   # header used with no verify call nearby
-grep -rniE "header\(['\"]x-forwarded-for['\"]\)|cf-connecting-ip" --include='*.{js,ts,py,go}' .
+grep -rniE "header\(['\"]x-forwarded-for['\"]\)|cf-connecting-ip" --include='*.js' --include='*.ts' --include='*.py' --include='*.go' .
 grep -rn "set_real_ip_from\|real_ip_header" **/nginx*.conf 2>/dev/null
 ```
 
@@ -552,8 +552,8 @@ if login == "" { http.Error(w, "unauthorized", 401); return }   // Funnel traffi
 **Detection:**
 
 ```bash
-grep -rniE 'tailscale-user-(login|name|profile-pic)' --include='*.{go,js,ts,py}' .
-grep -rnE 'ListenAndServe\("0\.0\.0\.0|listen\(.*0\.0\.0\.0' --include='*.go' --include='*.{js,ts}' .
+grep -rniE 'tailscale-user-(login|name|profile-pic)' --include='*.go' --include='*.js' --include='*.ts' --include='*.py' .
+grep -rnE 'ListenAndServe\("0\.0\.0\.0|listen\(.*0\.0\.0\.0' --include='*.go' --include='*.js' --include='*.ts' .
 grep -rn 'tailscale serve\|tailscale funnel' . 2>/dev/null
 ```
 

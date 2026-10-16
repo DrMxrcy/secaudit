@@ -3,7 +3,7 @@ id: 53
 title: Add api-surface skill: accidentally exposed backend and internal APIs, BFF open proxies, docs/introspection/debug endpoints in production, OWASP API Top 10 inventory
 type: feature
 version: 3.10.0
-status: active
+status: done
 created: 2026-10-16
 ---
 
@@ -28,5 +28,7 @@ created: 2026-10-16
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Research primary sources and write the skill -> target: `skills/api-surface/SKILL.md`
   > evidence: verifier PARTIAL→fixed: BFF path guard SSRF (//evil.com) replaced by allowlist + origin assert, node test 16 rejected/1 accepted; HMAC signs path+query, body cap; compose egress fixed; OWASP API9 quote re-verified on 0x11-t10; 621 lines, 48 sources 200 (2026-10-16) (2026-10-16)
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README, plugin.json/marketplace.json, sibling cross-refs -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 2: Register the skill: audit tier + OWASP map, README, plugin.json/marketplace.json, sibling cross-refs -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)

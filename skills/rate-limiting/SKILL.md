@@ -24,6 +24,10 @@ Every one of these endpoints needs rate limiting. AI assistants almost never add
 - **File processing** — Upload, resize, convert. CPU-intensive operations without limits enable
   denial-of-service.
 - **Webhook-like endpoints** — Anything accepting external input at scale.
+- **Code redemption** — join/invite codes and short PINs are guessable online; cap attempts per
+  account and per IP (see `secaudit:cryptography` §8 for how to store them).
+- **Realtime connections** — WebSocket/SSE connect attempts, open-connection counts and inbound
+  message rates (see `secaudit:realtime-security`).
 
 ## Don't Store Rate Limits in Public Tables
 

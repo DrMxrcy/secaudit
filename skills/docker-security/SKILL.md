@@ -564,6 +564,10 @@ the credentials from §7 live, so report the variable name and never the value.
 - `secaudit:kubernetes-security` — if this image is deployed to a cluster: the pod
   `securityContext` a manifest sets (or fails to set) is the same root-user and
   capability-drop argument as §3 and §8 here, one layer up the stack.
+- `secaudit:api-surface` — which services should be reachable at all: internal networks, origin
+  lockdown, and service-to-service auth between web, API, worker and bot.
+- `secaudit:postgres-security` — the Postgres container itself: `pg_hba.conf` `trust`,
+  `POSTGRES_HOST_AUTH_METHOD`, roles, and backups.
 
 ## Sources
 

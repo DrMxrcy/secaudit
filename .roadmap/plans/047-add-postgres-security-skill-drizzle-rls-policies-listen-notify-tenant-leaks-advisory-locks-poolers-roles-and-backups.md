@@ -3,7 +3,7 @@ id: 47
 title: Add postgres-security skill: Drizzle RLS policies, LISTEN/NOTIFY tenant leaks, advisory locks, poolers, roles and backups
 type: feature
 version: 3.10.0
-status: active
+status: done
 created: 2026-10-16
 ---
 
@@ -28,5 +28,7 @@ created: 2026-10-16
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Research primary sources (vendor docs, RFCs, OSV/GHSA) and write the skill; every API name, header, default and advisory ID verified live -> target: `skills/postgres-security/SKILL.md`
   > evidence: verifier reproduced on PG17.11: NOTIFY reaches role without SELECT, current_setting NULL vs '', drizzle-kit 0.31.11 push --force disables RLS, pg_dump needs BYPASSRLS; all quotes/CVEs/PgBouncer facts confirmed; polish applied, 646 lines, 31 sources 200 (2026-10-16) (2026-10-16)
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json/marketplace.json description and keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json/marketplace.json description and keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)

@@ -3,7 +3,7 @@ id: 51
 title: Extend cryptography with low-entropy code hashing, key-prefix lookup and AEAD binding for encrypted-at-rest secrets
 type: feature
 version: 3.10.0
-status: active
+status: done
 created: 2026-10-16
 ---
 
@@ -28,5 +28,7 @@ created: 2026-10-16
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Research primary sources and write the new section(s); every API name, parameter, default and advisory ID verified live -> target: `skills/cryptography/SKILL.md`
   > evidence: verifier CONFIRMED: NIST 800-63B-4/800-38D, OWASP, Node, GitHub quotes verbatim; snippets run (20k keys, AAD tamper rejected); 2 minor fixes applied (2026-10-16) (2026-10-16)
-- [ ] Step 2: Update the skill description/frontmatter, audit dispatch notes, README and plugin.json keywords; cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 2: Update the skill description/frontmatter, audit dispatch notes, README and plugin.json keywords; cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)

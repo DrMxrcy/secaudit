@@ -229,7 +229,16 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
    row-level security; the tenant predicate must be in every query, and Postgres RLS is silently
    bypassed when the app connects as the table owner. Covers pgvector retrieval too.
    → `secaudit:prisma-security`
-6. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
+6. **Postgres via Drizzle / pg / postgres.js** — if the project has a `drizzle.config.ts`, imports
+   `drizzle-orm/pg-core`, `pg`, or `postgres`, or runs PgBouncer, LISTEN/NOTIFY, advisory locks, or
+   `pg_dump` backups: Drizzle RLS declared but not in force (`drizzle-kit push` drops hand-written
+   policies, FORCE never emitted), runtime vs migration/owner role, tenant context via
+   `set_config(..., true)` in `db.transaction` and the NULL-vs-`''` `current_setting` trap,
+   PgBouncer transaction mode breaking session GUCs/LISTEN/session locks, NOTIFY payloads reaching
+   any connected role past RLS, advisory-lock key collisions and locks held across awaits, SECURITY
+   DEFINER `search_path`, `public` schema and default privileges, `pg_hba.conf` `trust`, TLS,
+   unfiltered `pg_dump` backups, `log_statement = all`. → `secaudit:postgres-security`
+7. **Authentication & authorization** — JWT handling, middleware (never the sole auth layer),
    Server Action protection, session management. → `secaudit:auth`
    - If `next-auth` or `@auth/*` is in `package.json`, the Auth.js section of `secaudit:auth`
      applies: the July 2026 advisory set and its fixed versions, provider-unbound check cookies,
@@ -237,60 +246,77 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
    - If `better-auth` is in `package.json`, also → `secaudit:better-auth-security`
    - If the app implements OAuth/OIDC itself (`openid-client`, `oidc-provider`, a hand-written
      callback), also → `secaudit:oauth-oidc-security`
-7. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
+   - If the app serves several hosts (per-tenant subdomains, customer custom domains) or hands a
+     login from one host to another, the Multi-Host section of `secaudit:auth` applies: host-only
+     `__Host-` cookies and host-bound session rows, single-use handoff tokens (hashed, atomic
+     consume, bound to user + target host + browser nonce, POSTed not in a query string),
+     verified-host return-URL allowlists, logout across hosts, and custom-domain TXT verification /
+     dangling-domain takeover.
+8. **Privilege escalation & admin surface** — unprotected admin routes/actions, roles trusted from
    the client, broken function-level authorization, role mass-assignment. → `secaudit:privilege-escalation`
-8. **Payments** — client-side price manipulation, webhook signature verification, subscription
+9. **Payments** — client-side price manipulation, webhook signature verification, subscription
    status validation. → `secaudit:payments`
    - If the app sells via mobile in-app purchase (RevenueCat, StoreKit, Play Billing), also →
      `secaudit:revenuecat-security`. Mobile IAP fails differently from Stripe: entitlement is
      asserted by a client SDK, and webhook authenticity is opt-in.
-9. **Object storage** — if the project uploads files to R2, S3, Supabase Storage, or Convex file
-   storage: presigned-URL lifetime, client-supplied object keys, public buckets, and whether
-   knowing a key is treated as authorization. → `secaudit:object-storage-security`
+10. **Object storage** — if the project uploads files to R2, S3, Supabase Storage, or Convex file
+    storage: presigned-URL lifetime, client-supplied object keys, public buckets, and whether
+    knowing a key is treated as authorization. → `secaudit:object-storage-security`
 
 **Tier 2 — common, high-frequency web attack surface.**
 
-10. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
-   proof counters. → `secaudit:rate-limiting`
-11. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
-   authorization). → `secaudit:web-vulns`
-12. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
+11. **Rate limiting & abuse prevention** — auth endpoints, AI calls, expensive operations; tamper-
+    proof counters. → `secaudit:rate-limiting`
+12. **Web vulnerabilities** — XSS, SSRF, file upload / path traversal, IDOR (broken object-level
+    authorization). → `secaudit:web-vulns`
+13. **Data access & input validation** — SQL injection, ORM misuse, mass assignment, missing input
     validation. → `secaudit:data-access`
-13. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
+14. **AI / LLM integration** — exposed AI keys, missing usage caps, prompt injection, MCP security,
     unsafe output rendering. → `secaudit:ai-integration`
-14. **Deployment configuration** — production settings, security headers, source maps, preview
+15. **Deployment configuration** — production settings, security headers, source maps, preview
     deployment isolation, environment separation. → `secaudit:deployment`
     - If the project builds an agent loop or hosts an MCP server, also →
       `secaudit:mcp-agent-security` (per-tool-call authorization, tool-result provenance, agent
       memory poisoning, blast radius).
-15. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
+16. **Docker & containers** — if the project has a `Dockerfile` or compose file: secrets baked into
     image layers, root containers, unpinned base images, databases published on `0.0.0.0`, the
     Docker socket mounted in. → `secaudit:docker-security`
-16. **Kubernetes & Helm** — if the project has a `Chart.yaml`, `kustomization.yaml`, or a
+17. **Kubernetes & Helm** — if the project has a `Chart.yaml`, `kustomization.yaml`, or a
     manifest declaring `apiVersion: apps/v1`: secrets in `values.yaml` or committed
     `Secret` manifests, RBAC wildcards and `cluster-admin`/`system:masters` bindings, pod
     `securityContext` against the Restricted profile, Pod Security Admission labels that
     silently don't apply to Deployments, `NetworkPolicy` default-allow, image digest
     pinning and resource limits, and NodePort/kubelet/API-server exposure.
     → `secaudit:kubernetes-security`
-17. **CI/CD pipelines** — if the project has `.github/workflows/` (or any pipeline config): pwn
+18. **CI/CD pipelines** — if the project has `.github/workflows/` (or any pipeline config): pwn
     requests (`pull_request_target` / `workflow_run` + a PR-head checkout), expression injection
     into `run:`, actions on mutable tags, default `GITHUB_TOKEN` permissions, secrets in logs,
     cache/artifact poisoning, self-hosted runners, OIDC trust scope, artifact signature
     verification. → `secaudit:ci-cd-security`
-18. **Cloudflare Workers / Pages** — if the project has a `wrangler.toml` / `wrangler.jsonc` or a
+19. **Cloudflare Workers / Pages** — if the project has a `wrangler.toml` / `wrangler.jsonc` or a
     `hono` dependency: secrets in `[vars]` instead of `wrangler secret`, `.dev.vars` hygiene and
     per-environment non-inheritance, binding blast radius (every route reaches every D1/KV/R2/
     Durable Object binding), Hono middleware ordering and CORS defaults, `serveStatic` path
     handling, `cf-connecting-ip` vs `x-forwarded-for`, D1 prepared statements, KV as a rate-limit
     store, and Cloudflare Access JWT verification. → `secaudit:cloudflare-workers-security`
-19. **Webhook verification** — any route receiving a third-party webhook (`/api/webhooks/`,
+20. **Webhook verification** — any route receiving a third-party webhook (`/api/webhooks/`,
     `/interactions`): per-sender signature verification (GitHub, Slack, Discord, Svix-backed
     senders like Clerk/Resend, Telegram, Twilio, Shopify, Linear, Vercel), raw body before JSON
     parsing, constant-time comparison, replay/idempotency by delivery id, and failing closed when
     the signing secret is unset. → `secaudit:webhook-security`
     - Stripe and RevenueCat webhooks stay in `secaudit:payments` / `secaudit:revenuecat-security`.
-20. **Reverse proxies and edge auth** — if the project sets a framework's `trust proxy`/
+21. **Discord bots & Discord OAuth** — if `discord.js`, `@discordjs/*`, or `discord-api-types` is in
+    any `package.json`, or the app offers "Sign in with Discord": bot token handling (client-exposed
+    env, `Shard#env`, one application per environment, reset), privileged intents and invite
+    permissions, slash-command authorization beyond `default_member_permissions` (guild-admin
+    overrides, guild binding, `contexts`), actor identity vs `custom_id`/option IDs, role-sync
+    escalation (dangerous-permission roles, bot and admin hierarchy, cross-guild role IDs),
+    `allowedMentions` against `@everyone` injection, masked-link and DM abuse, 429 and
+    invalid-request bans, and Discord OAuth identity (snowflake `id`, `verified`, `guilds.join`,
+    token revocation). → `secaudit:discord-bot-security`
+    - HTTP-interactions signature verification stays in `secaudit:webhook-security`; generic OAuth
+      flow mechanics in `secaudit:oauth-oidc-security`.
+22. **Reverse proxies and edge auth** — if the project sets a framework's `trust proxy`/
     `trustProxy`/`app.proxy` option, reads `X-Forwarded-*`, defines a `forwardAuth`/
     `forward_auth`/`auth_request` block, or runs a Traefik/Caddy/nginx/nginx-proxy-manager compose
     service: which forwarded headers a framework actually trusts and at what hop count, IP-keyed
@@ -298,20 +324,56 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
     generation, identity-header injection (`Remote-User`, `X-Forwarded-User`,
     `X-Auth-Request-*`) when the gateway isn't the only path in, the Traefik ForwardAuth CVEs, and
     Cloudflare Access/Tunnel JWT verification. → `secaudit:proxy-trust`
+23. **Realtime connections** — if the project uses `ws`, Socket.IO/`engine.io`, Hono
+    `upgradeWebSocket` (`@hono/node-server` or `@hono/node-ws`), an `'upgrade'` handler on a Next.js
+    custom server, `streamSSE`/`text/event-stream`, `EventSource`, or a long-poll endpoint:
+    Cross-Site WebSocket Hijacking and exact `Origin` allowlisting (Socket.IO `cors` covers
+    long-polling only — `allowRequest` covers the upgrade; ws `verifyClient` vs the `'upgrade'`
+    event + `handleUpgrade`), tokens in WebSocket/SSE URLs vs single-use tickets, sockets that
+    outlive logout/revocation/role change, room/channel/subscription IDOR across tenants,
+    per-message authorization, `Last-Event-ID`/cursor replay, per-subscriber filtering of Postgres
+    LISTEN/NOTIFY or Redis fan-out, `maxPayload`/`maxHttpBufferSize` and connection caps, SSE proxy
+    buffering, and the ws/socket.io/engine.io/Hono SSE advisories. → `secaudit:realtime-security`
+    - LISTEN/NOTIFY privileges and RLS bypass stay in `secaudit:postgres-security`.
+24. **API surface and accidental exposure** — if the project has more than one service
+    (web/API/worker/bot), a compose file, a Next.js route handler or `rewrites()` that calls another
+    backend, a Hono/Express/Fastify/GraphQL API, or sits behind Cloudflare/a reverse proxy: the real
+    inventory (published ports vs `expose`, every route, every host via DNS and CT logs, old `/v1`
+    mounts), services on `0.0.0.0` and Docker ports bypassing ufw, internal worker/bot endpoints
+    with no service-to-service auth, origins reachable around Cloudflare, catch-all BFF proxies and
+    wildcard rewrites forwarding to a backend with a service token, backend keys in
+    `NEXT_PUBLIC_*`, Swagger/OpenAPI/introspection/`/metrics`/`--inspect` in production,
+    whole-row responses (API3), unvalidated third-party responses (API10), and error passthrough.
+    → `secaudit:api-surface`
+    - On a whole-app sweep, run its inventory and Map-the-Surface checklist during Reconnaissance;
+      the route/host/port lists decide which routes `privilege-escalation`, `web-vulns` (IDOR),
+      `auth`, and `rate-limiting` are dispatched against.
+25. **FiveM / CitizenFX** — if the project has an `fxmanifest.lua`, a `server.cfg`, or an API
+    whose callers are FiveM game servers: `RegisterNetEvent`/`onNet` handlers any client can
+    call with arbitrary arguments (authorize on `source`, never on an id/identifier argument;
+    money/item/admin events), server-only events networked instead of `AddEventHandler`,
+    secrets in `client_script`/`shared_script`/`files`/NUI (all downloaded to players), `setr`/
+    `sets` convars and missing `add_convar_permission`, committed `sv_licenseKey`/`rcon_password`,
+    client-writable state bags (`sv_stateBagStrictMode`), NUI callbacks and NUI XSS,
+    `PerformHttpRequest` key handling, txAdmin on `0.0.0.0:40120`, and the game-facing API
+    (per-community key scoping, cross-community IDOR on event streams, idempotent retries).
+    → `secaudit:fivem-security`
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-21. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
-    keys/IVs, JWT algorithm confusion. → `secaudit:cryptography`
-22. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+26. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+    keys/IVs, JWT algorithm confusion, storing app-issued secrets by entropy (API-key prefix +
+    SHA-256, peppered HMAC for join/invite codes and PINs, AES-256-GCM + AAD for stored webhook
+    URLs and third-party keys). → `secaudit:cryptography`
+27. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-23. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+28. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-24. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+29. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-25. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+30. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-26. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+31. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -320,7 +382,7 @@ domain skill(s).
 
 ## Optional final phase — dynamic verification
 
-Static tiers 1–26 read code and produce *candidate* findings. When a running instance **or a
+Static tiers 1–31 read code and produce *candidate* findings. When a running instance **or a
 running container** is available and the user authorizes testing of their own system, follow the
 static sweep with `secaudit:dynamic-verification` to confirm or refute findings against it —
 browser probes for the live app (security headers, CORS, unauthenticated routes, IDOR, reflected
@@ -336,16 +398,17 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection), `kubernetes-security` (RBAC wildcards, default ServiceAccount) |
-| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers), `kubernetes-security` (securityContext, Pod Security Admission, NetworkPolicy, exposure) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection), `kubernetes-security` (RBAC wildcards, default ServiceAccount), `postgres-security` (RLS not in force, tenant-context leaks, NOTIFY past RLS), `realtime-security` (CSWSH, room/channel IDOR, cross-tenant fan-out and cursor replay), `api-surface` (BFF open proxies, unauthenticated internal endpoints, origin reachable around the edge), `discord-bot-security` (command authorization, `custom_id` trust, role-sync escalation), `fivem-security` (client-triggerable net events, cross-community IDOR), `auth` (custom-domain claim takeover, cross-host return-URL allowlist) |
+| A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers), `kubernetes-security` (securityContext, Pod Security Admission, NetworkPolicy, exposure), `postgres-security` (roles/grants, `public` schema, pg_hba, listen_addresses), `api-surface` (services on `0.0.0.0`, docs/introspection/inspector/metrics in production), `realtime-security` (Socket.IO `cors` mistaken for an origin check, 100 MiB default `maxPayload`), `discord-bot-security` (intents, invite permissions), `fivem-security` (replicated/public convars, txAdmin/RCON exposure) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images), `kubernetes-security` (image digest pinning, Helm chart provenance) |
-| A04 Cryptographic Failures | `cryptography`, `prisma-security` (DATABASE_URL TLS), `python-web-security` (verify=False) |
-| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection), `kubernetes-security` (untrusted values interpolated into container command/args) |
-| A06 Insecure Design | `rate-limiting`, `payments` (partial) |
-| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification), `proxy-trust` (unverified forward-auth identity headers, unverified Cloudflare Access JWT) |
+| A04 Cryptographic Failures | `cryptography` (incl. entropy-appropriate storage of API keys, join codes and encrypted webhook URLs), `prisma-security` (DATABASE_URL TLS), `postgres-security` (postgres.js `ssl: 'require'`, unencrypted backups), `python-web-security` (verify=False) |
+| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection), `kubernetes-security` (untrusted values interpolated into container command/args), `postgres-security` (LISTEN channel identifiers, SECURITY DEFINER `search_path`), `discord-bot-security` (`allowedMentions` injection), `fivem-security` (NUI XSS) |
+| A06 Insecure Design | `rate-limiting`, `payments` (partial), `realtime-security` (connection caps, heartbeats, backpressure), `fivem-security` (client-authoritative game logic) |
+| A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification), `proxy-trust` (unverified forward-auth identity headers, unverified Cloudflare Access JWT), `auth` (multi-host session handoff, host-bound sessions), `realtime-security` (tokens in WebSocket/SSE URLs, connections outliving the session), `discord-bot-security` (bot token, Discord OAuth identity), `fivem-security` (game-server API keys) |
 | A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization), `webhook-security` (replay/idempotency, unverified-payload-field trust) |
-| A09 Security Logging and Alerting Failures | `logging-monitoring` |
-| A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses) |
+| A09 Security Logging and Alerting Failures | `logging-monitoring`, `postgres-security` (`log_statement` bind parameters) |
+| A10 Mishandling of Exceptional Conditions | `logging-monitoring` (error responses), `audit` fail-open sweep, `realtime-security` (unhandled socket errors), `api-surface` (upstream error passthrough) |
+| OWASP API Security Top 10 (2023) | API1 `web-vulns`; API2/API8/API9/API10 `api-surface`; API3 `api-surface` (responses) + `data-access` (mass assignment); API4/API6 `rate-limiting`; API5 `privilege-escalation`; API7 `web-vulns` + `api-surface` |
 | OWASP LLM Top 10 | `ai-integration`, `mcp-agent-security` |
 | OWASP Mobile Top 10 | `react-native-security`, `expo-security` |
 

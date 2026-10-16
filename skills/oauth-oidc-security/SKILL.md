@@ -623,6 +623,10 @@ grep -rnE 'backchannel[-_]?logout' --include='*.ts' --include='*.js' .
 - `secaudit:react-native-security` — PKCE with custom URL schemes; why an embedded WebView must not
   host the authorization request (RFC 8252 §8.12).
 - `secaudit:web-vulns` — open redirect and SSRF as general classes; §2 is the OAuth-specific case.
+- `secaudit:discord-bot-security` — Discord-specific OAuth: snowflake-keyed identity, the `verified`
+  flag, `guilds.join`, token revocation.
+- `secaudit:auth` — handing a login from the OAuth host to other hosts or custom domains (Multi-Host
+  section).
 
 ## Sources
 

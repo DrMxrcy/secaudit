@@ -17,6 +17,8 @@ This skill audits Prisma on PostgreSQL, including pgvector RAG stacks. For raw-S
 (`$queryRawUnsafe`, operator injection, mass assignment) see `secaudit:data-access`; for the RAG
 and prompt-injection layer above retrieval see `secaudit:ai-integration`; for `DATABASE_URL`
 handling see `secaudit:secrets`; for object-level authorization patterns see `secaudit:web-vulns`.
+For the same Postgres concerns under Drizzle, pg or postgres.js (plus LISTEN/NOTIFY, advisory
+locks, PgBouncer and backups) see `secaudit:postgres-security`.
 
 ## When to Use
 

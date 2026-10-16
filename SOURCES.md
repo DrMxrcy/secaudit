@@ -124,6 +124,39 @@ Last verified: 2026-10-16.
 - https://authjs.dev/getting-started/session-management/protecting — authorized: !!auth; proxy is not the boundary
 - https://next-auth.js.org/configuration/options — v4 NEXTAUTH_SECRET / NEXTAUTH_URL
 - https://nextjs.org/docs/app/guides/authentication — proxy is not your only line of defense
+- https://clerk.com/docs/reference/nextjs/app-router/auth — auth() Auth object: isAuthenticated, userId, orgId, orgRole, has
+- https://clerk.com/docs/guides/secure/authorization-checks — where Clerk authorization checks belong; has()
+- https://clerk.com/docs/guides/development/upgrading/upgrade-guides/migrate-from-create-route-matcher — moving checks off the middleware matcher onto each resource
+- https://clerk.com/docs/reference/types/metadata — public vs private vs unsafe metadata trust levels
+- https://clerk.com/docs/guides/users/extending — unsafeMetadata is writable from the frontend
+- https://clerk.com/docs/guides/sessions/session-tokens — custom session claims; keep JWT templates narrow
+- https://clerk.com/docs/guides/sessions/manual-jwt-verification — verifying __session yourself; the azp claim
+- https://clerk.com/docs/reference/backend/verify-token — verifyToken with jwtKey and authorizedParties
+- https://clerk.com/docs/guides/development/webhooks/overview — webhooks are Svix-signed; verify the signature
+- https://clerk.com/docs/guides/development/webhooks/syncing — verifyWebhook() in a route handler; mirroring user data
+- https://clerk.com/docs/guides/development/integrations/databases/convex — Clerk + Convex; ctx.auth.getUserIdentity()
+- https://clerk.com/docs/guides/organizations/control-access/roles-and-permissions — org roles/permissions; system permissions are not in the token
+- https://clerk.com/docs/guides/development/clerk-environment-variables — publishable key ships to the client; secret key does not
+- https://www.rfc-editor.org/rfc/rfc6265.html — Domain attribute; host-only when omitted; §8.6 weak integrity for sibling domains
+- https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/ — RFC 6265bis (draft 22): __Host-/__Secure- prefixes, case-insensitive prefix matching, Lax vs cross-site top-level POST (§8.8.6), Public Suffix List
+- https://publicsuffix.org/ — Public Suffix List: cookie boundaries between registrable domains
+- https://github.com/publicsuffix/list/wiki/Guidelines — PSL private-section submissions are slow and cannot be expedited
+- https://github.blog/engineering/yummy-cookies-across-domains/ — GitHub Pages moved to github.io over cookie tossing from subdomains
+- https://www.rfc-editor.org/rfc/rfc9700.html — OAuth 2.0 Security BCP: credential leakage via Referer (§4.2) and browser history (§4.3); Referrer-Policy: no-referrer; form post
+- https://www.rfc-editor.org/rfc/rfc9110.html — §10.1.3 Referer must not include the fragment
+- https://www.rfc-editor.org/rfc/rfc3986.html — §3.5 the fragment is separated before dereference (never sent to the server)
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy — Referrer-Policy values; strict-origin-when-cross-origin default
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Clear-Site-Data — "cookies" clears the registered domain only
+- https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html — parsed-URL allowlist; no prefix/suffix matching; reject userinfo
+- https://www.postgresql.org/docs/current/transaction-iso.html — Read Committed: a concurrent second DELETE ignores the already-deleted row
+- https://orm.drizzle.team/docs/delete — Drizzle delete().where().returning() on PostgreSQL
+- https://learn.microsoft.com/en-us/azure/security/fundamentals/subdomain-takeover — dangling DNS, cookie harvesting with a valid certificate, asuid TXT domain verification
+- https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/Subdomain_takeover — subdomain takeover and vendor-side verification of domain claims
+- https://github.com/EdOverflow/can-i-take-over-xyz — which hosting services allow dangling-CNAME takeover
+- https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/pre-validation/ — _cf-custom-hostname TXT ownership verification
+- https://caddyserver.com/docs/automatic-https — on-demand TLS must be restricted; the ask endpoint
+- https://caddyserver.com/docs/caddyfile/options — on_demand_tls ask: 2xx authorizes issuance
+- https://nodejs.org/api/dns.html — dns.promises.resolveTxt returns TXT records as arrays of chunks
 
 ## Privilege escalation (`privilege-escalation`)
 - https://api-security.owasp.org/editions/2023/en/0xa5-broken-function-level-authorization/ — OWASP API A05 (BFLA)
@@ -164,6 +197,46 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025 mapping
 - https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — A08:2025 mapping
 - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025 mapping
+
+## Discord bots and Discord OAuth (`discord-bot-security`)
+- https://docs.discord.com/developers/quick-start/getting-started — token "highly sensitive… never share your token or check it into any kind of version control"; Bot page "Reset Token"; token cannot be viewed again
+- https://docs.discord.com/developers/events/gateway — privileged intents GUILD_PRESENCES/GUILD_MEMBERS/MESSAGE_CONTENT; "only enable… if your use case requires it"; verified apps (100+ guilds) need approval; >10,000 users review; 4014 close code; 1000 IDENTIFY/24h then token reset
+- https://docs.discord.com/developers/interactions/application-commands — `default_member_permissions` "0" semantics and overwrites; Server Settings > Integrations; Administrators can use all commands; `dm_permission` deprecated for `contexts`; contexts default [0,1,2]; contexts don't affect permissions
+- https://docs.discord.com/developers/interactions/receiving-and-responding — interaction `member` ("invoking user, including permissions") / `user` fields, `app_permissions`, `authorizing_integration_owners`
+- https://docs.discord.com/developers/components/reference — `custom_id`: developer-defined, 1-100 characters, returned on interaction, "maintain state or pass through other important data"
+- https://docs.discord.com/developers/topics/permissions — role hierarchy rules for bots; ADMINISTRATOR "allows all permissions"; MANAGE_ROLES; MENTION_EVERYONE; role `managed`; equal positions sorted by id
+- https://docs.discord.com/developers/resources/message — allowed mentions object: defaults (regular messages parse all; interactions and webhooks parse users), MENTION_EVERYONE requirements, `parse` mutually exclusive, `replied_user`
+- https://docs.discord.com/developers/resources/user — User object (`id`, `username` "not unique across the platform", `global_name`, `verified`, `email`); username restrictions; Create DM guidance against mass DMs; Get Current User Guild Member requires `guilds.members.read`
+- https://docs.discord.com/developers/resources/guild — Add Guild Member requires a `guilds.join` token and bot token, accepts `roles`/`nick`; Add Guild Member Role requires MANAGE_ROLES; List Guild Members requires GUILD_MEMBERS
+- https://docs.discord.com/developers/resources/application — `bot_public` false: only the app owner can add the app to guilds
+- https://docs.discord.com/developers/resources/webhook — Get/Modify/Delete Webhook with Token do not require authentication
+- https://docs.discord.com/developers/topics/oauth2 — scopes (`identify`, `email`, `guilds`, `guilds.join`, `guilds.members.read`); `state` guidance; implicit grant returns token in URL fragment; revocation URL form-encoded only and revokes the whole authorization; bot authorization `permissions` parameter
+- https://docs.discord.com/developers/topics/rate-limits — 50 req/s global; 429 with `retry_after`/Retry-After; don't hard-code limits; invalid request limit 10,000 per 10 minutes on 401/403/429; shared-scope 429s not counted
+- https://docs.discord.com/developers/reference — snowflakes returned as strings to prevent integer overflow; message formatting (mentions, markdown subset)
+- https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns — Discord Bot Token (`discord_bot_token`): partner, push protection, validity check; partner alerts go to the provider
+- https://discordjs.guide/legacy/slash-commands/permissions — `setDefaultMemberPermissions(PermissionFlagsBits.…)`, `0` hides the command except for overwrites/Administrator, `setContexts`
+- https://discordjs.guide/legacy/popular-topics/intents — privileged intents in discord.js terms (`GuildPresences`, `MessageContent`, `GuildMembers`)
+- https://discordjs.guide/legacy/popular-topics/faq — `allowedMentions` as a `ClientOptions` default and per message; embed mentions never notify
+- https://discordjs.guide/legacy/sharding — `ShardingManager` takes the token and passes it to shards
+- https://discord.js.org/docs/packages/discord.js/14.27.0/ClientOptions:Interface — `allowedMentions`, `intents`, `rest` client options
+- https://discord.js.org/docs/packages/discord.js/14.27.0/BaseInteraction:Class — `memberPermissions`, `inCachedGuild()`, `inGuild()`, `user`, `guildId`
+- https://discord.js.org/docs/packages/discord.js/14.27.0/Role:Class — `comparePositionTo` return semantics, `managed`, `editable`, `permissions`, `position`
+- https://discord.js.org/docs/packages/discord.js/14.27.0/GuildMemberRoleManager:Class — `roles.add`, `roles.highest`, `botRole`
+- https://discord.js.org/docs/packages/discord.js/14.27.0/GuildMemberManager:Class — `members.fetch`, `members.me`, `fetchMe`
+- https://discord.js.org/docs/packages/builders/1.14.1/SlashCommandBuilder:Class — `setDefaultMemberPermissions`, `setContexts`, `setIntegrationTypes`; `setDMPermission` deprecated ("Use setContexts instead")
+- https://github.com/discordjs/discord.js/blob/14.27.0/packages/discord.js/src/sharding/Shard.js — `Shard#env` = `process.env` plus `DISCORD_TOKEN`
+- https://github.com/discordjs/discord.js/blob/14.27.0/packages/discord.js/src/client/Client.js — implicit `process.env.DISCORD_TOKEN`, non-enumerable `token`, censored token in debug output
+- https://github.com/discordjs/discord.js/blob/14.27.0/packages/formatters/src/escapers.ts — `escapeMarkdown` option defaults (`maskedLink`, `heading`, `bulletedList`, `numberedList` false)
+- https://github.com/discordjs/discord.js/blob/%40discordjs/rest%402.6.3/packages/rest/src/lib/utils/types.ts — `invalidRequestWarningInterval` (0 = no warnings), `rejectOnRateLimit`, `InvalidRequestWarningData`
+- https://github.com/advisories/GHSA-wh94-p5m6-mr7j — OpenClaw: Discord moderation authorization used sender identity from request params (CVE-2026-27484, fixed 2026.2.18)
+- https://github.com/advisories/GHSA-jp4j-q5fc-58gv — OpenClaw: Discord component interactions skipped guild/channel policy gates (fixed 2026.3.28)
+- https://github.com/advisories/GHSA-cw4q-gqg5-g38h — OpenClaw: Discord allowlist bound to mutable display names (CVE-2026-53849, fixed 2026.5.7)
+- https://github.com/advisories/GHSA-4cqv-h74h-93j4 — OpenClaw: Discord name/tag slug collision allowlist bypass (fixed 2026.2.22)
+- https://github.com/advisories/GHSA-43wq-xrcm-3vgr — `@discordjs/opus` DoS (CVE-2024-21521), OSV `last_affected` 0.9.0
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where §3, §4, §5 and §10 land
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025, where §1 and §9 land
+- https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025, where mention and markdown injection (§6, §7) land
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where intents and invite permissions (§2) land
 
 ## Supply chain (`supply-chain`)
 - https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen — USENIX 2025 package-hallucination study
@@ -208,6 +281,39 @@ Last verified: 2026-10-16.
 - https://github.com/pgvector/pgvector — filtered search, partial HNSW indexes, hnsw.iterative_scan
 - https://github.com/pgvector/pgvector-node — Prisma + pgvector integration
 - https://node-postgres.com/features/ssl — ssl object overwritten when the connection string carries sslmode
+
+## Postgres via Drizzle / pg / postgres.js (`postgres-security`)
+- https://orm.drizzle.team/docs/rls — `pgTable.withRLS`, `pgPolicy` options (`as`/`to`/`for`/`using`/`withCheck`), `pgRole` options and `.existing()`, `crudPolicy` from `drizzle-orm/neon`, policies auto-enable RLS, `entities.roles` off by default, `createDrizzle` sample using `sql.raw` and `set local role`
+- https://orm.drizzle.team/docs/drizzle-kit-push — push introspects the database, diffs, and applies; "best approach for rapid prototyping"
+- https://orm.drizzle.team/docs/drizzle-config-file — `entities.roles` default false; `dbCredentials`
+- https://www.postgresql.org/docs/current/ddl-rowsecurity.html — default-deny with no policy; owner/superuser/BYPASSRLS bypass; TRUNCATE and REFERENCES not subject to RLS; `row_security = off` throws instead of filtering
+- https://www.postgresql.org/docs/current/sql-createpolicy.html — permissive vs restrictive, restrictive-only denies all, USING vs WITH CHECK null handling
+- https://www.postgresql.org/docs/current/functions-admin.html — `set_config` is_local, `current_setting` missing_ok, advisory lock functions, 64-bit vs two-32-bit key spaces
+- https://www.postgresql.org/docs/current/explicit-locking.html — advisory locks unenforced; session locks survive rollback; transaction locks release at end (pg_locks: advisory locks are local to each database)
+- https://www.postgresql.org/docs/current/runtime-config-client.html — `lock_timeout`, `idle_in_transaction_session_timeout`, `transaction_timeout` (17+; absent from the 16 docs)
+- https://www.postgresql.org/docs/current/sql-listen.html — channel is any identifier; no privilege requirement listed; LISTEN takes effect at commit
+- https://www.postgresql.org/docs/current/sql-notify.html — "Notifications are visible to all users"; 8000-byte payload limit; `pg_notify(text, text)`; queue-full failure at commit
+- https://www.postgresql.org/docs/current/sql-createfunction.html — writing SECURITY DEFINER functions safely: `search_path` with `pg_temp` last, revoke EXECUTE from PUBLIC
+- https://www.postgresql.org/docs/current/ddl-schemas.html — CREATE on a search_path schema trusts its creators; PG15+ secure default; upgraded databases keep old grants
+- https://www.postgresql.org/docs/release/15.0/ — PUBLIC CREATE removed from `public`; upgrades and dump restores preserve existing permissions
+- https://www.postgresql.org/docs/current/ddl-priv.html — CONNECT on databases granted to PUBLIC by default
+- https://www.postgresql.org/docs/current/predefined-roles.html — `pg_read_all_data` does not bypass RLS
+- https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html — future objects only; scoped to objects created by the target role
+- https://www.postgresql.org/docs/current/runtime-config-connection.html — `listen_addresses` default localhost
+- https://www.postgresql.org/docs/current/auth-pg-hba-conf.html — `trust` allows login as any user; records matched in order
+- https://github.com/docker-library/docs/blob/master/postgres/content.md — official image: `POSTGRES_HOST_AUTH_METHOD` writes `host all all all <method>` to pg_hba.conf
+- https://www.postgresql.org/docs/current/libpq-ssl.html — default sslmode `prefer`; `verify-full` recommended
+- https://www.postgresql.org/docs/current/app-pgdump.html — pg_dump sets row_security off and errors without bypass privilege; `--enable-row-security`
+- https://www.postgresql.org/docs/current/runtime-config-logging.html — `log_statement` includes bind parameters; `log_parameter_max_length`
+- https://www.postgresql.org/docs/current/sql-createrole.html — plaintext PASSWORD may reach the server log; pre-hashed verifiers stored as-is
+- https://www.postgresql.org/support/security/ — CVE-2026-14666, CVE-2024-10976, CVE-2025-8713, CVE-2024-7348, CVE-2025-8714, CVE-2025-8715, CVE-2026-19385, CVE-2026-18408 and their fixed versions
+- https://www.pgbouncer.org/features.html — transaction pooling: SET/RESET, LISTEN, session advisory locks never supported; NOTIFY supported
+- https://www.pgbouncer.org/config.html — `server_reset_query` not used in transaction pooling; `max_prepared_statements`
+- https://www.pgbouncer.org/changelog.html — CVE-2026-107350 (1.26.1), CVE-2025-12819 (1.25.1)
+- https://node-postgres.com/features/transactions — same client instance for every statement in a transaction
+- https://github.com/porsager/postgres — `sql.listen` dedicated connection; `ssl` options; README `rejectUnauthorized: false` sample flagged as MITM-vulnerable
+- https://github.com/porsager/postgres/blob/master/src/connection.js — `ssl: 'require'` sets `rejectUnauthorized = false`
+- https://top10.owasp.org/2025/ — OWASP Top 10 (2025): A01, A02, A04, A05, A09 as mapped in the intro
 
 ## Better Auth (`better-auth-security`)
 - https://better-auth.com/docs/integrations/next — getSessionCookie is not secure; auth.api.getSession({ headers })
@@ -297,6 +403,37 @@ Last verified: 2026-10-16.
 - https://docs.pypi.org/trusted-publishers/ — PyPI Trusted Publishing
 - https://docs.pypi.org/attestations/ — PyPI attestations
 - https://packaging.python.org/en/latest/specifications/name-normalization/ — PEP 503 name folding
+
+## FiveM / CitizenFX (`fivem-security`)
+- https://docs.fivem.net/docs/developers/server-security/ — "Cheats can allow the client to trigger events in any context"; AddEventHandler vs RegisterNetEvent; RegisterNetEvent is a wrapper; `65535` server source on client; server-side checks list; bad `job:givePlayerItem` example
+- https://docs.fivem.net/docs/scripting-manual/working-with-events/listening-for-events/ — `source` holds the triggering player, valid only for the initial call; registering is what lets a client-side script trigger a server event
+- https://docs.fivem.net/docs/scripting-manual/working-with-events/triggering-events/ — `TriggerServerEvent`/`emitNet`, `TriggerClientEvent` with `-1` for all clients
+- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/RegisterNetEvent/ — "Marks the event safe for network use" (triggerability itself rests on the two pages above)
+- https://docs.fivem.net/docs/scripting-reference/convars/ — `set` server-only, `setr` readable by clients, `sets` exposed in `info.json` and the server list
+- https://docs.fivem.net/docs/developers/sandbox/ — `add_convar_permission`; "ConVars are readable by all resources" by default; filesystem/worker/child-process restrictions and overrides
+- https://docs.fivem.net/docs/scripting-reference/resource-manifest/ — `client_script`/`shared_script` add files to the packfile; `file` "to be downloaded by clients"; `ui_page`; `server_only`; globbing; `escrow_ignore`
+- https://docs.fivem.net/docs/scripting-manual/nui-development/full-screen-nui/ — client-side NUI files must be in the packfile; CEF remote debugging on `localhost:13172`
+- https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/ — `RegisterNuiCallback`, JSON-parsed POST data, always return via `cb`
+- https://docs.fivem.net/docs/scripting-manual/networking/state-bags/ — default write policy (player/owner/server), client sets replicated only on opt-in
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/AddStateBagChangeHandler.md — "the change handler can't opt to reject changes"
+- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/ — identifier types `steam`, `discord`, `license`, `license2`, `fivem`, `ip`; `license2` can equal `license`
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/GetPlayerIdentifierByType.md — server-side `GetPlayerIdentifierByType(src, 'license')`
+- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequest/ — signature, callback `(statusCode, body, headers, errorData)`, `followLocation = true` default
+- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequestAwait/ — definition of `followLocation` ("Makes cURL follow the redirects of the URL"); server build 9515+
+- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/server-functions/ — `PerformHttpRequest` listed as a server-side Lua function
+- https://docs.fivem.net/docs/server-manual/server-commands/ — `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown`, `sv_filterRequestControl` modes, `sv_authMaxVariance`, `sv_authMinTrust`, `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), "Rate limiters" section (`netEvent`, `stateBag`, `rcon` buckets; `rateLimiter_<name>_rate`/`_burst`)
+- https://docs.fivem.net/docs/server-manual/setting-up-a-server-vanilla/ — `sv_licenseKey` in `server.cfg`, commented `rcon_password`, OneSync for server-side state awareness
+- https://docs.fivem.net/docs/server-manual/proxy-setup/ — `sv_proxyIPRanges` allows `X-Real-IP` and bypasses the rate limiter
+- https://docs.fivem.net/docs/resources/txAdmin/ — `txAdminPort` default 40120, `txAdminInterface` default `0.0.0.0`, admin menu actions, brute-force protection
+- https://docs.fivem.net/docs/server-manual/asset-escrow/ — Escrow scope (Lua/YFT/YDD/YDR), NUI not supported, `escrow_ignore`
+- https://docs.fivem.net/docs/cookbook/2021/07/17/quick-note-on-using-built-in-acl-security/ — built-in ACL; resources granted `command.add_ace`/`command.add_principal` change the ACL at runtime via `ExecuteCommand`
+- https://docs.fivem.net/docs/scripting-manual/runtimes/lua/ — `json` global is dkjson
+- https://docs.discord.com/developers/resources/webhook — webhooks "do not require a bot user or authentication"; token-based Get/Modify/Delete need no auth
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025 (unauthorized net events, cross-community IDOR)
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025 (replicated convars, server.cfg, txAdmin/RCON exposure)
+- https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025 (XSS in NUI pages)
+- https://top10.owasp.org/2025/A06_2025-Insecure_Design/ — A06:2025 (client-authoritative game logic)
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025 (game-server API keys, identity from event arguments)
 
 ## AI chat & RAG (`ai-integration`)
 - https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-message-persistence — send last message only; validateUIMessages
@@ -498,6 +635,56 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where §1, §3, §5 and §6 land
 - https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025, where §4's identity-header trust and §5's Access JWT verification land
 
+## Accidentally exposed APIs (`api-surface`)
+- https://api-security.owasp.org/editions/2023/en/0x11-t10/ — OWASP API Security Top 10 2023 names; API9 overview cites exposed debug endpoints
+- https://api-security.owasp.org/editions/2023/en/0xa2-broken-authentication/ — API2:2023 Broken Authentication
+- https://api-security.owasp.org/editions/2023/en/0xa3-broken-object-property-level-authorization/ — API3:2023; avoid to_json(), cherry-pick properties, schema-based response validation
+- https://api-security.owasp.org/editions/2023/en/0xa7-server-side-request-forgery/ — API7:2023 Server Side Request Forgery
+- https://api-security.owasp.org/editions/2023/en/0xa8-security-misconfiguration/ — API8:2023; unnecessary features, stack traces in errors, error-response schemas
+- https://api-security.owasp.org/editions/2023/en/0xa9-improper-inventory-management/ — API9:2023; inventory, retirement plan, docs only for authorized users, beta-host scenario, protect all versions
+- https://api-security.owasp.org/editions/2023/en/0xaa-unsafe-consumption-of-apis/ — API10:2023; validation, redirects, resource limits, timeouts
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025
+- https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/ — A10:2025, where §11 lands
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites — rewrites act as a URL proxy; external destinations; `:path*`; fallback; regex params
+- https://nextjs.org/docs/app/api-reference/file-conventions/proxy — middleware deprecated and renamed to proxy in v16.0.0; matcher changes can drop Server Function coverage
+- https://nextjs.org/docs/app/guides/data-security — Server Actions reachable via direct POST; DTOs; return only what the UI needs; NEXT_PUBLIC_ exposure
+- https://nextjs.org/docs/app/api-reference/cli/next — `next build` route table, `--debug` adds rewrites/redirects/headers, `next start` hostname default 0.0.0.0
+- https://nextjs.org/blog/next-15-5 — globally generated `RouteContext`/`PageProps`/`LayoutProps`; `next typegen`
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/poweredByHeader — x-powered-by on by default; `poweredByHeader: false`
+- https://fastify.dev/docs/latest/Reference/Server/ — `printRoutes()` route listing
+- https://hono.dev/docs/helpers/dev — `showRoutes` from `hono/dev`
+- https://hono.dev/docs/middleware/builtin/bearer-auth — `bearerAuth` token / token array / `verifyToken`
+- https://hono.dev/docs/middleware/builtin/basic-auth — `basicAuth` from `hono/basic-auth`
+- https://hono.dev/docs/helpers/proxy — `proxy()` ignores `Connection` by default; forward all headers only when necessary
+- https://hono.dev/examples/swagger-ui — `@hono/swagger-ui` on a GET route; no access control in the example
+- https://github.com/fastify/fastify-swagger-ui — default `routePrefix` `/documentation`; `uiHooks` for protecting docs routes
+- https://www.apollographql.com/docs/apollo-server/api/apollo-server — `introspection` default true unless NODE_ENV=production
+- https://www.apollographql.com/docs/apollo-server/api/plugin/landing-pages — Sandbox landing page outside production; `ApolloServerPluginLandingPageDisabled`
+- https://the-guild.dev/graphql/yoga-server/docs/features/graphiql — GraphiQL only in development by default; disabling it is not a security control
+- https://the-guild.dev/graphql/yoga-server/docs/features/introspection — `useDisableIntrospection`; persisted operations
+- https://prometheus.io/docs/operating/security/ — `/metrics` not for public networks; metrics not considered secret
+- https://nodejs.org/learn/getting-started/debugging — inspector default 127.0.0.1:9229; 0.0.0.0 binding allows arbitrary code; use SSH tunnels
+- https://nodejs.org/api/net.html — `server.listen()` with no host binds `::` / `0.0.0.0`
+- https://docs.docker.com/reference/compose-file/services/ — `expose` not published to host; `ports` without host IP bind 0.0.0.0, bypassing host firewall rules
+- https://docs.docker.com/reference/compose-file/networks/ — external connectivity by default; `internal: true` creates an externally isolated network
+- https://docs.docker.com/engine/network/port-publishing/ — publishing is insecure by default; loopback publishing
+- https://docs.docker.com/engine/network/packet-filtering-firewalls/ — Docker and ufw incompatible
+- https://developers.cloudflare.com/fundamentals/security/protect-your-origin-server/ — Tunnel, AOP, IP allowlist (spoofing caveat), SPF/TXT audit, mail separation, rotate origin IPs
+- https://developers.cloudflare.com/dns/manage-dns-records/troubleshooting/exposed-ip-address/ — "a dig query against that record reveals your origin server's IP address"
+- https://developers.cloudflare.com/learning-paths/prevent-ddos-attacks/advanced/protect-origin-ip/ — rotate origin IPs; no mail on the protected server
+- https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/ — global vs zone-level vs per-hostname AOP; Full/Full (strict) required
+- https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/ — origin connects outbound; no publicly routable IP needed
+- https://www.cloudflare.com/ips/ — current Cloudflare IP ranges
+- https://certificate.transparency.dev/ — CT logs are public, append-only, and show certificates per domain
+- https://expressjs.com/en/advanced/best-practice-security/ — reduce fingerprinting: `x-powered-by`, default 404 and error messages
+- https://zod.dev/api — object schemas strip unrecognized keys by default; `z.strictObject()`; `z.uuid()`
+- https://api.osv.dev/v1/vulns/CVE-2025-66415 — @fastify/reply-from `%2e%2e` route bypass; fixed 12.5.0
+- https://api.osv.dev/v1/vulns/CVE-2026-33805 — Connection header strips proxy-added headers; fixed reply-from 12.6.2, http-proxy 11.4.4
+- https://api.osv.dev/v1/vulns/CVE-2026-55602 — http-proxy-middleware router host+path substring match; fixed 2.0.10 / 3.0.6 / 4.1.0
+- https://api.osv.dev/v1/vulns/CVE-2024-34351 — self-hosted Next.js Server Actions relative redirect + modified Host header SSRF; fixed 14.1.1
+- https://api.osv.dev/v1/vulns/CVE-2025-57822 — Next.js middleware `next()` SSRF when forwarding user headers; fixed 14.2.32 / 15.4.7
+
 ## Deployment (`deployment`)
 - https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP
@@ -539,6 +726,13 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/ — OWASP A04:2025 Cryptographic Failures
 - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html — key management
 - https://nodejs.org/api/crypto.html — Node crypto
+- https://pages.nist.gov/800-63-4/sp800-63b.html — NIST SP 800-63B-4 (final, July 2025): look-up secret storage, rate limiting, session secrets
+- https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf — NIST SP 800-38D: GCM IV uniqueness and the 2^32 invocation limit
+- https://github.blog/engineering/platform-security/behind-githubs-new-authentication-token-formats/ — prefixed tokens, `_` separator, CRC32 checksum
+- https://docs.github.com/en/code-security/tutorials/secret-scanning-partner-program — scannable secret format, verify endpoint, revoke on report
+- https://nodejs.org/api/zlib.html — zlib.crc32 (v22.2.0 / v20.15.0)
+- https://docs.discord.com/developers/resources/webhook — channel webhooks need no authentication
+- https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/ — "Your webhook URL contains a secret"
 
 ## Logging & monitoring (`logging-monitoring`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html — what to log / exclude
@@ -560,3 +754,20 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/ — OWASP Top 10 (2025)
 - https://genai.owasp.org/llm-top-10/ — OWASP LLM Top 10
 - https://owasp.github.io/www-project-mobile-top-10/ — OWASP Mobile Top 10
+- https://cwe.mitre.org/data/definitions/636.html — CWE-636 Not Failing Securely ('Failing Open')
+- https://cwe.mitre.org/data/definitions/1188.html — CWE-1188 Initialization of a Resource with an Insecure Default
+- https://devguide.owasp.org/en/02-foundations/03-security-principles/ — OWASP Developer Guide: "Fail Safe" and "Security by Default"
+- https://codeql.github.com/docs/codeql-overview/about-codeql/ — definition of variant analysis
+- https://docs.github.com/en/code-security/how-tos/find-and-fix-code-vulnerabilities/scan-from-vs-code/run-queries-at-scale — multi-repository variant analysis (up to 1,000 repos, controller repository)
+- https://github.com/trailofbits/skills/blob/main/plugins/variant-analysis/skills/variant-analysis/SKILL.md — Trail of Bits variant-analysis method: exact match first, generalise one element at a time
+- https://cwe.mitre.org/data/definitions/453.html — CWE-453 Insecure Default Variable Initialization (variant of CWE-1188)
+- https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/ — A10:2025, maps CWE-636; roll back and fail closed
+- https://cheatsheetseries.owasp.org/cheatsheets/Secure_Product_Design_Cheat_Sheet.html — secure defaults; configuration that fails securely
+- https://zod.dev/api — z.stringbool(); z.coerce.boolean() is Boolean(input), so "false" parses as true
+- https://upstash.com/docs/redis/sdks/ratelimit-ts/features — @upstash/ratelimit `timeout` (default 5 s) lets the request pass
+- https://github.com/expressjs/cors — Express `cors` default `origin: "*"`
+- https://docs.github.com/en/code-security/tutorials/customize-code-scanning/prepare-code-for-analysis — `codeql database create --language=javascript-typescript`
+- https://docs.semgrep.dev/writing-rules/pattern-syntax — Semgrep ellipsis, metavariables, `--pattern` / `-e`
+- https://github.com/trailofbits/skills/tree/main/plugins/insecure-defaults — Trail of Bits insecure-defaults plugin: fallback secrets, fail-open switches, CORS `*`
+- https://docs.fivem.net/docs/scripting-manual/working-with-events/listening-for-events/ — FiveM `source` holds the triggering player; valid only for the initial call
+- https://hono.dev/docs/helpers/factory — Hono `createMiddleware`

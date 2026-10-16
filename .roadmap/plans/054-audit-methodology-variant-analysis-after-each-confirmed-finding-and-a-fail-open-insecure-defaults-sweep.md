@@ -3,7 +3,7 @@ id: 54
 title: Audit methodology: variant analysis after each confirmed finding and a fail-open insecure-defaults sweep
 type: feature
 version: 3.10.0
-status: active
+status: done
 created: 2026-10-16
 ---
 
@@ -28,4 +28,5 @@ created: 2026-10-16
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Write the variant-analysis and fail-open sections and wire them into the audit phases -> target: `skills/audit/SKILL.md`, `skills/audit/references/methodology.md`
   > evidence: verifier PARTIAL→fixed: diff-scope exception, worker table row, no-reseed rule, Hono typing, tightened heuristics; methodology 538→318 lines; 15 rg heuristics re-run on BAD/GOOD fixtures (2026-10-16) (2026-10-16)
-- [ ] Step 2: Cite sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 2: Cite sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: registered in audit tiers (31 static tiers) + OWASP 2025 and API Top 10 map, README table, plugin.json/marketplace.json (manifest check clean), sibling cross-refs; SOURCES.md merged; python3 scripts/check-freshness.py: All current (cves, eol, fixclaims, kev, links, manifests, versions) (2026-10-16) (2026-10-16)

@@ -115,7 +115,8 @@ description of it.
 Incoming Webhooks, Discord's channel webhook URLs) rather than a header to verify on receipt — the
 authorization is a token embedded in the URL path. That URL is a bearer credential exactly like an
 API key: never commit it, never log it, never put it in client-side code, and rotate it the same way
-you would a leaked key (`secaudit:secrets`).
+you would a leaked key (`secaudit:secrets`). If you store one to post to later, encrypt it at rest
+and bind the ciphertext to its tenant (`secaudit:cryptography` §9).
 
 **Dedupe by delivery/event id.** Every sender in this skill retries, and several document no signed
 timestamp at all (§2, §6–8) — the only replay defense available is treating the delivery as a no-op
@@ -235,6 +236,9 @@ grep -rnE "SLACK_SIGNING_SECRET" . | grep -v '\.env'     # is it read anywhere?
 ```
 
 ## 4. Discord (Interactions Endpoint)
+
+This section is signature verification only. Command authorization, `custom_id` trust, role sync
+and bot-token handling are in `secaudit:discord-bot-security`.
 
 **What to look for:** an interactions endpoint that parses the body and dispatches before verifying;
 verification against the parsed JSON object instead of the raw body string; no `401` on failure (any

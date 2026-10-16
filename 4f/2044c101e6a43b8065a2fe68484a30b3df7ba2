@@ -1,0 +1,25 @@
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_f73fef321f2d53 4,516-545
+.roadmap/plans/053-add-api-surface-skill-accidentally-exposed-backend-and-internal-apis-bff-open-proxies-docs-introspection-debug-endpoints-in-production-owasp-api-top-10-inventory.md
+  s_dc1f2fbe3ef106::t_5ee11b5054de93 1-30
+.roadmap/plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md
+  s_dc1f2fbe3ef106::t_edb631b3340134 1-30
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_4ec98731722143 49-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4f2044c101e6a43b8065a2fe68484a30b3df7ba2",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

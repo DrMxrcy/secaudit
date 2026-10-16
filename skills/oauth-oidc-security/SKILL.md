@@ -635,7 +635,7 @@ grep -rnE 'backchannel[-_]?logout' --include='*.ts' --include='*.js' .
 - https://www.descope.com/blog/post/noauth -- nOAuth: mutable, unverified `email` claims and account takeover by email linking
 - https://next-auth.js.org/faq -- why automatic account linking between arbitrary providers is unsafe
 - https://developer.okta.com/docs/guides/add-an-external-idp/openidconnect/main/ -- match on email if you must, but key the user on the static `sub` claim
-- https://arcticjs.dev/ -- Arctic deprecated July 2026; replacement code published in the repository
+- https://arctic.pilcrowonpaper.com/ -- Arctic deprecated July 2026; replacement code published in the repository
 - https://pilcrowonpaper.com/blog/18 -- the deprecation announcement for Arctic and most Oslo packages
 - https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_request-pkce.ts -- the hand-rolled authorization request: 32-byte hex verifier, S256 challenge, scoped `HttpOnly; Secure; SameSite=Lax; Max-Age=600` cookie
 - https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_code_exchange-pkce.ts -- reading the stored verifier back and aborting when it is missing

@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.10.0 — (in progress)
+
+### ✨ New
+- (pending) New checks for live-updating features such as WebSockets, server-sent events and long-polling, covering who can connect and which updates they receive.
+- (pending) New checks for self-hosted Postgres, covering row-level security set up through Drizzle, realtime notifications and database roles.
+- (pending) New checks for Discord bots and Discord sign-in, covering bot tokens, command permissions and role syncing.
+- (pending) Sign-in checks now cover apps that keep users logged in across several domains, including customer-owned custom domains.
+- (pending) New checks for FiveM game servers and the web services they connect to.
+- (pending) Cryptography checks now cover invite and join codes, stored access keys and encrypted stored secrets such as webhook URLs.
+- (pending) New checks for backend and internal services that are reachable from the internet by mistake.
+- (pending) Audits now hunt for repeats of every confirmed issue elsewhere in the code and check what happens when a setting is missing.
+
+### 🐛 Fixed
+- Version-check advice now reflects the security fixes released over the past month.
+
 ## v3.9.0 — 2026-09-16
 
 ### ✨ New

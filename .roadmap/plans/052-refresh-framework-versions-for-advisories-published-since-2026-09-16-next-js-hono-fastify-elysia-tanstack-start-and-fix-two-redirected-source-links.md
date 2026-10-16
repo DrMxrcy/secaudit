@@ -3,7 +3,7 @@ id: 52
 title: Refresh framework-versions for advisories published since 2026-09-16 (Next.js, Hono, Fastify, Elysia, TanStack Start) and fix two redirected source links
 type: bug
 version: 3.10.0
-status: planned
+status: done
 created: 2026-10-16
 ---
 
@@ -26,6 +26,9 @@ created: 2026-10-16
 - **Fails if:** a fixed version or CVE id is asserted that GHSA/OSV does not confirm.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Verify each drifted advisory on GHSA/OSV and update floors + CVE entries; sweep the extra stack packages -> target: `skills/framework-versions/SKILL.md`
-- [ ] Step 2: Replace the two redirected links with their final URLs -> target: `skills/payments/SKILL.md`, `skills/oauth-oidc-security/SKILL.md`, `SOURCES.md`
-- [ ] Step 3: `python3 scripts/check-freshness.py` all-current -> target: `SOURCES.md`
+- [x] Step 1: Verify each drifted advisory on GHSA/OSV and update floors + CVE entries; sweep the extra stack packages -> target: `skills/framework-versions/SKILL.md`
+  > evidence: verifier CONFIRMED via OSV: 15 GHSAs id/range/fixed match; new floors next 15.5.27/16.3.8, hono 4.13.7, fastify 5.12.5, elysia 1.4.29, react-start 1.168.60 return 0 advisories; links 200; check-freshness versions/cves/fixclaims/links clean (only unrelated manifest drift for in-flight skills) (2026-10-16) (2026-10-16)
+- [x] Step 2: Replace the two redirected links with their final URLs -> target: `skills/payments/SKILL.md`, `skills/oauth-oidc-security/SKILL.md`, `SOURCES.md`
+  > evidence: verifier CONFIRMED via OSV: 15 GHSAs id/range/fixed match; new floors next 15.5.27/16.3.8, hono 4.13.7, fastify 5.12.5, elysia 1.4.29, react-start 1.168.60 return 0 advisories; links 200; check-freshness versions/cves/fixclaims/links clean (only unrelated manifest drift for in-flight skills) (2026-10-16) (2026-10-16)
+- [x] Step 3: `python3 scripts/check-freshness.py` all-current -> target: `SOURCES.md`
+  > evidence: verifier CONFIRMED via OSV: 15 GHSAs id/range/fixed match; new floors next 15.5.27/16.3.8, hono 4.13.7, fastify 5.12.5, elysia 1.4.29, react-start 1.168.60 return 0 advisories; links 200; check-freshness versions/cves/fixclaims/links clean (only unrelated manifest drift for in-flight skills) (2026-10-16) (2026-10-16)

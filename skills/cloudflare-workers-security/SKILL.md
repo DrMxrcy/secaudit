@@ -531,7 +531,7 @@ grep -rn -A4 'jwtVerify(' --include='*.ts' . | grep -c 'audience'
 Hono moves fast and carries a large advisory surface, so this section is a starting point, not an
 answer. Re-derive the floor from OSV at audit time exactly as `secaudit:framework-versions` does:
 query the `hono` package for the installed version and read the result, rather than trusting a
-number written here weeks ago. As verified on 2026-09-15, `hono@4.13.5` is the current clean floor
+number written here weeks ago. As verified on 2026-10-16, `hono@4.13.7` is the current clean floor
 — OSV reports zero open advisories for it, and it is the highest fixed version in the package's
 advisory feed. The Workers-relevant advisories behind that number:
 
@@ -544,6 +544,10 @@ advisory feed. The Workers-relevant advisories behind that number:
   response can contain HTML rendered for another user's request"; request-scoped values from
   `useContext` / `useRequestContext` are ignored by its comparator; fixed 4.12.34. On a shared edge
   runtime that is a cross-user data leak, not a caching nit.
+- `CVE-2026-93981` — `hono/jsx` emits a plain string as raw markup when it is a child or
+  `fallback` of `Suspense` / `ErrorBoundary`, the only child of a `Context.Provider`, or the root
+  value passed to `renderToString()`, so user input in those positions is XSS on an edge-rendered
+  page; fixed 4.13.7.
 - `CVE-2026-22817` — JWK/JWKS algorithm confusion (§7); fixed 4.11.4.
 - `CVE-2026-44457` — the cache middleware ignores `Vary: Authorization` / `Cookie`, serving one
   user's cached response to another; fixed 4.12.18.
@@ -638,6 +642,7 @@ curl -s -X POST https://api.osv.dev/v1/query -H 'Content-Type: application/json'
 - https://github.com/advisories/GHSA-gqvv-2mrq-wpjv -- CVE-2026-84365 `toSSG()` writes outside the output directory
 - https://github.com/advisories/GHSA-88fw-hqm2-52qc -- CVE-2026-54290 cors() reflected origin with credentials
 - https://github.com/advisories/GHSA-f23p-vx2j-j53r -- CVE-2026-71850 `memo()` cross-user SSR disclosure
+- https://github.com/advisories/GHSA-hxh3-vqpv-xpqv -- CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor
 - https://github.com/advisories/GHSA-f67f-6cw9-8mq4 -- CVE-2026-22817 JWK algorithm confusion
 - https://github.com/advisories/GHSA-r354-f388-2fhh -- CVE-2026-24398 ipRestriction IPv4 range bypass
 - https://github.com/advisories/GHSA-xpcf-pg52-r92g -- CVE-2026-39409 ipRestriction IPv4-mapped-IPv6 bypass

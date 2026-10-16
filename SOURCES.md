@@ -4,7 +4,7 @@ Every claim in the secaudit skills is backed by a primary source: official docum
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 
-Last verified: 2026-09-16.
+Last verified: 2026-10-16.
 
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/cve-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
@@ -53,6 +53,21 @@ Last verified: 2026-09-16.
 - https://github.com/advisories/GHSA-6765-c87h-8mrf — CVE-2026-71326 Traefik BasicAuth singleflight identity spoof
 - https://github.com/advisories/GHSA-2xp9-vwfh-vxw4 — Next.js AVIF image-optimization RCE, 2026-09-08
 - https://github.com/advisories/GHSA-26w7-cxv4-gfx2 — Astro AVIF image-optimization RCE, same day; the shared sharp/libvips pipeline
+- https://github.com/advisories/GHSA-vcvr-r3jv-pc5j — Next.js `next/og` ImageResponse RCE (no CVE), fixed 16.3.6
+- https://github.com/advisories/GHSA-cjq9-62q9-8jv4 — CVE-2026-94483 Next.js Image Optimization SSRF
+- https://github.com/advisories/GHSA-mcj8-r9mp-w47p — CVE-2026-94484 Next.js SSG/ISR cache poisoning via root catch-all; sets the 15.5.27 / 16.3.8 floors
+- https://github.com/advisories/GHSA-4jqv-mc3x-m676 — CVE-2026-94543 Next.js self-hosted Pages Router SSG/ISR cache poisoning
+- https://github.com/advisories/GHSA-f87g-xv8r-7p7x — CVE-2026-94485 Next.js metadata image routes ignore dynamicParams
+- https://github.com/advisories/GHSA-3w37-wq28-93x7 — CVE-2026-94544 Next.js `use cache` leaks Draft Mode content
+- https://github.com/advisories/GHSA-39w2-rjm5-chcv — CVE-2026-94486 Next.js dev-server MCP endpoint disclosure
+- https://github.com/advisories/GHSA-hxh3-vqpv-xpqv — CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor
+- https://github.com/advisories/GHSA-p68q-wchp-6fh7 — CVE-2026-76169 Fastify auth bypass via a sibling plugin's not-found handler
+- https://github.com/advisories/GHSA-9q9j-q6p8-xq58 — CVE-2026-84428 Fastify header-schema `dependencies` never enforced
+- https://github.com/advisories/GHSA-hwr6-493r-vm6h — CVE-2026-84469 Fastify boolean `false` schemas skipped
+- https://github.com/advisories/GHSA-667r-xxjv-c9mm — CVE-2026-84504 Fastify `$async` validation result replaces the body
+- https://github.com/advisories/GHSA-4mh8-r7rc-xpvc — CVE-2026-92081 Fastify HTTP/2 trailer crash; sets the 5.12.5 floor
+- https://github.com/advisories/GHSA-9643-4qgh-g8mx — CVE-2026-56669 Elysia quadratic form-data normalization DoS; sets the 1.4.29 floor
+- https://github.com/advisories/GHSA-qx66-fv34-fjm8 — CVE-2026-102989 TanStack Start server-function reflected XSS; sets the 1.168.60 floor
 - https://google.github.io/osv.dev/api/ — OSV.dev API (live advisory lookup, no key, multi-ecosystem)
 - https://google.github.io/osv.dev/post-v1-querybatch/ — OSV.dev querybatch request/response shape
 - https://github.com/google/osv-scanner — osv-scanner CLI for lockfile scanning
@@ -124,7 +139,7 @@ Last verified: 2026-09-16.
 
 ## Payments (`payments`)
 - https://docs.stripe.com/webhooks — replay tolerance ("don't use 0"), duplicate events, IP allowlisting, secret rolling, 3xx treated as failure
-- https://docs.stripe.com/webhooks/signature — raw-body signature verification
+- https://docs.stripe.com/events/manage-webhook-endpoints — raw-body signature verification
 - https://docs.stripe.com/webhooks — constructEvent, endpoint secret
 - https://docs.stripe.com/products-prices/how-products-and-prices-work — server-side Price IDs
 
@@ -331,7 +346,7 @@ Last verified: 2026-09-16.
 - https://www.descope.com/blog/post/noauth — nOAuth: mutable, unverified `email` claims and account takeover by email linking
 - https://next-auth.js.org/faq — why automatic account linking between arbitrary providers is unsafe
 - https://developer.okta.com/docs/guides/add-an-external-idp/openidconnect/main/ — match on email if you must, but key the user on the static `sub` claim
-- https://arcticjs.dev/ — Arctic deprecated July 2026; replacement code published in the repository
+- https://arctic.pilcrowonpaper.com/ — Arctic deprecated July 2026; replacement code published in the repository
 - https://pilcrowonpaper.com/blog/18 — the deprecation announcement for Arctic and most Oslo packages
 - https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_request-pkce.ts — the hand-rolled authorization request: 32-byte hex verifier, S256 challenge, scoped `HttpOnly; Secure; SameSite=Lax; Max-Age=600` cookie
 - https://raw.githubusercontent.com/pilcrowonpaper/arctic/refs/heads/main/code/authorization_code_exchange-pkce.ts — reading the stored verifier back and aborting when it is missing

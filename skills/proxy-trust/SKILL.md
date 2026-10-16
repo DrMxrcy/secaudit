@@ -153,7 +153,7 @@ const app = Fastify({
 ```bash
 grep -rnE "trust proxy'\s*,\s*true|trustProxy:\s*true|trustProxy:\s*[0-9]+" --include='*.{js,ts}' .
 grep -rn "app.proxy\s*=\s*true" --include='*.{js,ts}' . ; grep -rn "maxIpsCount" --include='*.{js,ts}' .
-node -p "require('./package.json').dependencies.fastify" 2>/dev/null   # compare against 5.12.1 floor
+node -p "require('./package.json').dependencies.fastify" 2>/dev/null   # compare against 5.12.5 floor
 grep -rn "allowedOrigins" next.config.* 2>/dev/null || echo "check: proxy behind Next.js forwarding its own host?"
 ```
 
@@ -563,7 +563,8 @@ grep -rn 'tailscale serve\|tailscale funnel' . 2>/dev/null
   `X-Forwarded-For` entry becomes `req.ip`.
 - Koa `app.proxy = true` with `maxIpsCount` left at its infinite default.
 - Fastify `trustProxy` set to a plain number — hop-count trust doesn't validate the connecting
-  peer; confirm the installed version is ≥ 5.12.1 (CVE-2026-3635 / CVE-2026-16732).
+  peer; confirm the installed version is ≥ 5.12.1 (CVE-2026-3635 / CVE-2026-16732), and at the
+  5.12.5 clean floor in `secaudit:framework-versions` for the later Fastify advisories.
 - A rate limiter, allowlist, or audit log keyed on an XFF value with no matching hop-count/IP trust
   configuration — bypassable or globally-bucketed, in either direction.
 - A password-reset, invite, or callback URL built from `req.hostname` / the raw `Host` header

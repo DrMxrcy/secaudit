@@ -140,6 +140,6 @@ can claim to be a different user or select a different plan.
 
 ## Sources
 
-- https://docs.stripe.com/webhooks/signature -- signature verification requires the raw body
+- https://docs.stripe.com/events/manage-webhook-endpoints -- signature verification requires the raw body
 - https://docs.stripe.com/webhooks -- constructEvent, endpoint secret, event handling
 - https://docs.stripe.com/products-prices/how-products-and-prices-work -- server-side Price IDs, not client amounts

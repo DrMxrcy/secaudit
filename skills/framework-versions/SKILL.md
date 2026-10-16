@@ -128,14 +128,41 @@ payloads in React Server Components. Actively exploited (listed in CISA KEV).
 - **Patched by (Next.js):** 15.0.5, 15.1.9, 15.2.6, 15.3.6, 15.4.8, 15.5.7, 16.0.7.
 - **Do not stop there.** These are the releases that fixed *this* CVE, not versions that are
   safe today — later advisories landed on the same lines. As of 2026-08-21, OSV reports 28 open
-  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.24`**
-  or **`next@16.3.3`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
+  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.27`**
+  or **`next@16.3.8`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
   not trust the numbers on this line to still be clean when you read them.
 - **2026-09-08 pair of unauthenticated RCEs** moved the floor from 15.5.21 / 16.2.11:
   `GHSA-2xp9-vwfh-vxw4` (RCE in the Image Optimization API when an AVIF file is processed,
   affects 10.0.0+) and `CVE-2026-75604` (RCE on Windows-hosted servers, affects 13.4.0+). Both
   fixed in **15.5.24 / 16.3.3**. Astro shipped an AVIF image-optimization RCE the same day
   (see below) — when one framework's image pipeline gets a CVE, check the others.
+- **2026-09-30 / 2026-10-07 advisories** moved the floor again, from 15.5.24 / 16.3.3. Only the
+  two cache poisonings reach 15.x; everything else is 16.x only:
+  - `GHSA-vcvr-r3jv-pc5j` (Critical, CVSS 4.0 9.5; no CVE assigned) — RCE in the Node.js
+    `next/og` `ImageResponse` when attacker-controlled values reach SVG content, attributes or
+    styles; range `>= 16.2.0, < 16.3.6`, first patched 16.3.6. Edge `ImageResponse` is not affected.
+  - `CVE-2026-94483` (`GHSA-cjq9-62q9-8jv4`, High) — SSRF to private IPs through Image
+    Optimization when an allow-listed `images.remotePatterns` host is attacker-controlled;
+    `>= 16.0.0, < 16.3.8`, fixed 16.3.8.
+  - `CVE-2026-94484` (`GHSA-mcj8-r9mp-w47p`, Moderate) — a root-level catch-all page plus SSG/ISR
+    routes lets one unauthenticated request poison the shared response cache (cross-user content
+    substitution, persistent DoS); `>= 15.0.0, < 15.5.27` and `>= 16.0.0, < 16.3.8`, fixed
+    15.5.27 / 16.3.8.
+  - `CVE-2026-94543` (`GHSA-4jqv-mc3x-m676`, Moderate) — self-hosted Pages Router SSG/ISR pages
+    can have their cache entry replaced with another route's content; Vercel-hosted apps are not
+    affected; `>= 15.0.0, < 15.5.27` and `>= 16.0.0, < 16.3.8`, fixed 15.5.27 / 16.3.8.
+  - `CVE-2026-94485` (`GHSA-f87g-xv8r-7p7x`, Moderate) — webpack-built metadata image routes
+    (`opengraph-image`, `twitter-image`) ignore `dynamicParams`, serving segments deliberately
+    left out of `generateStaticParams()`; `>= 16.0.0, < 16.3.8`, fixed 16.3.8.
+  - `CVE-2026-94544` (`GHSA-3w37-wq28-93x7`, Moderate) — a pending `use cache` fill is shared
+    between Draft Mode and regular requests, so unpublished content reaches anonymous visitors
+    and can be persisted into a prerendered page; `>= 16.3.0, < 16.3.8`, fixed 16.3.8.
+  - `CVE-2026-94486` (`GHSA-39w2-rjm5-chcv`, Low) — the `next dev` Model Context Protocol
+    endpoint does not check the requesting origin, so a website the developer visits reads the
+    project path, source snippets, route inventory and dev logs; `>= 16.0.0, < 16.3.8`, fixed
+    16.3.8.
+  - None of these is on CISA KEV (catalog of 2026-10-15). Two of them are in image handling
+    again (`next/og` and Image Optimization) — see *The shared image pipeline* below.
 - **Sibling CVEs are patched one release later**, so upgrading to the -55182 fix leaves both
   open: `CVE-2025-55183` (source exposure) and `CVE-2025-55184` (DoS) are fixed in
   **19.0.2 / 19.1.3 / 19.2.2**, not 19.0.1 / 19.1.2 / 19.2.1.
@@ -176,8 +203,8 @@ middleware is one advisory away from being open, permanently — the patch tread
 control. Enforce authorization at the data-access layer, where no routing-layer bypass can
 skip it. Middleware is an optimistic redirect, not a boundary. (See `secaudit:auth`.)
 
-Note `CVE-2026-64643` is fixed exactly at **15.5.21 / 16.2.11** — that advisory is what sets the
-clean floors named above.
+Note `CVE-2026-64643` is fixed exactly at **15.5.21 / 16.2.11** — that advisory set the clean
+floors until the September and October 2026 advisories above raised them.
 
 ### CISA KEV — actively exploited, in ecosystems this plugin covers
 
@@ -253,7 +280,7 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
 
 ## Server frameworks and libraries (verify against live advisories)
 
-- **Hono:** 50 advisories and a fast-moving surface. The 2026-09-08 trio `CVE-2026-84363`
+- **Hono:** 51 advisories and a fast-moving surface. The 2026-09-08 trio `CVE-2026-84363`
   (the query parser reads parameters after the URL fragment, poisoning cache keys and proxy
   routing), `CVE-2026-84364` (unbounded dot-notation nesting in `parseBody()` exhausts memory)
   and `CVE-2026-84365` (`toSSG()` writes files outside the output directory) is fixed 4.13.5;
@@ -261,7 +288,11 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   so one user's rendered page is served to another) is fixed 4.12.34. `hono@4.11.7` is a trap:
   it is the version blog posts name as the answer to the `CVE-2026-24473` serve-static
   environment-key disclosure on the Cloudflare Workers adapter, and it still carries 33 open
-  advisories. Current clean floor **`hono@4.13.5`**.
+  advisories. `CVE-2026-93981` (`GHSA-hxh3-vqpv-xpqv`, Moderate, 2026-09-30): `hono/jsx` does not
+  HTML-escape a plain string placed as a child or `fallback` of `Suspense` / `ErrorBoundary`, as
+  the only child of a `Context.Provider`, or as the root value of `renderToString()` from
+  `hono/jsx/dom/server` — XSS wherever user input reaches those positions; all versions below
+  4.13.7, fixed 4.13.7. Current clean floor **`hono@4.13.7`**.
 - **Auth.js / NextAuth:** the July 2026 set lands on `next-auth` and `@auth/core` together.
   `CVE-2026-73419` is the one that matters: OAuth `state`, `nonce` and PKCE check cookies are
   not bound to the provider that issued them, so a flow started with one provider can be
@@ -289,20 +320,43 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   `X-Forwarded-Proto` / `X-Forwarded-Host` sent by an untrusted peer; fixed 5.8.3.
   `CVE-2026-18504` — schema validation bypass via a root primitive coercion mismatch; fixed
   5.12.1. `CVE-2025-32442` — a leading space in `Content-Type` defeats content-type parsing and
-  the validation attached to it; fixed 5.8.5. Current clean floor **`fastify@5.12.1`**. The
+  the validation attached to it; fixed 5.8.5. The
   proxy-header pair is a configuration finding as much as a version one — see
   `secaudit:proxy-trust`.
+- **Fastify, 2026-09-30:** five more, four of them bypasses of a control the app thinks it has.
+  `CVE-2026-76169` (`GHSA-p68q-wchp-6fh7`, High) — a malformed URL under one plugin prefix is
+  dispatched to a sibling plugin's not-found handler without that handler's `preHandler`, so an
+  unauthenticated request reaches an auth-protected fallback; `>= 4.0.0, < 5.12.2`.
+  `CVE-2026-84428` (`GHSA-9q9j-q6p8-xq58`, High) — header schemas are only lowercased at the top
+  level, so a Draft 7 `dependencies` rule (`X-Admin` requires `X-Admin-Token`) silently never
+  fires. `CVE-2026-84469` (`GHSA-hwr6-493r-vm6h`, High) — a request-part schema of boolean `false`
+  (deny-all) is treated as absent and nothing is validated. `CVE-2026-84504`
+  (`GHSA-667r-xxjv-c9mm`, High) — an `$async` validator's result is unwrapped like `{ value, error }`,
+  so a `value` property in the payload replaces the validated body; all four fixed 5.12.2.
+  `CVE-2026-92081` (`GHSA-4mh8-r7rc-xpvc`, Moderate) — `reply.trailer()` over HTTP/2 throws an
+  uncaught exception and one request kills the process; fixed 5.12.5. Current clean floor
+  **`fastify@5.12.5`**.
 - **Elysia:** `CVE-2026-31865` — cookie value prototype pollution; fixed 1.4.27.
   `CVE-2026-30837` — ReDoS in the string URL format validator; fixed 1.4.26. `CVE-2025-66457` —
-  arbitrary code injection through the cookie config; fixed 1.4.18. Current clean floor
-  **`elysia@1.4.27`**.
-- **TanStack Start:** the only advisory against `@tanstack/react-start` is a supply-chain
+  arbitrary code injection through the cookie config; fixed 1.4.18. `CVE-2026-56669`
+  (`GHSA-9643-4qgh-g8mx`, High, CVSS 7.5, 2026-09-23) — `multipart/form-data` normalization calls
+  `getAll` once per key, so CPU cost grows quadratically with the number of fields
+  (unauthenticated DoS on any form-data endpoint); all versions below 1.4.29, fixed 1.4.29.
+  Current clean floor **`elysia@1.4.29`**.
+- **TanStack Start:** two advisories of two different kinds. The first is a supply-chain
   incident, not a code defect — `CVE-2026-45321` (OSV also tracks it as `MAL-2026-3468`), the May 2026 malware
   releases in which 42 `@tanstack/*` packages were republished with code that exfiltrates cloud
   credentials, GitHub tokens and SSH keys; fixed 1.167.72 on this package, with sibling packages
   republished across their own lines. A lockfile is no defence here: `npm ci` reinstalls the
   malicious release faithfully, so the check is which version resolved, not whether the install
-  was reproducible. Current clean floor **`@tanstack/react-start@1.168.54`**. The old package
+  was reproducible. The second is a code defect: `CVE-2026-102989` (`GHSA-qx66-fv34-fjm8`,
+  Critical, CVSS 9.3, 2026-10-15) — unauthenticated reflected XSS through server-function
+  responses: payload fields leak into internal middleware state and a response-shaped object is
+  returned as the HTTP response, so a crafted link runs script on the app's own origin. Affected
+  from 1.143.12; fixed 1.168.60 on `@tanstack/react-start`, 1.168.57 on `@tanstack/solid-start`,
+  1.168.56 on `@tanstack/vue-start` and 1.169.39 on `@tanstack/start-server-core` — check the
+  resolved `start-server-core` in the lockfile, not just the framework package. Current clean
+  floor **`@tanstack/react-start@1.168.60`**. The old package
   name `@tanstack/start` shows zero advisories and is deprecated — read that as unmaintained,
   not safe. See `secaudit:supply-chain` and `secaudit:ci-cd-security`.
 - **Traefik** (Go module `github.com/traefik/traefik/v3`, normally deployed as a container, so
@@ -409,3 +463,18 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-6765-c87h-8mrf -- CVE-2026-71326 Traefik BasicAuth singleflight identity spoof
 - https://github.com/advisories/GHSA-2xp9-vwfh-vxw4 -- Next.js AVIF image-optimization RCE, 2026-09-08
 - https://github.com/advisories/GHSA-26w7-cxv4-gfx2 -- Astro AVIF image-optimization RCE, same day; the shared sharp/libvips pipeline
+- https://github.com/advisories/GHSA-vcvr-r3jv-pc5j -- Next.js `next/og` ImageResponse RCE (no CVE), fixed 16.3.6
+- https://github.com/advisories/GHSA-cjq9-62q9-8jv4 -- CVE-2026-94483 Next.js Image Optimization SSRF
+- https://github.com/advisories/GHSA-mcj8-r9mp-w47p -- CVE-2026-94484 Next.js SSG/ISR cache poisoning via root catch-all; sets the 15.5.27 / 16.3.8 floors
+- https://github.com/advisories/GHSA-4jqv-mc3x-m676 -- CVE-2026-94543 Next.js self-hosted Pages Router SSG/ISR cache poisoning
+- https://github.com/advisories/GHSA-f87g-xv8r-7p7x -- CVE-2026-94485 Next.js metadata image routes ignore dynamicParams
+- https://github.com/advisories/GHSA-3w37-wq28-93x7 -- CVE-2026-94544 Next.js `use cache` leaks Draft Mode content
+- https://github.com/advisories/GHSA-39w2-rjm5-chcv -- CVE-2026-94486 Next.js dev-server MCP endpoint disclosure
+- https://github.com/advisories/GHSA-hxh3-vqpv-xpqv -- CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor
+- https://github.com/advisories/GHSA-p68q-wchp-6fh7 -- CVE-2026-76169 Fastify auth bypass via a sibling plugin's not-found handler
+- https://github.com/advisories/GHSA-9q9j-q6p8-xq58 -- CVE-2026-84428 Fastify header-schema `dependencies` never enforced
+- https://github.com/advisories/GHSA-hwr6-493r-vm6h -- CVE-2026-84469 Fastify boolean `false` schemas skipped
+- https://github.com/advisories/GHSA-667r-xxjv-c9mm -- CVE-2026-84504 Fastify `$async` validation result replaces the body
+- https://github.com/advisories/GHSA-4mh8-r7rc-xpvc -- CVE-2026-92081 Fastify HTTP/2 trailer crash; sets the 5.12.5 floor
+- https://github.com/advisories/GHSA-9643-4qgh-g8mx -- CVE-2026-56669 Elysia quadratic form-data normalization DoS; sets the 1.4.29 floor
+- https://github.com/advisories/GHSA-qx66-fv34-fjm8 -- CVE-2026-102989 TanStack Start server-function reflected XSS; sets the 1.168.60 floor

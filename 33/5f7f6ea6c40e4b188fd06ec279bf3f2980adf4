@@ -1,0 +1,27 @@
+skills/proxy-trust/SKILL.md
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 51-52,55,154-155,217,287,423,507,509,555-556
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 4,546-554
+  s_dc1f2fbe3ef106::t_ccf2bda913de67 555,575
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 42,52
+.roadmap/plans/055-proxy-trust-grep-heuristics-use-quoted-brace-globs-in-include-that-never-expand.md
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 1-44
+  s_dc1f2fbe3ef106::t_cbfaa3993f8025 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "335f7f6ea6c40e4b188fd06ec279bf3f2980adf4",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

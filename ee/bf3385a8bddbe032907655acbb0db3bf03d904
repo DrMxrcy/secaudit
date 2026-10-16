@@ -1,0 +1,27 @@
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_c53ff898ac8e47 575
+.roadmap/plans/055-proxy-trust-grep-heuristics-use-quoted-brace-globs-in-include-that-never-expand.md
+  s_dc1f2fbe3ef106::t_0117435e0890aa 6,14-16,19-20,25,30-33
+CHANGELOG.internal.md
+  s_dc1f2fbe3ef106::t_d7550d5043d097 19
+CHANGELOG.md
+  s_dc1f2fbe3ef106::t_ff6c3780f131c9 17
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_7f2ce8fbca84ea 42,52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eebf3385a8bddbe032907655acbb0db3bf03d904",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

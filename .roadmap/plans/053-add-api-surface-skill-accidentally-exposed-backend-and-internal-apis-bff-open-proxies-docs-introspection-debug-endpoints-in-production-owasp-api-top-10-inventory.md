@@ -3,7 +3,7 @@ id: 53
 title: Add api-surface skill: accidentally exposed backend and internal APIs, BFF open proxies, docs/introspection/debug endpoints in production, OWASP API Top 10 inventory
 type: feature
 version: 3.10.0
-status: planned
+status: active
 created: 2026-10-16
 ---
 
@@ -26,6 +26,7 @@ created: 2026-10-16
 - **Fails if:** an API name, default or advisory is asserted that the vendor docs or OSV do not confirm; or it duplicates a sibling skill instead of cross-referencing.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Research primary sources and write the skill -> target: `skills/api-surface/SKILL.md`
+- [x] Step 1: Research primary sources and write the skill -> target: `skills/api-surface/SKILL.md`
+  > evidence: verifier PARTIAL→fixed: BFF path guard SSRF (//evil.com) replaced by allowlist + origin assert, node test 16 rejected/1 accepted; HMAC signs path+query, body cap; compose egress fixed; OWASP API9 quote re-verified on 0x11-t10; 621 lines, 48 sources 200 (2026-10-16) (2026-10-16)
 - [ ] Step 2: Register the skill: audit tier + OWASP map, README, plugin.json/marketplace.json, sibling cross-refs -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
 - [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`

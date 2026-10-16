@@ -3,7 +3,7 @@
 ## 💡 Idea Incubator
 <!-- Free-form. Drop loose ideas here; scripts never touch this region. -->
 <!-- roadmap:auto:start -->
-**Current version: v3.11.0**
+**Current version: v3.12.0**
 
 ## 📊 Versions
 
@@ -31,8 +31,5 @@
 
 ### [x] v3.10.0 — 100% · 10 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [x] v3.11.0 — 100%
-- [x] **#56 TanStack npm compromise postmortem link moved to old.tanstack.com** `bug` — 100% ([plan](.roadmap/plans/056-tanstack-npm-compromise-postmortem-link-moved-to-old-tanstack-com.md))
-- [x] **#57 Cover OpenTelemetry trace attributes leaking database usernames (CVE-2026-104872) in logging-monitoring** `feature` — 100% ([plan](.roadmap/plans/057-cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring.md))
-- [x] **#58 Nuxt blog source URL now redirects to nuxt.com/updates** `bug` — 100% ([plan](.roadmap/plans/058-nuxt-blog-source-url-now-redirects-to-nuxt-com-updates.md))
+### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

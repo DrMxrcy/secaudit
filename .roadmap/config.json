@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.11.0",
-  "nextId": 58,
+  "nextId": 59,
   "items": [
     {
       "id": 1,
@@ -573,6 +573,16 @@
       "file": "plans/057-cover-opentelemetry-trace-attributes-leaking-database-usernames-cve-2026-104872-in-logging-monitoring.md",
       "note": "Logging checks now flag tracing setups that send your database account names to monitoring tools.",
       "audience": "public"
+    },
+    {
+      "id": 58,
+      "slug": "nuxt-blog-source-url-now-redirects-to-nuxt-com-updates",
+      "title": "Nuxt blog source URL now redirects to nuxt.com/updates",
+      "type": "bug",
+      "version": "3.11.0",
+      "file": "plans/058-nuxt-blog-source-url-now-redirects-to-nuxt-com-updates.md",
+      "note": "The Nuxt release-announcements source link points to its current address.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -594,5 +604,5 @@
     "3.10.0": "2026-10-16",
     "3.11.0": "2026-10-16"
   },
-  "last_seen_sha": "80d19deef15209c7b490119f5e86e4136239a211"
+  "last_seen_sha": "0247ae01462edb2153c1eab24d9bf7dc83b5884f"
 }

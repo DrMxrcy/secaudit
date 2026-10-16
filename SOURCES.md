@@ -32,7 +32,7 @@ Last verified: 2026-10-16.
 - https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json — CISA KEV feed (machine-readable; check dateAdded)
 - https://github.com/advisories/GHSA-qwww-vcr4-c8h2 — React Router RSC-mode CSRF bypass
 - https://nodejs.org/en/blog/vulnerability/ — Node.js security releases (the runtime is not OSV-indexed)
-- https://nuxt.com/blog — Nuxt release and security announcements
+- https://nuxt.com/updates — Nuxt release and security announcements
 - https://github.com/remix-run/react-router/security — React Router / Remix advisories
 - https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)
 - https://nextjs.org/blog — official Next.js security releases

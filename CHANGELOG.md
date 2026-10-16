@@ -7,6 +7,7 @@
 
 ### 🐛 Fixed
 - The source link for the May 2026 TanStack supply-chain incident points to its current home again.
+- The Nuxt release-announcements source link points to its current address.
 
 ## v3.10.0 — 2026-10-16
 

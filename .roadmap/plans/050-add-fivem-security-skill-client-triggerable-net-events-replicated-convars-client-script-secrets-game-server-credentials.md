@@ -3,7 +3,7 @@ id: 50
 title: Add fivem-security skill: client-triggerable net events, replicated convars, client-script secrets, game-server credentials
 type: feature
 version: 3.10.0
-status: planned
+status: active
 created: 2026-10-16
 ---
 
@@ -26,6 +26,7 @@ created: 2026-10-16
 - **Fails if:** an API name, default, version, advisory ID or provider capability is asserted that the vendor docs, RFC or OSV do not confirm; or the freshness check reports drift; or content duplicates a sibling skill instead of cross-referencing it.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Research primary sources (vendor docs, RFCs, OSV/GHSA) and write the skill; every API name, header, default and advisory ID verified live -> target: `skills/fivem-security/SKILL.md`
+- [x] Step 1: Research primary sources (vendor docs, RFCs, OSV/GHSA) and write the skill; every API name, header, default and advisory ID verified live -> target: `skills/fivem-security/SKILL.md`
+  > evidence: verifier PARTIAL→fixed: false 'no rate limiter' claim replaced with documented netEvent/stateBag token buckets, setr sv_stateBagStrictMode (12739+), ACL/ip/attribution wording, Lua/Hono code fixes; trimmed to 584 lines; links all current (2026-10-16) (2026-10-16)
 - [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json/marketplace.json description and keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
 - [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`

@@ -1,0 +1,29 @@
+skills/auth/SKILL.md
+  s_dc1f2fbe3ef106::t_a6bfdc7632a2e3 474-476
+  s_dc1f2fbe3ef106::t_5e9d2b018ce328 210-245,248-473,477-496
+  s_dc1f2fbe3ef106::t_b2b5fb91c2d226 246-247
+  s_dc1f2fbe3ef106::t_be35cc89e41023 3,1099-1111
+  s_dc1f2fbe3ef106::t_7497cb067c8a76 497-503,1112-1118
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_786eeb9bbd800d 565
+.roadmap/plans/049-extend-auth-with-multi-host-sessions-cross-host-handoff-tokens-and-custom-domain-verification.md
+  s_dc1f2fbe3ef106::t_e98be63b1ad52f 6,29-30
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_b394dad2394080 42,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "32b60a1c55ca57416dd6ab74a961a5f29b0e9f6f",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

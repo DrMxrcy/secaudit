@@ -1,0 +1,26 @@
+.roadmap/plans/051-extend-cryptography-with-low-entropy-code-hashing-key-prefix-lookup-and-aead-binding-for-encrypted-at-rest-secrets.md
+  s_dc1f2fbe3ef106::t_804c2d0b6f91ef 6,29-30
+skills/cryptography/SKILL.md
+  s_dc1f2fbe3ef106::t_f9dc2e16fa06ea 182,331-333
+  s_dc1f2fbe3ef106::t_18415d04918c1a 3,19-21,133-181,183-330,334-403,411-417
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_804c2d0b6f91ef 565
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_804c2d0b6f91ef 42,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5063d957e293fbf141f7e1659ef7833bb58791c6",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

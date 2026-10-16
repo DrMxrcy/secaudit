@@ -1,0 +1,76 @@
+CHANGELOG.internal.md
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 19
+  s_dc1f2fbe3ef106::t_4acd6038d62ead 9-15
+.claude-plugin/plugin.json
+  s_dc1f2fbe3ef106::t_087346264d8847 4,82-126
+skills/audit/SKILL.md
+  s_dc1f2fbe3ef106::t_9c7d866bf02f35 232-241,249-255,257,262-264,268-272,274,276,281,284,291,296,302,308-319,327-360,364-368,370,372,374,376,385
+  s_dc1f2fbe3ef106::t_087346264d8847 401-402,404-407,409-411
+README.md
+  s_dc1f2fbe3ef106::t_087346264d8847 9,13,43,49-50,57,71-73,76
+SOURCES.md
+  s_dc1f2fbe3ef106::t_f15e0c4a8e0000 285,317,407,638,687
+  s_dc1f2fbe3ef106::t_34c81a0a292c60 763-773
+  s_dc1f2fbe3ef106::t_cdab3e2b75c683 127-159,286-316,408-436,639-686,729-735,757-762
+  s_dc1f2fbe3ef106::t_587b2deac21e78 201-240
+  s_dc1f2fbe3ef106::t_b576e0a89b5f28 437
+CHANGELOG.md
+  s_dc1f2fbe3ef106::t_7e3fe6d0015682 17
+  s_dc1f2fbe3ef106::t_eba10531de9a23 7-13
+skills/discord-bot-security/SKILL.md
+  s_dc1f2fbe3ef106::t_34c81a0a292c60 336
+  s_dc1f2fbe3ef106::t_af546ee09d4c8d 360,376
+  s_dc1f2fbe3ef106::t_2d09f5bc52d0f4 134-136
+  s_dc1f2fbe3ef106::t_0e67c84a6e6036 489
+  s_dc1f2fbe3ef106::t_0264637f4e73b8 22,302-303,308-315,324,326-327,333-335,361-362,446-448,463,523,537-542
+  s_dc1f2fbe3ef106::t_5472f2838662a3 3,209,304-305,340-343
+  s_dc1f2fbe3ef106::t_d719133a3f644b 331-332,345-346
+  s_dc1f2fbe3ef106::t_adbeee982e961d 1-2,4-21,23-133,137-208,210-301,306-307,316-323,325,328-330,337-339,344,347-359,363-375,377-445,449-462,464-485,490-522,524-536,543-650
+  s_dc1f2fbe3ef106::t_1d8bdebc882639 486-488
+.claude-plugin/marketplace.json
+  s_dc1f2fbe3ef106::t_087346264d8847 11,89-133
+.roadmap/config.json
+  s_dc1f2fbe3ef106::t_3e2c3fed68a0eb 575
+.roadmap/plans/047-add-postgres-security-skill-drizzle-rls-policies-listen-notify-tenant-leaks-advisory-locks-poolers-roles-and-backups.md
+  s_dc1f2fbe3ef106::t_2925255d9133cb 6,31-34
+.roadmap/plans/048-add-discord-bot-security-skill-bot-tokens-intents-command-permissions-role-sync-hierarchy-allowedmentions-discord-oauth-identity.md
+  s_dc1f2fbe3ef106::t_4404d3a440d71e 6,29-34
+.roadmap/plans/049-extend-auth-with-multi-host-sessions-cross-host-handoff-tokens-and-custom-domain-verification.md
+  s_dc1f2fbe3ef106::t_c8a3999a332b01 6,31-34
+.roadmap/plans/050-add-fivem-security-skill-client-triggerable-net-events-replicated-convars-client-script-secrets-game-server-credentials.md
+  s_dc1f2fbe3ef106::t_c842ed3a9b3d16 6,31-34
+.roadmap/plans/051-extend-cryptography-with-low-entropy-code-hashing-key-prefix-lookup-and-aead-binding-for-encrypted-at-rest-secrets.md
+  s_dc1f2fbe3ef106::t_7dfcfd12f128ed 6,31-34
+.roadmap/plans/053-add-api-surface-skill-accidentally-exposed-backend-and-internal-apis-bff-open-proxies-docs-introspection-debug-endpoints-in-production-owasp-api-top-10-inventory.md
+  s_dc1f2fbe3ef106::t_62adc49325420a 6,31-34
+.roadmap/plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md
+  s_dc1f2fbe3ef106::t_1f80de7e40741a 6,31-32
+ROADMAP.md
+  s_dc1f2fbe3ef106::t_c444492fb5377f 42,44-48,50-51
+skills/docker-security/SKILL.md
+  s_dc1f2fbe3ef106::t_766e58e9328333 567-570
+skills/oauth-oidc-security/SKILL.md
+  s_dc1f2fbe3ef106::t_0844b39ac7fef7 626-629
+skills/prisma-security/SKILL.md
+  s_dc1f2fbe3ef106::t_94e56edc9c08e2 20-21
+skills/rate-limiting/SKILL.md
+  s_dc1f2fbe3ef106::t_63ebdbfbd7b884 27-30
+skills/webhook-security/SKILL.md
+  s_dc1f2fbe3ef106::t_9618b6f066a35f 118-119,240-242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "84824d2d9fb570187dac01ddc33bd4620440328d",
+  "prompts": {},
+  "sessions": {
+    "s_dc1f2fbe3ef106": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fbd5e79-c6e4-4999-9de8-124d0f2cfcaf",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.9.0",
-  "nextId": 46,
+  "nextId": 52,
   "items": [
     {
       "id": 1,
@@ -452,6 +452,66 @@
       "version": "3.9.0",
       "file": "plans/045-generalize-payments-webhook-section-into-webhook-security-discord-ed25519-slack-github-svix-telegram-verification-and-replay.md",
       "note": "Incoming webhook checks now cover chat and developer platforms such as Discord, Slack and GitHub, not only payment providers.",
+      "audience": "public"
+    },
+    {
+      "id": 46,
+      "slug": "add-realtime-security-skill-websocket-sse-and-long-poll-auth-origin-checks-cswsh-channel-authorization-connection-limits",
+      "title": "Add realtime-security skill: WebSocket, SSE and long-poll auth, Origin checks (CSWSH), channel authorization, connection limits",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/046-add-realtime-security-skill-websocket-sse-and-long-poll-auth-origin-checks-cswsh-channel-authorization-connection-limits.md",
+      "note": "New checks for live-updating features such as WebSockets, server-sent events and long-polling, covering who can connect and which updates they receive.",
+      "audience": "public"
+    },
+    {
+      "id": 47,
+      "slug": "add-postgres-security-skill-drizzle-rls-policies-listen-notify-tenant-leaks-advisory-locks-poolers-roles-and-backups",
+      "title": "Add postgres-security skill: Drizzle RLS policies, LISTEN/NOTIFY tenant leaks, advisory locks, poolers, roles and backups",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/047-add-postgres-security-skill-drizzle-rls-policies-listen-notify-tenant-leaks-advisory-locks-poolers-roles-and-backups.md",
+      "note": "New checks for self-hosted Postgres, covering row-level security set up through Drizzle, realtime notifications and database roles.",
+      "audience": "public"
+    },
+    {
+      "id": 48,
+      "slug": "add-discord-bot-security-skill-bot-tokens-intents-command-permissions-role-sync-hierarchy-allowedmentions-discord-oauth-identity",
+      "title": "Add discord-bot-security skill: bot tokens, intents, command permissions, role-sync hierarchy, allowedMentions, Discord OAuth identity",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/048-add-discord-bot-security-skill-bot-tokens-intents-command-permissions-role-sync-hierarchy-allowedmentions-discord-oauth-identity.md",
+      "note": "New checks for Discord bots and Discord sign-in, covering bot tokens, command permissions and role syncing.",
+      "audience": "public"
+    },
+    {
+      "id": 49,
+      "slug": "extend-auth-with-multi-host-sessions-cross-host-handoff-tokens-and-custom-domain-verification",
+      "title": "Extend auth with multi-host sessions, cross-host handoff tokens and custom-domain verification",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/049-extend-auth-with-multi-host-sessions-cross-host-handoff-tokens-and-custom-domain-verification.md",
+      "note": "Sign-in checks now cover apps that keep users logged in across several domains, including customer-owned custom domains.",
+      "audience": "public"
+    },
+    {
+      "id": 50,
+      "slug": "add-fivem-security-skill-client-triggerable-net-events-replicated-convars-client-script-secrets-game-server-credentials",
+      "title": "Add fivem-security skill: client-triggerable net events, replicated convars, client-script secrets, game-server credentials",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/050-add-fivem-security-skill-client-triggerable-net-events-replicated-convars-client-script-secrets-game-server-credentials.md",
+      "note": "New checks for FiveM game servers and the web services they connect to.",
+      "audience": "public"
+    },
+    {
+      "id": 51,
+      "slug": "extend-cryptography-with-low-entropy-code-hashing-key-prefix-lookup-and-aead-binding-for-encrypted-at-rest-secrets",
+      "title": "Extend cryptography with low-entropy code hashing, key-prefix lookup and AEAD binding for encrypted-at-rest secrets",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/051-extend-cryptography-with-low-entropy-code-hashing-key-prefix-lookup-and-aead-binding-for-encrypted-at-rest-secrets.md",
+      "note": "Cryptography checks now cover invite and join codes, stored access keys and encrypted stored secrets such as webhook URLs.",
       "audience": "public"
     }
   ],

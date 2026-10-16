@@ -3,7 +3,7 @@ id: 46
 title: Add realtime-security skill: WebSocket, SSE and long-poll auth, Origin checks (CSWSH), channel authorization, connection limits
 type: feature
 version: 3.10.0
-status: planned
+status: done
 created: 2026-10-16
 ---
 
@@ -26,6 +26,9 @@ created: 2026-10-16
 - **Fails if:** an API name, default, version, advisory ID or provider capability is asserted that the vendor docs, RFC or OSV do not confirm; or the freshness check reports drift; or content duplicates a sibling skill instead of cross-referencing it.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Research primary sources (vendor docs, RFCs, OSV/GHSA) and write the skill; every API name, header, default and advisory ID verified live -> target: `skills/realtime-security/SKILL.md`
-- [ ] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json/marketplace.json description and keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
-- [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+- [x] Step 1: Research primary sources (vendor docs, RFCs, OSV/GHSA) and write the skill; every API name, header, default and advisory ID verified live -> target: `skills/realtime-security/SKILL.md`
+  > evidence: verifier PARTIAL→fixed: 12 advisories, RFC/WHATWG/OWASP/ws/Socket.IO/Hono/nginx facts confirmed; same-origin missing-Origin handling, async upgrade/message rejection crashes, int64 cursor regex (node-tested), ticket/Origin ordering, Redis pattern wording fixed; 649 lines (2026-10-16) (2026-10-16)
+- [x] Step 2: Register the skill: audit tier + OWASP map, README table, plugin.json/marketplace.json description and keywords, cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
+  > evidence: registered in audit Tier 2, OWASP map, README, plugin/marketplace keywords; SOURCES.md merged; check-freshness All current (2026-10-16) (2026-10-16)
+- [x] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`
+  > evidence: registered in audit Tier 2, OWASP map, README, plugin/marketplace keywords; SOURCES.md merged; check-freshness All current (2026-10-16) (2026-10-16)

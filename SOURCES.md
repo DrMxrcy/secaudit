@@ -635,6 +635,58 @@ Last verified: 2026-10-16.
 - https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025, where §1, §3, §5 and §6 land
 - https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025, where §4's identity-header trust and §5's Access JWT verification land
 
+## Realtime connections (`realtime-security`)
+- https://www.rfc-editor.org/rfc/rfc6455.html — §10.2 servers SHOULD verify `Origin` and reply 403; close codes 1003/1007/1008/1011, 1008 for hiding policy details
+- https://websockets.spec.whatwg.org/ — WebSocket request credentials mode "include", referrer "no-referrer"; `close()` reason over 123 bytes throws
+- https://fetch.spec.whatwg.org/ — `Origin` appended for CORS-tainted and "websocket"-mode requests, not same-origin GET/HEAD
+- https://html.spec.whatwg.org/multipage/server-sent-events.html — `EventSource(url, { withCredentials })`; potential-CORS request; non-200 fails the connection; 204 stops reconnection; `Last-Event-ID` on reconnect and its value space; 15-second comment heartbeat
+- https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html — Origin allowlist, no tokens in URLs, first-message auth, SameSite, per-action authorization, close on logout/expiry, 30-minute re-validation, 64KB, 100 msg/min, per-user connection limits
+- https://portswigger.net/web-security/websockets/cross-site-websocket-hijacking — CSWSH definition, cookie-only handshake condition, two-way interaction
+- https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions — site vs origin, Lax top-level-GET rule, CSWSH via sibling domains
+- https://github.com/websockets/ws/blob/master/doc/ws.md — `maxPayload` 104857600, `maxFragments` 16384, `maxBufferedChunks` 262144, `verifyClient` discouraged, `noServer`, `handleUpgrade`, auto-accept, server `perMessageDeflate` off, `isBinary`, `bufferedAmount`, `terminate()`
+- https://github.com/websockets/ws/blob/master/README.md — `'upgrade'` + `handleUpgrade` auth example, heartbeat, permessage-deflate overhead, leftmost `X-Forwarded-For` FAQ example, per-connection `'error'` listeners
+- https://socket.io/docs/v4/handling-cors/ — "CORS only applies to HTTP long-polling"; `allowRequest` to restrict
+- https://socket.io/docs/v4/server-options/ — `allowRequest`, `maxHttpBufferSize` 1e6, `pingInterval` 25000, `pingTimeout` 20000, `connectTimeout` 45000, `perMessageDeflate` false, `skipMiddlewares` warning
+- https://socket.io/docs/v4/middlewares/ — `io.use` once per connection; `next(err)` message and `data` reach `connect_error`; socket not yet connected in middleware
+- https://socket.io/docs/v4/namespaces/ — `io.use` is `io.of("/").use`; per-namespace middleware; regex namespace warning; function form; `cleanupEmptyChildNamespaces`
+- https://socket.io/docs/v4/rooms/ — rooms are a server-only concept
+- https://socket.io/docs/v4/server-socket-instance/ — `socket.use` per-packet middleware; dropped packets without `next`; `socket.data`
+- https://socket.io/docs/v4/server-instance/ — `disconnectSockets`; utility methods across servers with the Redis adapter
+- https://socket.io/docs/v4/client-options/ — `auth`, `query`, `extraHeaders` ignored by the browser WebSocket API
+- https://socket.io/docs/v4/using-multiple-nodes/ — sticky sessions, disabling long-polling, adapters
+- https://github.com/socketio/socket.io-protocol — `CONNECT` packet carries the auth payload
+- https://hono.dev/docs/helpers/websocket — `upgradeWebSocket`, Node via `@hono/node-server` + `WebSocketServer({ noServer: true })`, `@hono/node-ws` deprecated, CORS immutable-header warning
+- https://github.com/honojs/node-server — `serve({ fetch, websocket: { server: wss } })`
+- https://github.com/honojs/middleware/blob/main/packages/node-ws/src/index.ts — `new WebSocketServer({ noServer: true })` with no options; upgrade routed through the Hono app first
+- https://hono.dev/docs/helpers/streaming — `streamSSE`, `writeSSE`, `stream.aborted`, `onAbort`
+- https://github.com/honojs/hono/blob/main/src/helper/streaming/sse.ts — CR/LF rejection in `event`/`id`; per-line `data:`; `onError` then `event: error` with `e.message`
+- https://hono.dev/docs/middleware/builtin/csrf — `csrf()` skips GET/HEAD/OPTIONS
+- https://github.com/honojs/hono/blob/main/src/utils/compress.ts — default compressible regex excludes `text/event-stream`
+- https://github.com/expressjs/compression — SSE needs `res.flush()`
+- https://nginx.org/en/docs/http/ngx_http_proxy_module.html — `proxy_buffering on`, `X-Accel-Buffering`, `proxy_ignore_headers`, `proxy_read_timeout` 60s
+- https://nodejs.org/api/http.html — `'upgrade'` replaces the `'request'` flow; `server.timeout` default 0; `maxHeadersCount`
+- https://nextjs.org/docs/app/guides/custom-server — custom server `handle(req, res)`
+- https://nextjs.org/docs/app/api-reference/file-conventions/proxy — `middleware` renamed to `proxy`
+- https://node-postgres.com/apis/client — `notification` event `{ processId, channel, payload }`
+- https://redis.io/docs/latest/develop/pubsub/ — `PSUBSCRIBE` matches channel names against a pattern
+- https://github.com/advisories/GHSA-3h5v-q93c-6h6q — ws CVE-2024-37890; fixed 8.17.1 / 7.5.10 / 6.2.3 / 5.2.4
+- https://github.com/advisories/GHSA-96hv-2xvq-fx4p — ws CVE-2026-48779; fixed 8.21.0 / 7.5.11 / 6.2.4 / 5.2.5
+- https://github.com/advisories/GHSA-58qx-3vcg-4xpx — ws CVE-2026-45736; fixed 8.20.1
+- https://github.com/advisories/GHSA-25hc-qcg6-38wj — socket.io CVE-2024-38355; fixed 4.6.2 / 2.5.1
+- https://github.com/advisories/GHSA-677m-j7p3-52f9 — socket.io-parser CVE-2026-33151; fixed 4.2.6 / 3.4.4 / 3.3.5
+- https://github.com/advisories/GHSA-2m8v-j782-fhvr — socket.io-parser CVE-2026-69185; fixed 4.2.7 / 3.4.5 / 3.3.6
+- https://github.com/advisories/GHSA-r635-g3xr-vw7x — engine.io CVE-2026-59725; fixed 6.6.7
+- https://github.com/advisories/GHSA-gr94-w7qr-f4j3 — engine.io CVE-2026-59724; fixed 6.6.7
+- https://github.com/advisories/GHSA-2gc4-cqfq-p2gv — engine.io CVE-2026-102599; fixed 6.6.10
+- https://github.com/advisories/GHSA-wfpm-5gcm-94cg — @socket.io/cluster-engine CVE-2026-102600; fixed 0.1.1
+- https://github.com/advisories/GHSA-p6xx-57qc-3wxr — hono CVE-2026-29085; fixed 4.12.4
+- https://github.com/advisories/GHSA-88fw-hqm2-52qc — hono CVE-2026-54290; fixed 4.12.25
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025: CSWSH, room IDOR, cross-tenant fan-out and replay
+- https://top10.owasp.org/2025/A07_2025-Authentication_Failures/ — A07:2025: URL tokens, connections outliving the session
+- https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ — A02:2025: permissive origin/CORS, default limits
+- https://top10.owasp.org/2025/A06_2025-Insecure_Design/ — A06:2025: missing per-connection resource model
+- https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/ — A10:2025: unhandled socket errors, streamed exception text
+
 ## Accidentally exposed APIs (`api-surface`)
 - https://api-security.owasp.org/editions/2023/en/0x11-t10/ — OWASP API Security Top 10 2023 names; API9 overview cites exposed debug endpoints
 - https://api-security.owasp.org/editions/2023/en/0xa2-broken-authentication/ — API2:2023 Broken Authentication

@@ -1,9 +1,9 @@
 # Changelog
 
-## v3.10.0 — (in progress)
+## v3.10.0 — 2026-10-16
 
 ### ✨ New
-- (pending) New checks for live-updating features such as WebSockets, server-sent events and long-polling, covering who can connect and which updates they receive.
+- New checks for live-updating features such as WebSockets, server-sent events and long-polling, covering who can connect and which updates they receive.
 - New checks for self-hosted Postgres, covering row-level security set up through Drizzle, realtime notifications and database roles.
 - New checks for Discord bots and Discord sign-in, covering bot tokens, command permissions and role syncing.
 - Sign-in checks now cover apps that keep users logged in across several domains, including customer-owned custom domains.

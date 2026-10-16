@@ -3,7 +3,7 @@ id: 54
 title: Audit methodology: variant analysis after each confirmed finding and a fail-open insecure-defaults sweep
 type: feature
 version: 3.10.0
-status: planned
+status: active
 created: 2026-10-16
 ---
 
@@ -26,5 +26,6 @@ created: 2026-10-16
 - **Fails if:** it contradicts the existing evidence/verification rules in the audit skill.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write the variant-analysis and fail-open sections and wire them into the audit phases -> target: `skills/audit/SKILL.md`, `skills/audit/references/methodology.md`
+- [x] Step 1: Write the variant-analysis and fail-open sections and wire them into the audit phases -> target: `skills/audit/SKILL.md`, `skills/audit/references/methodology.md`
+  > evidence: verifier PARTIAL→fixed: diff-scope exception, worker table row, no-reseed rule, Hono typing, tightened heuristics; methodology 538→318 lines; 15 rg heuristics re-run on BAD/GOOD fixtures (2026-10-16) (2026-10-16)
 - [ ] Step 2: Cite sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`

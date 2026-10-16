@@ -57,6 +57,9 @@ narrow.
   - **Judge the change by the guards that *should* surround it, not only the added lines.** A new
     endpoint with no auth check is a finding *because* of what the diff omits. When a verdict truly
     needs whole-app context the diff can't provide, say so and tag it **Needs verification**.
+  - **Exception:** variant analysis may search the whole repo using seed patterns from the diff's
+    confirmed findings; report variants outside the diff as **pre-existing** and keep them out of
+    the verdict on the change.
 
 State the chosen scope in one line before you start, so the user can widen or narrow it.
 
@@ -95,8 +98,9 @@ Reaching the last rung is fine, but say so, because the coverage caveat then app
 | Role | Prefer an agent whose description mentions | Used in |
 |------|-------------------------------------------|---------|
 | Recon | cheap, high-volume repo discovery, file enumeration, summarising | Phase 1 |
-| Domain audit | security-sensitive analysis, auditing, the specific domain | Phase 2 (one per domain) |
+| Domain audit | security-sensitive analysis, auditing, the specific domain | Phase 2 (one per domain, plus the fail-open worker) |
 | Verification | fresh-context adversarial verification of claimed findings | Phase 3 |
+| Variant sweep | security-sensitive analysis, code search across a repository | Phase 4 (one per confirmed root cause) |
 
 Respect deliberate model assignments in the agent definitions — a cheap model for enumeration and
 a strong one for analysis is the right shape, and where an environment has configured that, it is
@@ -108,8 +112,9 @@ agents and you used them, say so — the user needs to know whose judgement prod
 ### Phase 1 — recon (1 worker)
 
 Map the attack surface per `Reconnaissance` below and return a structured inventory: entry points,
-auth mechanism and its authoritative layer, data stores, third-party integrations, and **a file
-inventory per domain** so Phase 2 workers know their territory and Phase 3 can check coverage.
+auth mechanism and its authoritative layer, data stores, third-party integrations, **every
+security-relevant config read** (`file:line`, for the fail-open sweep), and **a file inventory per
+domain** so Phase 2 workers know their territory and Phase 3 can check coverage.
 
 ### Phase 2 — domain sweep (N workers, concurrent)
 
@@ -121,13 +126,19 @@ One worker per applicable domain from the tiers below. Each:
 
 Each worker returns:
 
-1. **Findings** — `file:line`, severity, the evidence actually read, and the fix.
+1. **Findings** — `file:line`, severity, the evidence actually read, and the fix, plus a one-line
+   **root cause** and the **seed pattern** that matches it exactly (Phase 4's input).
 2. **Explicit passes** — controls checked and found present. A silent absence is not a pass;
    "every public mutation is auth-gated, here are all four" is a result, "no findings" is not.
 3. **Coverage** — files read, and files deliberately skipped **with the reason**.
 
 That third item is the point. Coverage becomes mechanical and per-domain instead of one hedge at
 the end of the report.
+
+Alongside the domain workers, run one cross-cutting **fail-open worker**. Its territory is recon's
+config-read inventory, and it loads `./references/methodology.md` §3 instead of a domain skill. It
+returns the same three items, with a deny / crash / permissive verdict for every read. See
+`Fail-open / insecure-defaults sweep`.
 
 ### Phase 3 — verification
 
@@ -136,12 +147,24 @@ verdict against the evidence. This applies to refutations too: a false positive 
 same context that raised it has not really been checked. Wire the verdicts into the existing
 evidence rules in `Verification pass (before reporting)`.
 
+### Phase 4 — variant sweep (one worker per confirmed root cause)
+
+For each finding Phase 3 marked CONFIRMED (or PARTIAL with the root cause confirmed), the parent
+dispatches a variant worker with the finding, its root cause and its seed pattern. The worker
+searches the **whole repository**, every workspace and sibling service included, not the original
+domain's file list. It returns candidates with their evidence, and the patterns and tool it ran.
+Those candidates then go back through Phase 3 verification, so a variant is reported only after it
+has been verified on its own. Verified variants are not themselves seeds, so the phase runs once.
+The parent dispatches this phase but does not search itself. See `Variant analysis (after
+verification)`.
+
 ### Parent responsibilities
 
 The parent **synthesises and does not audit**. If it reads application code itself, it reintroduces
 the context pressure the fan-out exists to remove. It owns:
 
 - **De-duplication** — one root cause surfacing in three domains is one finding, not three.
+  Verified variants are grouped under their root cause in the same way.
 - **Attack chains** — chaining across domains is only visible from here (see `Attack chains`).
 - **Severity and the final report.** Workers never write the report directly.
 
@@ -174,6 +197,15 @@ against. Apply two lenses throughout the sweep — **sink-driven** (trace untrus
 dangerous sinks) and **control-driven** (enumerate entry points, verify each has its authZ /
 validation / ownership / rate-limit guard). Full checklist and strategies:
 `./references/methodology.md`.
+
+## Fail-open / insecure-defaults sweep (alongside the tiers)
+
+For every security-relevant config read from recon (secrets, allowed origins, auth toggles,
+rate-limit stores, webhook secrets, TLS, debug and security feature flags), check what the code does
+when the value is **missing, empty, or malformed**: it must refuse to start or deny, never fall back
+to permissive (`?? '*'`, `|| 'dev-secret'`, `if (secret) verify()`, `NODE_ENV !== 'production'`,
+`catch { return true }`). CWE-636 / CWE-1188. Procedure, BAD/GOOD patterns, the boot-time env schema,
+grep heuristics and evidence rules: `./references/methodology.md` §3.
 
 ## Audit Process (risk-ranked)
 
@@ -375,6 +407,15 @@ attacker-control from the code alone — say what would confirm it). A finding t
 behind. For findings that warrant runtime proof, hand off to `secaudit:dynamic-verification` when a
 running app is available.
 
+### Variant analysis (after verification)
+
+Treat each **Confirmed** finding as a seed: name its root cause (missing guard, unsafe API, shared
+helper, copy-pasted shape, insecure default), match the seed exactly, widen the pattern one element
+at a time, and sweep the whole repo. Each match is a candidate that must pass the verification pass
+on its own before it is reported, grouped under the root cause with one choke-point fix where one
+exists. Under the fan-out model this is Phase 4. Procedure, tools and worked examples:
+`./references/methodology.md` §4.
+
 ### Coverage check (after the sweep)
 
 Before writing the report, run a short completeness-critic pass against the recon map: was every
@@ -384,10 +425,12 @@ end?
 
 Under the fan-out model this is largely mechanical: each worker returned its files-read and
 files-skipped, so diff those against the recon inventory rather than reconstructing coverage from
-memory. **A domain whose worker failed is UNAUDITED and must be reported as such** — not folded
-into a general caveat, and never left to read as clean. Cover any gap you find, or state it explicitly. Report what you did **not** cover as a short
-**Coverage & known gaps** line — a report that names its own boundaries is more trustworthy than
-one that implies total coverage. See `./references/methodology.md`.
+memory. Also check that the fail-open worker gave every config read a verdict, and that each
+confirmed root cause was swept for variants, and note which tool ran the sweep. **A domain whose
+worker failed is UNAUDITED and must be reported as such** — not folded into a general caveat, and
+never left to read as clean. Cover any gap you find, or state it explicitly. Report what you did
+**not** cover as a short **Coverage & known gaps** line — a report that names its own boundaries is
+more trustworthy than one that implies total coverage. See `./references/methodology.md`.
 
 ### Attack chains (link findings into exploit paths)
 
@@ -419,6 +462,10 @@ For each issue:
    should guard. This is the evidence the finding rests on.
 4. Show a before/after code fix. In the "before", use a masked placeholder where a real secret
    would appear (`***`, `sk_live_…REDACTED`) — do not reproduce the actual value.
+5. **Variants:** list each verified sibling as `file:line` with its own tag, give the count of
+   refuted matches, and name the pattern that was run. When a choke-point fix exists, the fix in
+   item 4 is that single fix. Write `Variants: none (pattern … over N files)` when the sweep found
+   only the seed.
 
 Skip areas with no issues. After the severity-grouped findings, add an **Attack Chains** section
 when two or more findings combine into an exploit path (see the Attack chains rules above); rate
@@ -456,7 +503,7 @@ package, not from a version named in a skill file.
 "next": "15.1.0"
 
 // After — a version OSV currently reports zero advisories for
-"next": "15.5.21"
+"next": "15.5.27"
 ```
 
 #### High
@@ -478,6 +525,10 @@ const session = await stripe.checkout.sessions.create({
   line_items: [{ price: product.stripePriceId }],
 })
 ```
+
+**Variants:** `app/api/subscribe/route.ts:21` [Confirmed] — same `req.body.price` shape; 2 matches
+refuted (seed scripts never routed). Pattern: `rg -n "unit_amount:\s*req\.(body|query)" app/`.
+Fix both through one server-side `priceFor(productId)` lookup.
 
 ### Attack Chains
 
@@ -529,7 +580,9 @@ vulnerability in the first place. Prevention is better than detection.
 ## References
 
 - `./references/methodology.md` -- The recon / attack-surface checklist, the sink-driven vs
-  control-driven analysis strategies, and the coverage-gap self-check questions.
+  control-driven analysis strategies, the fail-open / insecure-defaults sweep (BAD/GOOD patterns,
+  boot-time env schema, grep heuristics), variant analysis (procedure, tools, four worked
+  examples), and the coverage-gap self-check questions.
 - `./references/tooling.md` -- Recommended automated security scanning tools, organized by stack,
   and when to run each.
 
@@ -538,3 +591,9 @@ vulnerability in the first place. Prevention is better than detection.
 - https://top10.owasp.org/2025/ -- OWASP Top 10 (2025), the backbone this audit maps to
 - https://genai.owasp.org/llm-top-10/ -- OWASP Top 10 for LLM Applications (2025)
 - https://owasp.github.io/www-project-mobile-top-10/ -- OWASP Mobile Top 10
+- https://cwe.mitre.org/data/definitions/636.html -- CWE-636 Not Failing Securely ('Failing Open')
+- https://cwe.mitre.org/data/definitions/1188.html -- CWE-1188 Initialization of a Resource with an Insecure Default
+- https://devguide.owasp.org/en/02-foundations/03-security-principles/ -- OWASP Developer Guide: "Fail Safe" and "Security by Default"
+- https://codeql.github.com/docs/codeql-overview/about-codeql/ -- definition of variant analysis
+- https://docs.github.com/en/code-security/how-tos/find-and-fix-code-vulnerabilities/scan-from-vs-code/run-queries-at-scale -- multi-repository variant analysis (up to 1,000 repos, controller repository)
+- https://github.com/trailofbits/skills/blob/main/plugins/variant-analysis/skills/variant-analysis/SKILL.md -- Trail of Bits variant-analysis method: exact match first, generalise one element at a time

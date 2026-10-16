@@ -16,7 +16,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 
 ### 🐛 Fixed
 - Version-check advice now reflects the security fixes released over the past month.
-- (pending) Some search commands in the proxy checks silently matched nothing; they now find what they are meant to.
+- Some search commands in the proxy checks silently matched nothing; they now find what they are meant to.
 
 ## v3.9.0 — 2026-09-16
 

@@ -3,7 +3,7 @@ id: 49
 title: Extend auth with multi-host sessions, cross-host handoff tokens and custom-domain verification
 type: feature
 version: 3.10.0
-status: planned
+status: active
 created: 2026-10-16
 ---
 
@@ -26,6 +26,7 @@ created: 2026-10-16
 - **Fails if:** an API name, default, version, advisory ID or provider capability is asserted that the vendor docs, RFC or OSV do not confirm; or the freshness check reports drift; or content duplicates a sibling skill instead of cross-referencing it.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Research primary sources and write the new section(s); every API name, parameter, default and advisory ID verified live -> target: `skills/auth/SKILL.md`
+- [x] Step 1: Research primary sources and write the new section(s); every API name, parameter, default and advisory ID verified live -> target: `skills/auth/SKILL.md`
+  > evidence: verifier PARTIAL→fixed: RFC 6265bis/9700/9110, OWASP, Postgres, Microsoft, Cloudflare, Caddy quotes verified; open-redirect in resolveTarget sample, timingSafeEqual length throw, premature nonce-cookie delete fixed; return-URL check node-tested (//evil.net rejected) (2026-10-16) (2026-10-16)
 - [ ] Step 2: Update the skill description/frontmatter, audit dispatch notes, README and plugin.json keywords; cross-references from sibling skills -> target: `skills/audit/SKILL.md`, `README.md`, `.claude-plugin/plugin.json`
 - [ ] Step 3: Add cited sources and confirm `python3 scripts/check-freshness.py` is all-current -> target: `SOURCES.md`

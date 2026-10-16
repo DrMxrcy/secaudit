@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.9.0",
-  "nextId": 52,
+  "nextId": 55,
   "items": [
     {
       "id": 1,
@@ -512,6 +512,36 @@
       "version": "3.10.0",
       "file": "plans/051-extend-cryptography-with-low-entropy-code-hashing-key-prefix-lookup-and-aead-binding-for-encrypted-at-rest-secrets.md",
       "note": "Cryptography checks now cover invite and join codes, stored access keys and encrypted stored secrets such as webhook URLs.",
+      "audience": "public"
+    },
+    {
+      "id": 52,
+      "slug": "refresh-framework-versions-for-advisories-published-since-2026-09-16-next-js-hono-fastify-elysia-tanstack-start-and-fix-two-redirected-source-links",
+      "title": "Refresh framework-versions for advisories published since 2026-09-16 (Next.js, Hono, Fastify, Elysia, TanStack Start) and fix two redirected source links",
+      "type": "bug",
+      "version": "3.10.0",
+      "file": "plans/052-refresh-framework-versions-for-advisories-published-since-2026-09-16-next-js-hono-fastify-elysia-tanstack-start-and-fix-two-redirected-source-links.md",
+      "note": "Version-check advice now reflects the security fixes released over the past month.",
+      "audience": "public"
+    },
+    {
+      "id": 53,
+      "slug": "add-api-surface-skill-accidentally-exposed-backend-and-internal-apis-bff-open-proxies-docs-introspection-debug-endpoints-in-production-owasp-api-top-10-inventory",
+      "title": "Add api-surface skill: accidentally exposed backend and internal APIs, BFF open proxies, docs/introspection/debug endpoints in production, OWASP API Top 10 inventory",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/053-add-api-surface-skill-accidentally-exposed-backend-and-internal-apis-bff-open-proxies-docs-introspection-debug-endpoints-in-production-owasp-api-top-10-inventory.md",
+      "note": "New checks for backend and internal services that are reachable from the internet by mistake.",
+      "audience": "public"
+    },
+    {
+      "id": 54,
+      "slug": "audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep",
+      "title": "Audit methodology: variant analysis after each confirmed finding and a fail-open insecure-defaults sweep",
+      "type": "feature",
+      "version": "3.10.0",
+      "file": "plans/054-audit-methodology-variant-analysis-after-each-confirmed-finding-and-a-fail-open-insecure-defaults-sweep.md",
+      "note": "Audits now hunt for repeats of every confirmed issue elsewhere in the code and check what happens when a setting is missing.",
       "audience": "public"
     }
   ],

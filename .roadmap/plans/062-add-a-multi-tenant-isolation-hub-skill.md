@@ -3,7 +3,7 @@ id: 62
 title: Add a multi-tenant-isolation hub skill
 type: feature
 version: 3.12.0
-status: planned
+status: active
 created: 2026-10-17
 ---
 
@@ -33,5 +33,6 @@ created: 2026-10-17
 - **Fails if:** RLS/realtime/object-storage content is duplicated rather than referenced, or any cited heading does not exist.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write multi-tenant-isolation SKILL.md sections 1-9 -> target: skills/multi-tenant-isolation/SKILL.md
+- [x] Step 1: Write multi-tenant-isolation SKILL.md sections 1-9 -> target: skills/multi-tenant-isolation/SKILL.md
+  > evidence: freshness --only links/fixclaims/cves: All current (manifest drift expected until step 2); 33/33 pointers resolve; 18 greps BSD+GNU; host resolver failed closed on all attack hosts; spec MET; quality PARTIAL x2 -> fixed (fetch cache, Stripe guard, worker lease/retry, ES wording); parent reviewed final worker snippet and fixed lease-duration overclaim (2026-10-18)
 - [ ] Step 2: Register: audit dispatch + OWASP map, README, plugin.json, web-vulns pointer, SOURCES; freshness green -> target: skills/audit/SKILL.md, README.md, .claude-plugin/plugin.json, skills/web-vulns/SKILL.md, SOURCES.md

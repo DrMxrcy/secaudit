@@ -1,0 +1,31 @@
+skills/fivem-security/SKILL.md
+  s_46f42f15a4ddb4::t_0b20e887c97094 544,662-664,680,696
+  s_46f42f15a4ddb4::t_92601374f89361 495,508-510,519-533,538-541,543,545-556,600,610,631
+  s_46f42f15a4ddb4::t_de7cb45117b8f7 511-513,516-518,534-537,542,557-561,565,567,586,588,594-596,598,601-609,611-630,633-637,641,698-699
+  s_46f42f15a4ddb4::t_23d82c7c3c17c1 514-515,562-564,566,568-585,587,589-593,597,599,638-640
+  s_46f42f15a4ddb4::t_91c1692707f5a3 632
+.roadmap/plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md
+  s_46f42f15a4ddb4::t_f6a51f8561caaf 21-25,36-37,39-40
+  s_46f42f15a4ddb4::t_8bd2ce31288d51 6
+ROADMAP.md
+  s_46f42f15a4ddb4::t_f6a51f8561caaf 43
+  s_46f42f15a4ddb4::t_c3d2e8af5b6298 47
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_5b964631019507 720
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "041745b176c9bbdd034d05e2c8da08b0a1fb6044",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

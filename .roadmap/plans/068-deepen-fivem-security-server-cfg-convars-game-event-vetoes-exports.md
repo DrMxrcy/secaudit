@@ -35,6 +35,7 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: server.cfg hardening grep table in §11 -> target: skills/fivem-security/SKILL.md
   > evidence: check-freshness.py: All current; every convar/default verified vs citizenfx/fivem-docs source; exec-order last-wins walker tested on 9 fixtures bash+zsh incl. cycle (terminates), CRLF, BOM, ; joins, quoted names; spec MET; quality PARTIAL x2 -> fixed (loop cap reached; parent re-ran cycle/override fixtures on the extracted script) (2026-10-18)
-- [ ] Step 2: game-event / entity-creation vetoes section, exports + ACE additions in §1, §3 example warning; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
+- [x] Step 2: game-event / entity-creation vetoes section, exports + ACE additions in §1, §3 example warning; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
+  > evidence: check-freshness.py: All current; claims verified vs citizenfx/fivem master (event args, routeEvent cancel, entityCreating, POPTYPE, GetInvokingResource, ACE, docs example cfg); greps tested on 2 fixtures bash+zsh; Lua parsed; spec MET; quality PARTIAL -> fixed entityCreating pop-type bypass + 5 grep gaps -> CONFIRMED; parent fixed relaxed-lockdown overclaim (2026-10-18)
 - [ ] Step 3: HTTP surface — sv_requestParanoia row, info/players/dynamic.json probe block, SetHttpHandler subsection; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
 - [ ] Step 4: NUI hardening — DB fields to innerHTML incl. blind XSS in staff UIs, cross-resource callback pass-through, CSP on ui_page; §3 one-liners; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md

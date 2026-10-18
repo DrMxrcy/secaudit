@@ -1,6 +1,6 @@
 ---
 name: fivem-security
-description: Audits FiveM (CitizenFX / Cfx.re) server resources (Lua/JS) and the web APIs a FiveM server calls. Covers `RegisterNetEvent` handlers any client can trigger with arbitrary arguments (authorize on `source`, never on an id/identifier argument), server-only events wrongly networked, files `fxmanifest.lua` ships to players, `setr`/`sets` convars, committed `server.cfg` secrets, client-writable state bags, NUI callbacks and XSS, `PerformHttpRequest` keys, txAdmin exposure, and the game-facing API (per-community key scoping, cross-community IDOR, idempotent retries). Use whenever the project has `fxmanifest.lua`, `server.cfg`, Lua/JS calling `RegisterNetEvent`/`TriggerServerEvent`/`PerformHttpRequest`, or an API called by a FiveM game server. Hand-offs: secaudit:secrets, secaudit:rate-limiting, secaudit:realtime-security, secaudit:discord-bot-security, secaudit:web-vulns.
+description: Audits FiveM (CitizenFX / Cfx.re) server resources (Lua/JS) and the web APIs a FiveM server calls. Covers `RegisterNetEvent` handlers any client can trigger with arbitrary arguments (authorize on `source`, never on an id/identifier argument), server-only events wrongly networked, files `fxmanifest.lua` ships to players, `setr`/`sets` convars, committed `server.cfg` secrets, client-writable state bags, NUI callbacks and XSS, `PerformHttpRequest` keys, txAdmin exposure, `server.cfg` hardening convars, OneSync game-event and `entityCreating` vetoes, privileged `exports` and ACE grants, and the game-facing API (per-community key scoping, cross-community IDOR, idempotent retries). Use whenever the project has `fxmanifest.lua`, `server.cfg`, Lua/JS calling `RegisterNetEvent`/`TriggerServerEvent`/`PerformHttpRequest`, or an API called by a FiveM game server. Hand-offs: secaudit:secrets, secaudit:rate-limiting, secaudit:realtime-security, secaudit:discord-bot-security, secaudit:web-vulns.
 license: MIT
 ---
 
@@ -103,6 +103,84 @@ end)
 
 The JS shape is identical (`onNet('bank:deposit', (amount) => { const src = global.source; ... })`).
 
+**Exports are a second entry point.** `exports('Name', fn)` (or `server_export` in the manifest)
+makes a function callable from other resources as `exports.myresource:Name(...)` (Lua runtime docs).
+Any server resource can call a server export — including a free script installed last week — so a
+privileged export (pay, give item, set job, ban) is an unauthenticated admin API inside your server.
+Don't export privileged actions; if you must, check the caller and still validate the arguments.
+
+```lua
+-- BAD — any resource can mint money for anyone
+exports('addMoney', function(playerId, amount) Framework.GetPlayer(playerId).addMoney(amount) end)
+
+-- GOOD — named callers only, arguments still checked
+local CALLERS = { my_jobs = true, my_shops = true }
+exports('addMoney', function(playerId, amount)
+  if not CALLERS[GetInvokingResource() or ''] then return false end
+  if not isPositiveInt(amount, 1, 100000) then return false end
+  local player = Framework.GetPlayer(tonumber(playerId))
+  if not player then return false end
+  player.addMoney(amount)
+  return true
+end)
+```
+
+`GetInvokingResource()` names a **resource, not a player**. Per the source (`ScriptHost.cpp`
+`GetInvokingRuntime`, `ResourceScriptFunctions.cpp`) it returns the resource one level down the
+script-runtime stack and `nil` when there is none — which is the case inside a net event delivered
+from a client. In a net event it can only tell "another server resource called `TriggerEvent`" from
+"the network delivered this"; it says nothing about which player sent it or what they may do. An
+allowlisted caller that forwards a client's arguments passes the export's check, so that caller must
+authorize on `source` itself.
+
+**ACE gates commands and ACE objects, not net events.** `RegisterCommand(name, fn, true)` makes
+players *"need the command.yourCommandName ace permission"* (RegisterCommand reference); a net event
+has no such gate — the handler must call `IsPlayerAceAllowed(src, '<object>')`. In the source
+(`Security.cpp`) ACE objects are hierarchical (`command` covers every `command.*`), a `deny` beats
+any `allow`, and every principal also matches `builtin.everyone`.
+
+```lua
+-- BAD — a second, hand-rolled admin list (often in a shared config, so public — §4; often has ip: entries — §6)
+local ADMINS = { ['license:1a2b3c4d'] = true, ['ip:203.0.113.7'] = true }
+RegisterNetEvent('admin:revive', function(targetId)
+  for _, id in ipairs(GetPlayerIdentifiers(source)) do
+    if ADMINS[id] then return Revive(targetId) end         -- and targetId is unchecked
+  end
+end)
+
+-- GOOD — one ACL, managed in cfg; the handler asks it
+-- server.cfg: add_ace group.admin myadmin.revive allow
+RegisterNetEvent('admin:revive', function(targetId)
+  local src = source
+  if not IsPlayerAceAllowed(src, 'myadmin.revive') then return end
+  targetId = tonumber(targetId)
+  if not targetId or not DoesPlayerExist(targetId) then return end
+  Revive(targetId)
+end)
+```
+
+In cfg: the docs' own example `server.cfg` ships `add_ace group.admin command allow # allow all
+commands`, `add_ace group.admin command.quit deny` and `add_principal identifier.fivem:1 group.admin`,
+so a broad `group.admin` grant is the documented baseline, not a finding by itself — what matters is
+who is in the group. Flag `add_ace builtin.everyone command allow` (every player gets every command),
+`add_ace resource.<x> command allow` or a grant of just `command.add_ace`/`command.add_principal`
+(that resource can `ExecuteCommand('add_ace ...')` — admin equivalent, §11), admin principals keyed on `identifier.ip:` (§6), and the docs' placeholder
+`identifier.fivem:1` left in. A committed admin roster is not a credential, but it names your admins
+and changes to it deserve review; it can live in an `exec`'d untracked file like the secrets (§5, §11).
+
+```bash
+# Exports: every one is callable by any server resource — read each for privileged actions
+grep -rnE "exports\s*\(\s*['\"]|^\s*server_exports?\s" --include='*.lua' --include='*.js' resources/
+grep -rn "GetInvokingResource" --include='*.lua' --include='*.js' resources/   # used as player auth?
+# ACL in cfg (and exec'd files, §11): everyone/resource granted every command or an ACL-editing
+# command (admin-equivalent); ip / placeholder admins
+grep -rniE "^\s*add_ace\s+(builtin\.everyone|resource\.\S+)\s+command(\.(add_ace|remove_ace|add_principal|remove_principal))?\s+allow" --include='*.cfg' .
+grep -rniE "^\s*add_principal\s+identifier\.(ip:\S+|fivem:1)\s" --include='*.cfg' .
+grep -rniE "^\s*add_principal\s+identifier\.\S+\s+group\." --include='*.cfg' .   # review the roster
+# Admin checks against hardcoded identifiers in Lua instead of IsPlayerAceAllowed
+grep -rnE "['\"](license2?|steam|discord|fivem|ip):[0-9a-fA-F.]+['\"]" --include='*.lua' resources/
+```
+
 ## 2. `AddEventHandler` vs `RegisterNetEvent` — Don't Network a Server-Only Event
 
 **What to look for.** Events meant only for other server resources (a job payout, a framework
@@ -135,6 +213,11 @@ server-side methods, not allowing players to change the values."* Its bad exampl
 arguments. The fix is a server-held state machine: the server records when a job starts, checks
 position itself (`GetEntityCoords(GetPlayerPed(src))` — server-side entity state needs OneSync, which
 the docs' example `server.cfg` enables), and computes the reward.
+
+The official page's own "good" example is a sketch, not working code: its tick thread calls
+`GetPlayerPed(source)` inside `CreateThread`, where `source` is not the player (use the loop's `src`),
+and its `job:givePlayerItem` handler passes an undefined `ped` to `isPedWithinRange`. Copy the
+pattern, not the code; the version below captures `src` before anything else.
 
 ```lua
 local active = {}            -- [src] = { startedAt = os.time() }
@@ -321,7 +404,7 @@ end)
 state of networked entities and the player state"*; *"Client-side (non-replicated) entities are not
 affected by this variable."* Enable it when no resource depends on client writes; otherwise treat
 client-writable values as client input. A server change handler reacting to a client write is a
-net event by another name — validate it, and remember it cannot veto.
+net event by another name — validate it, and remember it cannot veto. Entity *creation* can be vetoed (§12).
 
 ## 8. NUI: Callbacks Are Client Input, Pages Are Public, Player Strings Are XSS
 
@@ -531,7 +614,7 @@ only where the docs state one.
 | `sv_netEventReassemblyUnlimitedPendingEvents` | default `false`; flag `true` | Allows *"unlimited pending reassembled events per client"* and overrides the cap below. Our reading: one client can then make the server hold unbounded partial events in memory. | [cmds] |
 | `sv_netEventReassemblyMaxPendingEvents` | default `100` (range 0-254); flag a raised value | Per-client cap on pending reassembled events; the docs: *"decrease to limit memory usage."* `sv_enableNetEventReassembly` (default `true`) is the feature switch, not a security setting. | [cmds] |
 | **Entity and state control** | | | |
-| `sv_entityLockdown` | `strict` or `relaxed`; flag default `inactive` (advisory); `full` is a review item | `inactive`: *"Clients can create any entity."* `strict`: *"No entities can be created by clients"*; `relaxed` blocks only client-created script-owned entities. `full` *"Disables dummy object creation. Only usable on FiveM for GTAV Enhanced"* — the docs don't say it also blocks client entities, and the server source's lockdown checks (including the control-request filter) test for `strict` exactly, so don't count `full` as `strict`. | [cmds], source |
+| `sv_entityLockdown` | `strict` or `relaxed`; flag default `inactive` (advisory); `full` is a review item | `inactive`: *"Clients can create any entity."* `strict`: *"No entities can be created by clients"*; `relaxed` blocks only client-created script-owned entities. `full` *"Disables dummy object creation. Only usable on FiveM for GTAV Enhanced"* — the docs don't say it also blocks client entities, and the server source's lockdown checks (including the control-request filter) test for `strict` exactly, so don't count `full` as `strict`. The public source's parser (`OneSyncVars.h`) accepts `strict`, `relaxed`, `no_dummy` (allows everything except dummy objects) and `inactive`/`false`/`off` — not `full` — so on a non-Enhanced build confirm the value took effect in the server console. | [cmds], source |
 | `sv_filterRequestControl` | non-zero, e.g. `2`; missing or `0` is advisory only | Default `0` is off. `1` blocks control requests to player-controlled entities (*"currently, occupied vehicles only"*) once "settled" (older than the settle timer); `2` *"Blocks control requests to all entities controlled by players"*; `3` blocks all player-controlled entities regardless of age plus settled non-player entities; `4` routes no `REQUEST_CONTROL_EVENT` at all; `-1` = `2` plus a console warning. Any non-off mode also stops control requests across routing buckets and always blocks senders in `strict` lockdown. [sec] puts this convar in its *"shouldn't be touched unless you know what you are doing"* group, so recommending non-zero is our judgement (it can break resources that take control of player entities) — hence advisory, not a finding. | [cmds], [sec] |
 | `sv_filterRequestControlSettleTimer` | default `30000` **milliseconds**; only matters with modes `1`/`3`; flag a raised value | Entities younger than the timer are not yet "settled": mode `1` leaves them open (occupied vehicles), mode `3` leaves only *non-player* entities open (player-controlled ones are always blocked in 3). Our reading: a larger value widens that window. The argument *"must be provided in milliseconds."* | [cmds] |
 | `sv_stateBagStrictMode` | `true` (server 12739+) when no resource needs client writes (advisory) | Default `false`: the network owner can modify its entities' and its player state. `true`: *"Only the server can modify the state of networked entities and the player state"* (§7). The docs show `setr`; the server registers its own non-replicated copy (`ServerGameState.cpp`), so a plain `set` still reaches the server-side check, and `setr` also tells clients, which then refuse writes locally with the documented console error. | [cmds], source |
@@ -639,6 +722,114 @@ duplicates by hand. The walk handles CRLF, a UTF-8 BOM, `;`-joined commands and 
 `CYCLE` for an `exec` loop and skips it, and walks a file again when it is `exec`'d again later (not
 nested), as the server would.
 
+## 12. Server-Side Vetoes: Game Events and Entity Creation
+
+With OneSync the server parses some of the game's own network events before routing them, and a
+server handler can veto one with `CancelEvent()`. Cheat effects — explosions, projectiles, damage,
+weapon removal, particle spam, spawned props and vehicles — arrive this way, not through your
+resource's net events. These handlers are defence in depth: **their absence is advisory, not a
+finding**; `sv_entityLockdown` and the `sv_enableNetworked*` convars (§11) come first.
+
+**Which events.** Official: the server events reference lists `entityCreating` (*"can be canceled to
+instantly delete the entity"*), `weaponDamageEvent` (*"This event can be canceled"*),
+`startProjectileEvent`, `ptFxEvent` and `removeAllWeaponsEvent`; the OneSync cookbook adds
+`explosionEvent` (server 1543+, *"SERVER script, requires OneSync!"*, `CancelEvent()` in its
+explosion-free-zone example; archived 2019). The source (`ServerGameState.cpp`) raises those plus
+`giveWeaponEvent`, `removeWeaponEvent`, `clearPedTasksEvent` and `fireEvent` through one path: if a
+handler cancels, the server does not route the event to other players. Those four are
+source-confirmed only — no reference page, so treat their payload fields as unstable. Our reading:
+cancelling stops routing; it does not undo the effect on the sender's own game.
+
+Handler arguments are `(sender, data)`. `sender` arrives as a **string** — the server packs
+`std::to_string(client->GetNetId())` — so `tonumber(sender)` before using it as a table key or
+comparing it to a `source` you stored.
+
+```lua
+-- BAD — "anticheat" that only logs; every explosion is still routed to every player
+AddEventHandler('explosionEvent', function(sender, ev) print(GetPlayerName(sender), json.encode(ev)) end)
+
+-- GOOD — per-sender flood limit; excess explosions are not routed
+local recent = {}                                  -- [src] = { n = count, t = windowStart }
+AddEventHandler('explosionEvent', function(sender, ev)
+  local src, now = tonumber(sender), GetGameTimer()
+  local r = recent[src]
+  if not r or now - r.t > 10000 then r = { n = 0, t = now }; recent[src] = r end
+  r.n = r.n + 1
+  if r.n > 5 then
+    CancelEvent()
+    if r.n == 6 then print(('[anticheat] explosion flood from %s'):format(GetPlayerName(src))) end
+  end
+end)
+AddEventHandler('playerDropped', function() recent[tonumber(source)] = nil end)
+```
+
+**Client-created entities: `entityCreating`.** It fires when a client's entity reaches the server
+(in the source it runs while processing a client clone, after the `sv_entityLockdown` check;
+server-script entities raise `serverEntityCreated` instead). Cancel it and the (non-player) entity is deleted.
+Veto on the model (`GetEntityModel(entity)`, optionally `GetEntityType(entity)`: 1 ped, 2 vehicle,
+3 object). **Never gate a veto on `GetEntityPopulationType(entity)`**: the population type comes
+from the client-supplied sync data (the server's own lockdown check reads it from the entity's sync
+tree and exempts the `POPTYPE_RANDOM_*` "ambient" values outside `strict`), so a cheat can flag a
+blocked model as ambient traffic and skip a `== POPTYPE_MISSION` condition. Use it for logging only.
+
+```lua
+-- BAD — the pop type is client-controlled: mark the tank as "ambient" and it skips the check
+AddEventHandler('entityCreating', function(entity)
+  if GetEntityPopulationType(entity) == 7 and GetEntityModel(entity) == `rhino` then CancelEvent() end
+end)
+
+-- GOOD — block on the model whatever the client claims it is
+local BLOCKED = { [`rhino`] = true, [`hydra`] = true, [`prop_windmill_01`] = true }
+AddEventHandler('entityCreating', function(entity)
+  if BLOCKED[GetEntityModel(entity)] then
+    print(('[anticheat] blocked model %d from %s'):format(GetEntityModel(entity),
+      tostring(NetworkGetFirstEntityOwner(entity))))
+    CancelEvent()
+  end
+end)
+```
+
+This is a denylist: it stops the models you thought of. The stronger control is `sv_entityLockdown
+strict` (§11) with vehicles and props spawned by the server from a server-owned allowlist
+(below). `relaxed` is not enough here: it exempts entities the client labels as ambient
+population, which is the same label this bypass relies on.
+
+**Server-side spawns from a net event.** On the server, `CreateVehicle`, `CreatePed`,
+`CreateObject` and `CreateObjectNoOffset` are entity RPC natives (`rpc_spec_natives.lua`) and
+`CreateVehicleServerSetter(modelHash, type, x, y, z, heading)` is the server-setter variant. A net
+event that passes the client's model string into one of them lets the client spawn anything.
+
+```lua
+-- BAD — the client picks the model
+RegisterNetEvent('garage:spawn', function(model)
+  local c = GetEntityCoords(GetPlayerPed(source))
+  CreateVehicleServerSetter(GetHashKey(model), 'automobile', c.x, c.y, c.z, 0.0)
+end)
+
+-- GOOD — the client sends a key; the server owns model, type, cooldown (and ownership checks)
+local GARAGE = { sultan = { model = `sultan`, type = 'automobile' }, faggio = { model = `faggio`, type = 'bike' } }
+RegisterNetEvent('garage:spawn', function(key)
+  local src = source
+  local v = type(key) == 'string' and GARAGE[key]
+  if not v or throttled(src, 'garage', 10000) then return end   -- throttled() from §3
+  local ped = GetPlayerPed(src)
+  local c = GetEntityCoords(ped)
+  CreateVehicleServerSetter(v.model, v.type, c.x, c.y, c.z, GetEntityHeading(ped))
+end)
+```
+
+```bash
+# Which vetoes exist (none = advisory). Matches the event-name string anywhere, so a handler split
+# across lines is found too; read each: does it CancelEvent(), or only log? A RegisterNetEvent on one
+# of these names is a red flag: it would let clients trigger that resource's handler with forged data.
+grep -rnE "['\"](explosionEvent|entityCreating|weaponDamageEvent|startProjectileEvent|ptFxEvent|removeAllWeaponsEvent|giveWeaponEvent|removeWeaponEvent|clearPedTasksEvent|fireEvent)['\"]" \
+  --include='*.lua' --include='*.js' resources/
+# Server spawns whose model is a variable (not a `backtick` literal) — trace it back to net event
+# arguments. The model is CreatePed's 2nd and CreatePedInsideVehicle's 3rd argument.
+grep -rnE "(Create(VehicleServerSetter|Vehicle|ObjectNoOffset|Object)\s*\(|CreatePed\s*\([^,]+,|CreatePedInsideVehicle\s*\([^,]+,[^,]+,)\s*((GetHashKey|joaat)\(\s*)?[A-Za-z_][A-Za-z0-9_.]*\s*[,)]" \
+  --include='*.lua' resources/
+```
+
 ## FiveM Footgun Checklist
 
 - A net event taking a target id, identifier, amount, price, role, or `isAdmin` from its arguments
@@ -659,6 +850,11 @@ nested), as the server would.
 - Web API scoped by a path/body community id instead of the key; unscoped stream cursors; one key
   shared across communities; no revocation; a game-server call alone granting portal privileges.
 - txAdmin on `0.0.0.0:40120` unfirewalled; RCON with a weak or committed password.
+- A privileged `exports(...)` with no caller check; `GetInvokingResource()` treated as player auth;
+  admin net events checking a hand-rolled identifier list instead of `IsPlayerAceAllowed`;
+  `builtin.everyone`/`resource.*` granted `command`, or `ip:`-keyed admins, in cfg.
+- A net event passing a client-chosen model to `CreateVehicle*`/`CreatePed`/`CreateObject*`;
+  game-event "anticheat" handlers that log but never `CancelEvent()` (no handlers at all: advisory).
 - `server.cfg` (or an `exec`'d cfg) with `sv_pureLevel` unset, `sv_scriptHookAllowed`/`sv_devMode`/
   `sv_enableNetworkedPhoneExplosions`/`sv_netEventReassemblyUnlimitedPendingEvents` true, raised
   `rateLimiter_*` values, overridden CnL anti-cheat convars, or `steam_webApiKey` committed (§11).
@@ -677,7 +873,7 @@ nested), as the server would.
 
 ## Sources
 
-- https://docs.fivem.net/docs/developers/server-security/ -- "Cheats can allow the client to trigger events in any context"; AddEventHandler vs RegisterNetEvent; RegisterNetEvent is a wrapper; `65535` server source on client; server-side checks list; bad `job:givePlayerItem` example; "Server owner options": `sv_kick_players_cnl_*`, `sv_pure_verify_client_settings`, `sv_authMaxVariance`/`sv_authMinTrust`, `sv_filterRequestControl` "shouldn't be touched", most enabled by default from build 8450, `sv_disableClientReplays` disables Rockstar Editor
+- https://docs.fivem.net/docs/developers/server-security/ -- "Cheats can allow the client to trigger events in any context"; AddEventHandler vs RegisterNetEvent; RegisterNetEvent is a wrapper; `65535` server source on client; server-side checks list; bad `job:givePlayerItem` example; "good" example's `GetPlayerPed(source)` in a thread and undefined `ped`; "Server owner options": `sv_kick_players_cnl_*`, `sv_pure_verify_client_settings`, `sv_authMaxVariance`/`sv_authMinTrust`, `sv_filterRequestControl` "shouldn't be touched", most enabled by default from build 8450, `sv_disableClientReplays` disables Rockstar Editor
 - https://docs.fivem.net/docs/scripting-manual/working-with-events/listening-for-events/ -- `source` holds the triggering player, valid only for the initial call; registering is what lets a client-side script trigger a server event
 - https://docs.fivem.net/docs/scripting-manual/working-with-events/triggering-events/ -- `TriggerServerEvent`/`emitNet`, `TriggerClientEvent` with `-1` for all clients
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/RegisterNetEvent/ -- "Marks the event safe for network use" (triggerability itself rests on the two pages above)
@@ -695,13 +891,26 @@ nested), as the server would.
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/server-functions/ -- `PerformHttpRequest` listed as a server-side Lua function
 - https://docs.fivem.net/docs/server-manual/server-commands/ -- `exec` (relative to server data dir or `@resource`); `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown` modes, `sv_filterRequestControl` modes and `sv_filterRequestControlSettleTimer` (30000 ms, modes 1/3), `sv_pureLevel` levels 1/2, `sv_enableNetworkedSounds`/`sv_enableNetworkedScriptEntityStates` (default true, 8540+)/`sv_enableNetworkedPhoneExplosions` (default false, 6831+), `sv_enableNetEventReassembly`/`sv_netEventReassemblyMaxPendingEvents` (100, 0-254)/`sv_netEventReassemblyUnlimitedPendingEvents` (false), `sv_authMaxVariance` (1-5, default 5), `sv_authMinTrust` (1-5, default 1), `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), `rcon_password` (unset = disabled, UDP), `steam_webApiKey`, `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword`, `sv_devMode` ("Do not enable in production"), "Rate limiters" table (all bucket names and defaults; `rateLimiter_<name>_rate`/`_burst`)
 - https://docs.fivem.net/docs/server-manual/setting-up-a-server-vanilla/ -- `sv_licenseKey` in `server.cfg`, commented `rcon_password`, OneSync for server-side state awareness
-- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/state/ServerGameState.cpp -- server registers `sv_stateBagStrictMode` as its own non-replicated variable; entity-lockdown checks (population, control-request filter) compare against `strict` exactly
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/state/ServerGameState.cpp -- server registers `sv_stateBagStrictMode` as its own non-replicated variable; entity-lockdown checks (population, control-request filter) compare against `strict` exactly; `entityCreating` raised while processing client clones; game events (`explosionEvent`, `weaponDamageEvent`, `giveWeaponEvent`, `removeWeaponEvent`, `removeAllWeaponsEvent`, `clearPedTasksEvent`, `fireEvent`, `startProjectileEvent`, `ptFxEvent`) passed as `(tostring(netId), data)` and not routed when cancelled
 - https://github.com/citizenfx/fivem/blob/master/code/client/citicore/console/Console.Commands.h -- boolean convar parsing: `true`/`false` case-insensitive, else integer non-zero = true, unparseable = false
 - https://docs.fivem.net/docs/server-manual/proxy-setup/ -- `sv_proxyIPRanges` allows `X-Real-IP` and bypasses the rate limiter
 - https://docs.fivem.net/docs/resources/txAdmin/ -- `txAdminPort` default 40120, `txAdminInterface` default `0.0.0.0`, admin menu actions, brute-force protection
 - https://docs.fivem.net/docs/server-manual/asset-escrow/ -- Escrow scope (Lua/YFT/YDD/YDR), NUI not supported, `escrow_ignore`
-- https://docs.fivem.net/docs/cookbook/2021/07/17/quick-note-on-using-built-in-acl-security/ -- built-in ACL; resources granted `command.add_ace`/`command.add_principal` change the ACL at runtime via `ExecuteCommand`
-- https://docs.fivem.net/docs/scripting-manual/runtimes/lua/ -- `json` global is dkjson
+- https://docs.fivem.net/docs/cookbook/2021/07/17/quick-note-on-using-built-in-acl-security/ -- built-in ACL; resources granted `command.add_ace`/`command.add_principal` change the ACL at runtime via `ExecuteCommand`; `IsPlayerAceAllowed` for checks
+- https://docs.fivem.net/docs/cookbook/2019/08/19/onesync-intercepting-game-events-such-as-explosions/ -- `explosionEvent` (server 1543+, requires OneSync), `(sender, ev)` handler, `CancelEvent()` to stop routing
+- https://docs.fivem.net/docs/scripting-reference/events/server-events/ -- `entityCreating` (cancel deletes the entity), `weaponDamageEvent` (cancelable), `startProjectileEvent`, `ptFxEvent`, `removeAllWeaponsEvent` signatures
+- https://github.com/citizenfx/fivem-docs/blob/master/static/examples/config/server.cfg -- the docs' example `server.cfg`: `add_ace group.admin command allow`, `command.quit deny`, `add_principal identifier.fivem:1 group.admin`, `set steam_webApiKey ""`
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/RegisterCommand.md -- `restricted` commands need the `command.<name>` ace
+- https://github.com/citizenfx/fivem/blob/master/code/client/citicore/se/Security.cpp -- ACE objects hierarchical, deny wins, every principal matches `builtin.everyone`
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-scripting-core/src/ScriptHost.cpp -- `GetInvokingRuntime`: the runtime one level down the stack, null when there is none
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-scripting-core/src/ResourceScriptFunctions.cpp -- `GET_INVOKING_RESOURCE` returns that runtime's resource name or nil; client-side strict-mode state bag warning
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/CancelEvent.md -- "Cancels the currently executing event"
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/GetEntityPopulationType.md -- `ePopulationType` enum (RANDOM_* 1-5, MISSION 7)
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/NetworkGetFirstEntityOwner.md -- server ID of an entity's first owner
+- https://github.com/citizenfx/fivem/blob/master/ext/natives/rpc_spec_natives.lua -- server `CREATE_VEHICLE`/`CREATE_PED`/`CREATE_OBJECT`/`CREATE_OBJECT_NO_OFFSET` are entity RPC natives
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/server/CreateVehicleServerSetter.md -- `CreateVehicleServerSetter(modelHash, type, x, y, z, heading)`
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/include/OneSyncVars.h -- `sv_entityLockdown` parser accepts `strict`/`relaxed`/`no_dummy`/`inactive`
+- https://docs.fivem.net/docs/scripting-manual/runtimes/lua/ -- `json` global is dkjson; `exports('Name', fn)`, `server_export`, `exports.res:Name()`
 - https://docs.discord.com/developers/resources/webhook -- webhooks "do not require a bot user or authentication"; token-based Get/Modify/Delete need no auth
 - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ -- A01:2025 (unauthorized net events, cross-community IDOR)
 - https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/ -- A02:2025 (replicated convars, server.cfg, txAdmin/RCON exposure)

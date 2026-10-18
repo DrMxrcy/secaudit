@@ -3,7 +3,7 @@ id: 60
 title: Warn that OSV and npm audit miss vendor-only and unpublished advisories
 type: feature
 version: 3.12.0
-status: planned
+status: active
 created: 2026-10-17
 ---
 
@@ -27,5 +27,6 @@ created: 2026-10-17
 - **Fails if:** guidance claims Aikido/Snyk data is in OSV, or cites an unverified URL.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add vendor-only/lagging advisory subsection and transitive-override remediation -> target: skills/supply-chain/SKILL.md
+- [x] Step 1: Add vendor-only/lagging advisory subsection and transitive-override remediation -> target: skills/supply-chain/SKILL.md
+  > evidence: check-freshness.py: All current; OSV undici 6.29.1/7.30.1/8.12.2 empty and npm audit zero re-verified; engines/dist-tags/Aikido ranges verified; spec MET, quality CONFIRMED after one fix loop (Node >=22.19.0 warning, valid JSON fences) (2026-10-17)
 - [ ] Step 2: Add vendor-post check to framework-versions lookup and source caveat to audit report; freshness green -> target: skills/framework-versions/SKILL.md, skills/audit/SKILL.md, SOURCES.md

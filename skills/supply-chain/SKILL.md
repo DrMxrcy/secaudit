@@ -1,6 +1,6 @@
 ---
 name: supply-chain
-description: Audits dependencies for supply-chain risk — hallucinated/phantom packages ("slopsquatting") that AI assistants invent and attackers pre-register, unpinned versions, missing lock files, and weak/default JWT secrets. Also covers a compromised-but-legitimate package producing no advisory at all, and PyPI specifics (setup.py as the install hook, lock files and hash pinning, --extra-index-url dependency confusion). Use whenever adding dependencies (especially AI-suggested ones), reviewing package.json / requirements.txt / pyproject.toml, or auditing the dependency tree before deploying.
+description: Audits dependencies for supply-chain risk — hallucinated/phantom packages ("slopsquatting") that AI assistants invent and attackers pre-register, unpinned versions, missing lock files, and weak/default JWT secrets. Also covers a compromised-but-legitimate package producing no advisory at all, vendor-only and late advisories that OSV / npm audit miss (with npm/yarn/pnpm overrides to force a patched transitive version), and PyPI specifics (setup.py as the install hook, lock files and hash pinning, --extra-index-url dependency confusion). Use whenever adding dependencies (especially AI-suggested ones), reviewing package.json / requirements.txt / pyproject.toml, or auditing the dependency tree before deploying.
 license: MIT
 ---
 
@@ -237,6 +237,117 @@ no API key and covers npm, PyPI, crates.io, and Go. The full procedure and a wor
 in the `secaudit:framework-versions` skill's `live-advisory-lookup.md` reference (tool order:
 `osv-scanner` → OSV.dev API → `npm audit` → GitHub Advisories → firecrawl/WebSearch fallback).
 
+### An empty OSV / `npm audit` result is not a clean bill
+
+The compromise above had no advisory anywhere. This is a different failure: the advisory
+exists, but in a database your tools don't read, or it hasn't reached them yet.
+
+**Vendor-only advisories.** Commercial scanners publish under their own IDs (Aikido
+`AIKIDO-YYYY-NNNNN`, Snyk `SNYK-JS-…`, Socket alerts). Many never get a GHSA or CVE, so they
+never reach OSV, and `npm audit` never shows them. Verified 2026-10-17: these are three of the
+advisories Aikido lists against the vulnerable `undici@6.29.1` (not the full set, since its undici
+page lists more):
+
+| Advisory | Severity | Fixed in (per Aikido) |
+|---|---|---|
+| AIKIDO-2026-54683 | Medium | 8.10.2 |
+| AIKIDO-2026-10369 | Low | 7.23.0 |
+| AIKIDO-2026-10385 | Low | 7.24.1 |
+
+On the same day, OSV `POST /v1/query` returned no vulnerabilities for undici 6.29.1, 7.30.1, or
+8.12.2, and `npm audit` on a lockfile pinning undici 6.29.1 reported zero. Every OSV-backed tool
+called that tree clean.
+
+**Disclosure lag.** Advisories that do go through GHSA still arrive late. Vendor post → GHSA →
+OSV can take days: the Next.js advisories Vercel published on 2026-10-14 were still missing from
+OSV on 2026-10-17. Floors that come from a vendor post live in `secaudit:framework-versions`.
+
+What the auditor does:
+
+1. For each framework and major runtime dependency in use, read the vendor's own security
+   page, blog, or GitHub Security tab. Don't stop at OSV.
+2. Name the sources you consulted in the report. "No known vulnerabilities" overstates an
+   OSV-only lookup:
+   ```text
+   Advisory sources: OSV (osv-scanner, OSV API), npm audit (GitHub Advisory DB). OSV-only:
+   vendor-only feeds (Aikido, Snyk, Socket) not consulted; vendor posts checked for: next, react.
+   ```
+3. Recommend a second scanner with its own advisory feed in CI (Socket, Snyk, Aikido) next to
+   `npm audit`. Their IDs are the ones OSV never sees.
+4. Aikido's public feed is at `https://intel.aikido.dev` (returned 200 on 2026-10-17). Re-check
+   with `curl -sI https://intel.aikido.dev` before you cite it, and leave it out if it doesn't
+   return 200.
+
+### Forcing a patched version of a transitive dependency
+
+If the vulnerable copy belongs to a parent package, bumping your own `package.json` changes
+nothing, because the parent's declared range keeps the old copy. In one audited tree `discord.js`
+declared `undici: ^6.27.0` directly and again through `@discordjs/rest`, so both copies resolved
+to 6.29.1, alongside separate 7.x and 8.x copies pulled in by other packages. Map every copy
+first:
+
+```bash
+npm ls undici        # every installed copy and the chain that pulls each one in
+npm explain undici   # the same, with the range each parent declares
+```
+
+Then override from the **root** `package.json`. npm ignores overrides set anywhere else. Pick
+one npm form.
+
+npm, every undici under `discord.js` at any depth (this also covers the copy under
+`@discordjs/rest`):
+
+```json
+{ "overrides": { "discord.js": { "undici": "^8.10.2" } } }
+```
+
+npm, one parent only. This rewrites the copy under `@discordjs/rest`, and the copy `discord.js`
+declares itself stays on 6.29.1:
+
+```json
+{ "overrides": { "@discordjs/rest": { "undici": "^8.10.2" } } }
+```
+
+yarn `resolutions` accept one level of `parent/child`:
+
+```json
+{ "resolutions": { "discord.js/undici": "^8.10.2", "@discordjs/rest/undici": "^8.10.2" } }
+```
+
+pnpm reads overrides from `pnpm-workspace.yaml`. pnpm 10 and earlier read `pnpm.overrides` from
+`package.json`; since v11 pnpm no longer reads the `pnpm` field. `parent>child` matches only that
+parent's direct dependency, so list each parent:
+
+```yaml
+overrides:
+  "discord.js>undici": "^8.10.2"
+  "@discordjs/rest>undici": "^8.10.2"
+```
+
+A bare `"undici": "^8.10.2"` rewrites every copy in the tree. If you also depend on undici
+directly, npm throws `EOVERRIDE` unless the spec matches your dependency (or you use `"$undici"`).
+
+```bash
+npm install && npm ls undici   # confirm every copy moved, not only the one you aimed at
+```
+
+Forcing `^8` into a parent that declared `^6` installs a major version it was never tested
+against. Re-run the parent's code paths (its tests, or a smoke test of the feature that uses it)
+before you ship.
+
+It can also raise your Node floor. undici 8 declares `engines: node >=22.19.0`, while
+`discord.js` 14.27.0 declares `node >=18`. Check `node -v` locally and the deploy runtime's Node
+version before you force it:
+
+```bash
+npm view undici@8.10.2 engines   # { node: '>=22.19.0' }
+node -v
+```
+
+Here the major jump is the only route. Aikido lists the AIKIDO-2026-54683 fix only in 8.10.2
+(affected through 8.10.1), and the newest 6.x and 7.x releases (dist-tags `six` = 6.29.1, `seven` =
+7.30.1) don't carry it. Use the override until `discord.js` widens its range, then delete it.
+
 ## Unpinned Dependencies
 
 AI assistants often generate `package.json` with loose version ranges:
@@ -308,3 +419,9 @@ grep -rn "secret\|changeme\|keyboard.cat\|supersecret" --include="*.ts" --includ
 - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ -- lockfiles pin versions + integrity hashes
 - https://www.elastic.co/security-labs/threat-command/shai-hulud-chaindrop-npm-supply-chain -- CHAINDROP npm worm, preinstall delivery, no CVE assigned
 - https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack -- independent analysis of the same incident
+- https://intel.aikido.dev -- Aikido Intel vulnerability feed (AIKIDO-* IDs not in OSV); resolved 200 on 2026-10-17
+- https://docs.npmjs.com/cli/v10/configuring-npm/package-json/#overrides -- npm overrides: root-only, scoped `parent: { child }` form, EOVERRIDE and `$` references
+- https://yarnpkg.com/configuration/manifest -- yarn `resolutions`, one level of `parent/child`
+- https://pnpm.io/settings/dependency-resolution -- pnpm `overrides` in pnpm-workspace.yaml, `parent>child` selector
+- https://pnpm.io/package_json -- since v11 pnpm no longer reads settings from the `pnpm` field of package.json
+- https://intel.aikido.dev/cve/AIKIDO-2026-54683 -- undici Medium advisory: affected through 8.10.1, fixed in 8.10.2

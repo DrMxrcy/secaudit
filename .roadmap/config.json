@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.12.0",
-  "nextId": 69,
+  "nextId": 70,
   "items": [
     {
       "id": 1,
@@ -696,6 +696,14 @@
       "note": "Deeper FiveM server checks for server settings, game events and cross-resource calls.",
       "audience": "public",
       "order": 3
+    },
+    {
+      "id": 69,
+      "slug": "owasp-secure-headers-project-page-moved-to-owasp-org-projects",
+      "title": "OWASP Secure Headers project page moved to owasp.org/projects",
+      "type": "bug",
+      "version": "3.12.0",
+      "file": "plans/069-owasp-secure-headers-project-page-moved-to-owasp-org-projects.md"
     }
   ],
   "settings": {
@@ -717,5 +725,5 @@
     "3.10.0": "2026-10-16",
     "3.11.0": "2026-10-16"
   },
-  "last_seen_sha": "5b4f8be97292ac09f35d91deb90272d79f2c86ce"
+  "last_seen_sha": "8ef91accab2089622ca0c4872fffbdcd16ef7918"
 }

@@ -40,7 +40,7 @@
 
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.12.0 — 58%
+### [ ] v3.12.0 — 59%
 - [x] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 100% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
 - [x] **#60 Warn that OSV and npm audit miss vendor-only and unpublished advisories** `feature` — 100% ([plan](.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md))
 - [x] **#61 Add a rich-text-security skill for editors, docx import and sanitizers** `feature` — 100% ([plan](.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md))
@@ -51,4 +51,5 @@
 - [ ] **#65 Cover Drizzle write-path risks: mass assignment, unscoped writes, races** `feature` — 0% ([plan](.roadmap/plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md))
 - [ ] **#66 Cover modern browser defenses and DOM navigation and postMessage sinks** `feature` — 0% ([plan](.roadmap/plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md))
 - [ ] **#67 Cover Next.js 16 caching, Server Action key and image config risks** `feature` — 0% ([plan](.roadmap/plans/067-cover-next-js-16-caching-server-action-key-and-image-config-risks.md))
+- [x] **#69 OWASP Secure Headers project page moved to owasp.org/projects** `bug` — 100% ([plan](.roadmap/plans/069-owasp-secure-headers-project-page-moved-to-owasp-org-projects.md))
 <!-- roadmap:auto:end -->

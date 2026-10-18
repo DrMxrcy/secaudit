@@ -110,7 +110,7 @@ Before deploying:
 
 ## Sources
 
-- https://owasp.github.io/www-project-secure-headers/ -- CSP, HSTS, X-Frame-Options, frame-ancestors, etc.
+- https://owasp.org/projects/secure-headers-project -- CSP, HSTS, X-Frame-Options, frame-ancestors, etc.
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy -- CSP reference
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security -- HSTS reference
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS -- CORS (no wildcard with credentials)

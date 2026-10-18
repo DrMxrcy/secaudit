@@ -17,6 +17,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 
 ### 🐛 Fixed
 - (pending) Audits treat a project's bundled helper agents with appropriate caution.
+- OWASP Secure Headers project page moved to owasp.org/projects
 
 ## v3.11.0 — 2026-10-16
 

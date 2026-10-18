@@ -776,7 +776,7 @@ Last verified: 2026-10-17.
 - https://api.osv.dev/v1/vulns/CVE-2025-57822 — Next.js middleware `next()` SSRF when forwarding user headers; fixed 14.2.32 / 15.4.7
 
 ## Deployment (`deployment`)
-- https://owasp.github.io/www-project-secure-headers/ — security headers (incl. clickjacking / frame-ancestors)
+- https://owasp.org/projects/secure-headers-project — security headers (incl. clickjacking / frame-ancestors)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security — HSTS
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS — CORS

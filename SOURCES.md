@@ -781,6 +781,54 @@ Last verified: 2026-10-17.
 - https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA
 - https://portswigger.net/web-security — worked examples
 
+## Rich text, document import & sanitizers (`rich-text-security`)
+- https://tiptap.dev/docs/editor/extensions/marks/link — `isAllowedUri`, `protocols`, `shouldAutoLink`, `validate` deprecated
+- https://tiptap.dev/docs/editor/extensions/nodes/image — `allowBase64` (default false), `inline`
+- https://tiptap.dev/docs/editor/api/utilities/html — `generateHTML`/`generateJSON` from `@tiptap/core` (browser) vs `@tiptap/html` (server, virtual DOM)
+- https://tiptap.dev/docs/editor/api/utilities/static-renderer — `renderToReactElement`, `renderToHTMLString`, no DOM required
+- https://tiptap.dev/docs/editor/core-concepts/schema — schema derived from extensions; what the editor will parse
+- https://tiptap.dev/docs/editor/core-concepts/persistence — storing editor JSON vs HTML
+- https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new/node — `addAttributes`, `parseHTML`, `renderHTML`
+- https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new/mark — custom marks
+- https://tiptap.dev/docs/editor/markdown — TipTap Markdown support (the §6 Markdown attribute parsers)
+- https://prosemirror.net/docs/ref/ — `handlePaste`, `transformPastedHTML`, `transformPasted`, `handleDrop`; attribute `validate`; `Node.check`
+- https://github.com/mwilliamson/mammoth.js — Security section: no sanitisation, `javascript:` links, `externalFileAccess`, CPU/memory DoS; image converters
+- https://github.com/rehypejs/rehype-sanitize — "use rehype-sanitize after the last unsafe thing"; DOM clobbering example
+- https://github.com/syntax-tree/hast-util-sanitize — schema fields: `attributes`, `clobber`, `clobberPrefix`, `protocols`, `strip`, `tagNames`, `allowComments`
+- https://github.com/syntax-tree/mdast-util-to-hast — the mdast→hast step behind `remark-rehype`
+- https://github.com/remarkjs/remark-rehype — `allowDangerousHtml`
+- https://github.com/rehypejs/rehype-raw — parsing raw HTML nodes into hast
+- https://github.com/remarkjs/remark-directive — `:text`, `::leaf`, `:::container` directives
+- https://github.com/cure53/DOMPurify — configuration, `setConfig` semantics, hooks, `IN_PLACE` notes
+- https://github.com/kkomelin/isomorphic-dompurify — server-side DOMPurify on jsdom
+- https://github.com/apostrophecms/sanitize-html — `allowedTags`, `allowedAttributes`, `allowedSchemes`, `allowedSchemesByTag`, `allowVulnerableTags`
+- https://github.com/advisories/GHSA-vhrc-hgrq-x75r — @tiptap/extension-link `javascript:` via setLink/toggleLink (CVE-2025-14284)
+- https://github.com/advisories/GHSA-c8x8-7fp4-3x9w — prosemirror-view paste XSS (CVE-2026-104847)
+- https://github.com/advisories/GHSA-cp6q-959q-f8rh — @tiptap/core `mergeAttributes` `__proto__`
+- https://github.com/advisories/GHSA-j95f-988m-3j2f — @tiptap/core Markdown attribute ReDoS
+- https://github.com/advisories/GHSA-96g7-g7g9-jxw8 — happy-dom server-side `<script>` execution (CVE-2024-51757)
+- https://github.com/advisories/GHSA-37j7-fg3j-429f — happy-dom VM context escape (CVE-2025-61927)
+- https://github.com/advisories/GHSA-qpm2-6cq5-7pq5 — happy-dom `--disallow-code-generation-from-strings` insufficient (CVE-2025-62410)
+- https://github.com/advisories/GHSA-6q6h-j7hj-3r64 — happy-dom ES-module export-name injection (CVE-2026-33943)
+- https://github.com/advisories/GHSA-w4gp-fjgq-3q4g — happy-dom fetch credentials cookie leak (CVE-2026-34226)
+- https://github.com/advisories/GHSA-rmjr-87wv-gf87 — mammoth external image file read (CVE-2025-11849)
+- https://github.com/advisories/GHSA-4fh9-h7wg-q85m — mdast-util-to-hast unprefixed `class` (CVE-2025-66400)
+- https://github.com/advisories/GHSA-p98j-92pf-mc4p — DOMPurify `IN_PLACE` hook-detached subtree (CVE-2026-109344)
+- https://github.com/advisories/GHSA-6688-9rhm-gjv2 — DOMPurify `IN_PLACE` rawtext root (CVE-2026-109345)
+- https://github.com/advisories/GHSA-x4vx-rjvf-j5p4 — DOMPurify `IN_PLACE` attacker-controlled `nodeName` (CVE-2026-65901)
+- https://github.com/advisories/GHSA-vccv-cmxp-4j9h — sanitize-html `javascript:` via action/formaction/data/poster/background (CVE-2026-53606)
+- https://github.com/advisories/GHSA-jxwj-j7wr-gfrw — sanitize-html `</textarea/>` mutation XSS (CVE-2026-63670)
+- https://github.com/advisories/GHSA-g8qq-57p8-ggw5 — sanitize-html SVG SMIL URI-list bypass (CVE-2026-84371)
+- https://github.com/ChALkeR/notes/blob/master/Improper-markup-sanitization.md — the unsanitized-class class of bug behind CVE-2025-66400
+- https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html — XSS prevention; HTML sanitization guidance
+- https://cheatsheetseries.owasp.org/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.html — why unprefixed `id`/`name` in user content matters
+- https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html — strict CSP as the §10 backstop
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy — CSP directives
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe — `sandbox` and `srcdoc`; why `allow-scripts` + `allow-same-origin` defeats the sandbox
+- https://developer.mozilla.org/en-US/docs/Web/API/URL/URL — URL parsing used by `isSafeHref` / `isOwnAsset`
+- https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025, where the XSS findings land
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where image-fetch SSRF and cross-tenant reads land
+
 ## Cryptography (`cryptography`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html — hashing parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html — algorithms, randomness, keys

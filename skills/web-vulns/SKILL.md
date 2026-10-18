@@ -37,6 +37,8 @@ theft, account takeover, full compromise if the victim is an admin.
 **Fix:** Prefer plain text (frameworks auto-escape interpolated children). If you must render rich
 HTML, sanitize with an allowlist sanitizer (DOMPurify). Block dangerous URL schemes. Add a
 Content-Security-Policy as defense-in-depth, not a substitute for escaping.
+Rich-text editors (TipTap/ProseMirror), .docx import, and sanitizer configuration (rehype-sanitize,
+DOMPurify, sanitize-html) are covered in depth by `secaudit:rich-text-security`.
 
 ```tsx
 // components/Comment.tsx — BEFORE (stored XSS: raw DB content into an HTML sink)

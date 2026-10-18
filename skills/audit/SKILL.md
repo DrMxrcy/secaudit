@@ -358,22 +358,35 @@ relevant. Each domain skill carries the concrete detection patterns and before/a
     `PerformHttpRequest` key handling, txAdmin on `0.0.0.0:40120`, and the game-facing API
     (per-community key scoping, cross-community IDOR on event streams, idempotent retries).
     → `secaudit:fivem-security`
+26. **Rich-text editors, document import & HTML sanitizers** — if any `package.json` lists
+    `@tiptap/*`, `prosemirror-*`, `mammoth`, `rehype-sanitize`/`hast-util-sanitize`,
+    `dompurify`/`isomorphic-dompurify`, or `sanitize-html`, or the app has a rich-text/WYSIWYG
+    editor or stores user-authored HTML: editor HTML or JSON saved without a server-side
+    allowlist (the client schema is not a sanitizer), stored HTML in raw-HTML sinks and
+    server-side `@tiptap/html` on happy-dom, TipTap Link `isAllowedUri`/`protocols` and Image
+    `src`/`allowBase64`, paste handlers that skip the allowlist, custom nodes emitting raw
+    `style`/`href`/`on*`, mammoth `externalFileAccess` and unsanitized .docx output,
+    rehype-sanitize schema widening and plugin order, DOMPurify `setConfig`/hooks/`IN_PLACE`,
+    sanitize-html `allowedTags: false`, and the version floors for all of them.
+    → `secaudit:rich-text-security`
+    - Generic XSS stays in `secaudit:web-vulns`; Markdown rendering of LLM output in
+      `secaudit:ai-integration`.
 
 **Tier 3 — still covered on a full sweep; often lower or conditional impact.**
 
-26. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
+27. **Cryptography** — password hashing, secure randomness, weak algorithms/modes, hardcoded
     keys/IVs, JWT algorithm confusion, storing app-issued secrets by entropy (API-key prefix +
     SHA-256, peppered HMAC for join/invite codes and PINs, AES-256-GCM + AAD for stored webhook
     URLs and third-party keys). → `secaudit:cryptography`
-27. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
+28. **Logging, monitoring & integrity** — error info disclosure, secrets/PII in logs, missing
     audit logging, insecure deserialization, command injection. → `secaudit:logging-monitoring`
-28. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
+29. **Supply chain & dependencies** — hallucinated/phantom packages (slopsquatting), unpinned
     versions, lock file hygiene. → `secaudit:supply-chain`
-29. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
+30. **React Native** — if a bare/framework-agnostic RN app: secure storage, deep links, WebView,
     native bridge, network/ATS. → `secaudit:react-native-security`
-30. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
+31. **Expo / EAS** — if an Expo app: `EXPO_PUBLIC_` inlining, EAS secrets, expo-secure-store, OTA
     code signing, config plugins, deep links. → `secaudit:expo-security`
-31. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
+32. **Python web backends** — if the project has `pyproject.toml`, `requirements.txt`, `manage.py`,
     or a FastAPI app: per-route auth dependencies, `response_model` leakage, Django production
     settings, TLS verification. → `secaudit:python-web-security`
 
@@ -398,11 +411,11 @@ A full sweep covers the OWASP Top 10 (2025), plus the OWASP LLM and Mobile Top 1
 
 | OWASP 2025 | Domain skill(s) |
 |---|---|
-| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection), `kubernetes-security` (RBAC wildcards, default ServiceAccount), `postgres-security` (RLS not in force, tenant-context leaks, NOTIFY past RLS), `realtime-security` (CSWSH, room/channel IDOR, cross-tenant fan-out and cursor replay), `api-surface` (BFF open proxies, unauthenticated internal endpoints, origin reachable around the edge), `discord-bot-security` (command authorization, `custom_id` trust, role-sync escalation), `fivem-security` (client-triggerable net events, cross-community IDOR), `auth` (custom-domain claim takeover, cross-host return-URL allowlist) |
+| A01 Broken Access Control | `database`, `auth`, `better-auth-security`, `oauth-oidc-security` (provider tokens at rest, open redirectors), `object-storage-security`, `revenuecat-security`, `privilege-escalation`, `convex-security`, `prisma-security`, `python-web-security`, `web-vulns` (IDOR, SSRF), `webhook-security` (outbound webhook SSRF hand-off), `proxy-trust` (spoofed X-Forwarded-For bypassing IP-keyed controls, forward-auth identity-header injection), `kubernetes-security` (RBAC wildcards, default ServiceAccount), `postgres-security` (RLS not in force, tenant-context leaks, NOTIFY past RLS), `realtime-security` (CSWSH, room/channel IDOR, cross-tenant fan-out and cursor replay), `api-surface` (BFF open proxies, unauthenticated internal endpoints, origin reachable around the edge), `rich-text-security` (server-side fetches of document image URLs, mammoth external-file reads, cross-tenant document previews), `discord-bot-security` (command authorization, `custom_id` trust, role-sync escalation), `fivem-security` (client-triggerable net events, cross-community IDOR), `auth` (custom-domain claim takeover, cross-host return-URL allowlist) |
 | A02 Security Misconfiguration | `deployment`, `secrets`, `docker-security`, `cloudflare-workers-security` (`[vars]`, CORS/CSP defaults, origin exposure), `python-web-security` (Django settings), `proxy-trust` (permissive trust-proxy settings, missing Host allowlist, unstripped forward-auth headers), `kubernetes-security` (securityContext, Pod Security Admission, NetworkPolicy, exposure), `postgres-security` (roles/grants, `public` schema, pg_hba, listen_addresses), `api-surface` (services on `0.0.0.0`, docs/introspection/inspector/metrics in production), `realtime-security` (Socket.IO `cors` mistaken for an origin check, 100 MiB default `maxPayload`), `discord-bot-security` (intents, invite permissions), `fivem-security` (replicated/public convars, txAdmin/RCON exposure) |
 | A03 Software Supply Chain Failures | `framework-versions`, `supply-chain`, `ci-cd-security` (unpinned actions, compromised workflows), `docker-security` (base images), `kubernetes-security` (image digest pinning, Helm chart provenance) |
 | A04 Cryptographic Failures | `cryptography` (incl. entropy-appropriate storage of API keys, join codes and encrypted webhook URLs), `prisma-security` (DATABASE_URL TLS), `postgres-security` (postgres.js `ssl: 'require'`, unencrypted backups), `python-web-security` (verify=False) |
-| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection), `kubernetes-security` (untrusted values interpolated into container command/args), `postgres-security` (LISTEN channel identifiers, SECURITY DEFINER `search_path`), `discord-bot-security` (`allowedMentions` injection), `fivem-security` (NUI XSS) |
+| A05 Injection | `data-access`, `prisma-security`, `web-vulns` (XSS), `cloudflare-workers-security` (D1 query construction), `logging-monitoring` (command injection), `kubernetes-security` (untrusted values interpolated into container command/args), `postgres-security` (LISTEN channel identifiers, SECURITY DEFINER `search_path`), `discord-bot-security` (`allowedMentions` injection), `fivem-security` (NUI XSS), `rich-text-security` (stored XSS through rich-text editors, document import and sanitizer misconfiguration) |
 | A06 Insecure Design | `rate-limiting`, `payments` (partial), `realtime-security` (connection caps, heartbeats, backpressure), `fivem-security` (client-authoritative game logic) |
 | A07 Authentication Failures | `auth`, `better-auth-security`, `oauth-oidc-security` (state/PKCE binding, ID-token validation, account linking), `webhook-security` (per-sender signature verification), `proxy-trust` (unverified forward-auth identity headers, unverified Cloudflare Access JWT), `auth` (multi-host session handoff, host-bound sessions), `realtime-security` (tokens in WebSocket/SSE URLs, connections outliving the session), `discord-bot-security` (bot token, Discord OAuth identity), `fivem-security` (game-server API keys) |
 | A08 Software or Data Integrity Failures | `supply-chain`, `ci-cd-security` (cache/artifact poisoning, artifact attestation), `expo-security` (OTA), `logging-monitoring` (deserialization), `webhook-security` (replay/idempotency, unverified-payload-field trust) |

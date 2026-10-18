@@ -258,6 +258,8 @@ tables or embeds work. Combined with unfiltered RAG retrieval above, an attacker
 
 Detection: `grep -rn "rehypeRaw\|dangerouslySetInnerHTML\|allowDangerousHtml\|v-html"`,
 cross-referenced against files that render chat messages.
+If raw HTML must stay enabled, the sanitizer schema and plugin order (`rehype-raw` before
+`rehype-sanitize`, nothing after it) are covered in `secaudit:rich-text-security` §8.
 
 ### Do not un-mask streamed errors
 

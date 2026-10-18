@@ -73,6 +73,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:fivem-security` | FiveM/CitizenFX resources and game-facing APIs: client-triggerable `RegisterNetEvent` handlers (authorize on `source`), files shipped to players, `setr`/`sets` convars, state bags, NUI callbacks/XSS, `PerformHttpRequest` keys, txAdmin exposure, per-community API key scoping |
 | `secaudit:data-access` | SQL injection, ORM operator injection, Drizzle `sql.raw()` / identifier injection, SQLite / Turso / D1 file and tenancy specifics, runtime input validation, mass assignment |
 | `secaudit:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
+| `secaudit:rich-text-security` | Rich-text editors and HTML sanitizers: TipTap/ProseMirror stored HTML vs JSON and sanitize-on-write, render sinks and server-side `@tiptap/html` on happy-dom, Link `isAllowedUri` and Image `src`, paste handlers, custom nodes, mammoth .docx import, rehype-sanitize schemas and plugin order, DOMPurify / sanitize-html configs and version floors |
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion, API-key/join-code/session-token storage by entropy, encrypted stored secrets (webhook URLs) |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
 | `secaudit:python-web-security` | FastAPI/Django: per-route auth gaps, response_model leakage, production settings, TLS verification |

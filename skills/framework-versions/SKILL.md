@@ -1,6 +1,6 @@
 ---
 name: framework-versions
-description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, and the Traefik proxy in front of them) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
+description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, the rich-text and sanitizer libraries — TipTap/ProseMirror, mammoth, DOMPurify, sanitize-html — and the Traefik proxy in front of them) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
 license: MIT
 ---
 
@@ -395,6 +395,32 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   floor **`@tanstack/react-start@1.168.60`**. The old package
   name `@tanstack/start` shows zero advisories and is deprecated — read that as unmaintained,
   not safe. See `secaudit:supply-chain` and `secaudit:ci-cd-security`.
+- **TipTap / ProseMirror (rich-text editors):** `CVE-2025-14284` (`GHSA-vhrc-hgrq-x75r`) —
+  `setLink` / `toggleLink` accepted a `javascript:` href; fixed 2.10.4 on
+  `@tiptap/extension-link`. `CVE-2026-104847` (`GHSA-c8x8-7fp4-3x9w`) — pasting attacker HTML
+  into any ProseMirror editor runs script; fixed 1.42.3 on `prosemirror-view`, which arrives
+  transitively through `@tiptap/pm`, so check the resolved version. Server-side
+  `@tiptap/html` peers on happy-dom: `CVE-2025-61927` (VM-context escape to RCE) is fixed 20.0.0
+  and `CVE-2026-34226` (cookie leak on `fetch`) is fixed 20.8.9.
+- **`@tiptap/core` (no CVE ids):** `GHSA-cp6q-959q-f8rh` — `mergeAttributes()` turns an own
+  `__proto__` key into inherited DOM attributes (XSS via `onerror`); OSV lists 3.30.4 as the
+  only fixed release. `GHSA-j95f-988m-3j2f` — quadratic ReDoS in the Markdown attribute parsers
+  from 3.7.0, resolved in 3.30.5. On the 2.x line the published 2.27.3 package carries the
+  `mergeAttributes` `__proto__` guard (2.27.2 lacks it) while OSV still lists every 2.x release
+  in range, so an OSV-driven scanner keeps reporting it; the Markdown ReDoS does not reach 2.x.
+  Current clean floors **`@tiptap/core@3.30.5`**, **`@tiptap/extension-link@2.10.4`**,
+  **`prosemirror-view@1.42.3`**, **`happy-dom@20.8.9`**.
+- **Document import and HTML sanitizers:** `CVE-2025-11849` (`GHSA-rmjr-87wv-gf87`) — mammoth
+  follows an external `r:link` image, reads the local file and inlines it as a data URI; fixed
+  1.11.0, which adds `externalFileAccess` (default off). `CVE-2025-66400`
+  (`GHSA-4fh9-h7wg-q85m`) — mdast-util-to-hast emits unprefixed classes from a fenced-code info
+  string; fixed 13.2.1, arriving through `remark-rehype`. DOMPurify: `CVE-2026-109344` and
+  `CVE-2026-109345`, both `IN_PLACE` bypasses, fixed 3.4.16. sanitize-html: `CVE-2026-53606`
+  (`javascript:` in `formaction`/`action`/`poster`) fixed 2.17.5, `CVE-2026-63670`
+  (`</textarea/>` mutation XSS) fixed 2.17.6, `CVE-2026-84371` (SVG SMIL scheme bypass) fixed
+  2.17.7. Current clean floors **`mammoth@1.11.0`**, **`mdast-util-to-hast@13.2.1`**,
+  **`dompurify@3.4.16`**, **`sanitize-html@2.17.7`**. Configuration findings for all of these
+  live in `secaudit:rich-text-security`.
 - **Traefik** (Go module `github.com/traefik/traefik/v3`, normally deployed as a container, so
   `npm audit` and lockfile scanners never see it): ForwardAuth has taken a wave of pre-auth
   bypasses. `CVE-2026-35051` — a spoofed `X-Forwarded-Prefix` skips the auth decision even with

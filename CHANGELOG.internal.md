@@ -7,7 +7,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ### ✨ New
 - Next.js and React version checks now flag the latest critical fixes.
 - Dependency checks no longer treat an empty advisory lookup as proof a package is safe.
-- (pending) New checks for rich-text editors, document import and HTML sanitizing.
+- New checks for rich-text editors, document import and HTML sanitizing.
 - (pending) New checks for keeping each tenant's data separate across caches, jobs, domains and search.
 - (pending) Audits now review the AI-agent settings, hooks and MCP servers a project ships.
 - (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.

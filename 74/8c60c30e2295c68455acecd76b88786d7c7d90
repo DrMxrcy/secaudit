@@ -1,0 +1,31 @@
+scripts/check-freshness.py
+  s_46f42f15a4ddb4::t_7e582eacb81d91 380-392
+  s_46f42f15a4ddb4::t_3b743692ae55d3 534-535,541-548,553,555-566
+  s_46f42f15a4ddb4::t_998780faf4e20d 786
+  s_46f42f15a4ddb4::t_f3e45793e76edb 77-91
+  s_46f42f15a4ddb4::t_4a14352e22bf96 497-517
+CHANGELOG.md
+  s_46f42f15a4ddb4::t_096d08ce961c24 104
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_651b54556645c7 700
+.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md
+  s_46f42f15a4ddb4::t_5f100c2b4d39d5 6,33-34
+ROADMAP.md
+  s_46f42f15a4ddb4::t_f0165eff028a35 43-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "748c60c30e2295c68455acecd76b88786d7c7d90",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

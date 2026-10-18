@@ -127,10 +127,14 @@ payloads in React Server Components. Actively exploited (listed in CISA KEV).
 - **Patched by (React):** 19.0.1, 19.1.2, 19.2.1.
 - **Patched by (Next.js):** 15.0.5, 15.1.9, 15.2.6, 15.3.6, 15.4.8, 15.5.7, 16.0.7.
 - **Do not stop there.** These are the releases that fixed *this* CVE, not versions that are
-  safe today — later advisories landed on the same lines. As of 2026-08-21, OSV reports 28 open
-  advisories for `next@15.5.7` and 33 for `next@16.0.7`. Current clean floors: **`next@15.5.27`**
-  or **`next@16.3.8`**, and **`react-server-dom-*@19.2.8`**. Re-derive these from step 2 — do
-  not trust the numbers on this line to still be clean when you read them.
+  safe today — later advisories landed on the same lines. As of 2026-10-17, OSV reports 32 open
+  advisories for `next@15.5.7` and 40 for `next@16.0.7`. Current clean floors: **`next@15.5.28`**
+  or **`next@16.4.1`**, and **`react-server-dom-*@19.2.9`** (19.3.1 on the 19.3 line). The
+  post publishes no affected ranges and patches only 16.4.1 / 15.5.28, so treat 16.3.x
+  (including 16.3.8) and 16.4.0 as unpatched — a 16.3 app has to move to 16.4. Re-derive these from step 2 — do not trust the numbers on this line to
+  still be clean when you read them — but as of 2026-10-17 the 2026-10-14 advisories are not on
+  OSV yet, so an OSV re-derivation under-reports (it still shows 15.5.27 / 16.3.8 with zero open
+  advisories). Check the vendor post as well until OSV catches up.
 - **2026-09-08 pair of unauthenticated RCEs** moved the floor from 15.5.21 / 16.2.11:
   `GHSA-2xp9-vwfh-vxw4` (RCE in the Image Optimization API when an AVIF file is processed,
   affects 10.0.0+) and `CVE-2026-75604` (RCE on Windows-hosted servers, affects 13.4.0+). Both
@@ -163,6 +167,32 @@ payloads in React Server Components. Actively exploited (listed in CISA KEV).
     16.3.8.
   - None of these is on CISA KEV (catalog of 2026-10-15). Two of them are in image handling
     again (`next/og` and Image Optimization) — see *The shared image pipeline* below.
+- **2026-10-14 out-of-band release** moved the floor again, from 15.5.27 / 16.3.8, to
+  **15.5.28 / 16.4.1** (16.4.2 is the latest 16.x). Two of its three fixes were postponed from
+  the September release by upstream dependency delays. As of 2026-10-17 none of the three has an
+  npm / `next` record in OSV or the GitHub advisory DB (CVE-2026-96889 exists only as the
+  alias of the librsvg RUSTSEC record) — source: vendor post — so no version ranges are published yet;
+  the conditions below are the post's:
+  - `GHSA-673q-mjm6-r5xr` (Critical; React upstream `GHSA-xqc2-xf4c-x3h3`) — unauthenticated
+    RCE in App Router apps using Cache Components when a `use cache` function returns multiple
+    typed arrays. No known workaround; the post says to upgrade even if the app has no such
+    function.
+  - `CVE-2026-96889` (`GHSA-2464-fhr4-w9xw`, Critical) — unauthenticated RCE in the Image
+    Optimization API when it processes an SVG, through a use-after-free in librsvg underneath
+    `sharp` / libvips (`RUSTSEC-2026-0305`, same CVE). Only when Next.js runs on glibc-based
+    Linux; musl builds such as Alpine are outside the stated conditions, but the
+    vendor does not say musl is safe — do not downgrade severity on Alpine; upgrade regardless. Workaround: make sure
+    the `sharp` Next.js resolves is 0.35.5 or later — check it even after upgrading, because the
+    15.x release still accepts `sharp` 0.34.x (see *The shared image pipeline* below). Fixed
+    15.5.28 / 16.4.1.
+  - `GHSA-p3m5-59mp-jv5r` (High; React upstream `GHSA-h3gv-c5rc-p453`) — crafted requests to an
+    App Router app with at least one Server Action cause CPU exhaustion that blocks every other
+    request in the process (DoS). Pages Router apps and apps without Server Actions are not
+    vulnerable.
+  - React published `react-server-dom-*` 19.0.9 / 19.1.10 / 19.2.9 / 19.3.1 the same day; treat
+    those as the React fix lines until the upstream advisories publish their ranges.
+  - None of these is on CISA KEV (catalog of 2026-10-16). The SVG RCE is the third Next.js
+    image-pipeline RCE in six weeks.
 - **Sibling CVEs are patched one release later**, so upgrading to the -55182 fix leaves both
   open: `CVE-2025-55183` (source exposure) and `CVE-2025-55184` (DoS) are fixed in
   **19.0.2 / 19.1.3 / 19.2.2**, not 19.0.1 / 19.1.2 / 19.2.1.
@@ -389,6 +419,29 @@ dependency in the tree** — `sharp`, `@img/sharp-*`, `libvips`, ImageMagick bin
 framework wrapping them. An app that accepts and resizes user uploads is exposed for as long as
 its slowest wrapper takes to ship, whichever framework's name was on the advisory.
 
+On 2026-10-14 Next.js shipped a third: `GHSA-2464-fhr4-w9xw`, an RCE when Image Optimization
+processes an **SVG**. The bug is in librsvg, the SVG renderer libvips calls, not in Next.js
+(`RUSTSEC-2026-0305`, a use-after-free on duplicated XML entities across nested XIncludes; it
+lists the safe librsvg releases as 2.57.5, 2.60.3, 2.61.5, 2.62.4 and 2.63.2). Two conditions
+decide exposure, and the `next` version shows neither:
+
+- **glibc Linux only.** The vendor scopes it to Next.js running on glibc-based Linux. Record the
+  deploy image's libc before ranking it: `node:*-alpine` images are musl, the Debian-based
+  `node` images are glibc.
+- **The resolved `sharp` decides it, not `next`.** The workaround is `sharp` 0.35.5 or later, and
+  the post says upgrading Next.js makes package managers supply it. That holds for 16.4.1, which
+  requires `sharp` `^0.35.5`, but `next@15.5.28` declares `"^0.34.3 || ^0.35.5"`, so a lockfile
+  that already resolved 0.34.x keeps it through the upgrade. `sharp` 0.35.5 pulls
+  `@img/sharp-libvips-*` 1.3.4 (0.35.4 pulls 1.3.3, 0.34.5 pulls 1.2.4). A `sharp` built against
+  a system libvips uses the OS librsvg instead — check the distro package against the RUSTSEC
+  list.
+
+```bash
+# What the tree actually resolved (pnpm why sharp / yarn why sharp on those package managers)
+npm ls sharp @img/sharp-libvips-linux-x64 @img/sharp-libvips-linux-arm64
+grep -nE -A1 '"node_modules/(.+/)?(sharp|@img/sharp-libvips-[a-z0-9-]+)"' package-lock.json
+```
+
 ## What to Check
 
 ```bash
@@ -470,6 +523,8 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-f87g-xv8r-7p7x -- CVE-2026-94485 Next.js metadata image routes ignore dynamicParams
 - https://github.com/advisories/GHSA-3w37-wq28-93x7 -- CVE-2026-94544 Next.js `use cache` leaks Draft Mode content
 - https://github.com/advisories/GHSA-39w2-rjm5-chcv -- CVE-2026-94486 Next.js dev-server MCP endpoint disclosure
+- https://nextjs.org/blog/nextjs-security-update-october-14-2026 -- Next.js 2026-10-14 out-of-band release: GHSA-673q-mjm6-r5xr, CVE-2026-96889 / GHSA-2464-fhr4-w9xw, GHSA-p3m5-59mp-jv5r; sets the 15.5.28 / 16.4.1 floors; the only source until OSV ingests them
+- https://rustsec.org/advisories/RUSTSEC-2026-0305.html -- librsvg XInclude entity use-after-free behind CVE-2026-96889; lists the safe librsvg releases
 - https://github.com/advisories/GHSA-hxh3-vqpv-xpqv -- CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor
 - https://github.com/advisories/GHSA-p68q-wchp-6fh7 -- CVE-2026-76169 Fastify auth bypass via a sibling plugin's not-found handler
 - https://github.com/advisories/GHSA-9q9j-q6p8-xq58 -- CVE-2026-84428 Fastify header-schema `dependencies` never enforced

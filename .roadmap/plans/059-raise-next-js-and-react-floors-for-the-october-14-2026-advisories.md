@@ -32,5 +32,6 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Add PENDING_OSV allowance with expiry + self-check to the freshness script -> target: scripts/check-freshness.py
   > evidence: python3 -I scripts/check-freshness.py --self-check: self-check OK; check_advisories() returns only the 5 expected 'no longer cited' drifts until step 2 cites the ids; spec review all MET, quality review CONFIRMED (2026-10-17)
-- [ ] Step 2: Update Next.js/React floors, add 2026-10-14 advisory bullet and image-pipeline SVG/glibc/sharp caveats -> target: skills/framework-versions/SKILL.md
+- [x] Step 2: Update Next.js/React floors, add 2026-10-14 advisory bullet and image-pipeline SVG/glibc/sharp caveats -> target: skills/framework-versions/SKILL.md
+  > evidence: check-freshness.py: All current (5 pending ids warn only); vendor post, RUSTSEC-2026-0305, npm sharp ranges and OSV counts independently verified; 3 wording fixes from quality review applied (2026-10-17)
 - [ ] Step 3: Sync audit example and auth Server Action DoS line; cite sources; freshness green -> target: skills/audit/SKILL.md, skills/auth/SKILL.md, SOURCES.md

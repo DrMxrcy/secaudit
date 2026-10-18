@@ -4,7 +4,7 @@ Every claim in the secaudit skills is backed by a primary source: official docum
 vendor security advisories, the NVD / GitHub Advisory Database, OWASP, or primary research. Each
 skill also lists its own sources in a `## Sources` section. This file is the consolidated index.
 
-Last verified: 2026-10-16.
+Last verified: 2026-10-17.
 
 ## Frameworks (`framework-versions`)
 - https://nvd.nist.gov/vuln/detail/cve-2025-55182 — React2Shell RSC RCE (CVSS 10.0)
@@ -36,6 +36,7 @@ Last verified: 2026-10-16.
 - https://github.com/remix-run/react-router/security — React Router / Remix advisories
 - https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)
 - https://nextjs.org/blog — official Next.js security releases
+- https://react.dev/blog — official React blog, where React security releases are posted
 - https://github.com/advisories/GHSA-crvj-82cr-hjcx — CVE-2026-84363 Hono query parser reads past the URL fragment; the 2026-09-08 trio sets the 4.13.5 floor
 - https://github.com/advisories/GHSA-f23p-vx2j-j53r — CVE-2026-71850 Hono `memo()` cross-user SSR disclosure, fixed 4.12.34
 - https://github.com/advisories/GHSA-w332-q679-j88p — CVE-2026-24473 Hono serve-static env-key read; its fix release 4.11.7 still carries 33 open advisories
@@ -249,6 +250,12 @@ Last verified: 2026-10-16.
 - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json/ — lockfiles
 - https://www.elastic.co/security-labs/threat-command/shai-hulud-chaindrop-npm-supply-chain — CHAINDROP/Shai-Hulud npm worm (2026-08-04): preinstall-hook delivery, 400+ packages, 300+ credential patterns, self-propagation via npm publish tokens
 - https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack — same incident, independent analysis: keyv/cacheable ecosystem, IDE persistence attempts, no CVE assigned
+- https://intel.aikido.dev — Aikido Intel vulnerability feed (AIKIDO-* IDs not in OSV); resolved 200 on 2026-10-17
+- https://intel.aikido.dev/cve/AIKIDO-2026-54683 — undici Medium advisory: affected through 8.10.1, fixed in 8.10.2
+- https://docs.npmjs.com/cli/v10/configuring-npm/package-json/#overrides — npm overrides: root-only, scoped `parent: { child }` form, EOVERRIDE and `$` references
+- https://yarnpkg.com/configuration/manifest — yarn `resolutions`, one level of `parent/child`
+- https://pnpm.io/settings/dependency-resolution — pnpm `overrides` in pnpm-workspace.yaml, `parent>child` selector
+- https://pnpm.io/package_json — since v11 pnpm no longer reads settings from the `pnpm` field of package.json
 
 ## React Native (`react-native-security`)
 - https://reactnative.dev/docs/security — official RN security guide

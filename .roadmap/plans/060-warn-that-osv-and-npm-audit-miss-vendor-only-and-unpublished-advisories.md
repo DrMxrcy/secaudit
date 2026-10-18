@@ -3,7 +3,7 @@ id: 60
 title: Warn that OSV and npm audit miss vendor-only and unpublished advisories
 type: feature
 version: 3.12.0
-status: active
+status: done
 created: 2026-10-17
 ---
 
@@ -29,4 +29,5 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Add vendor-only/lagging advisory subsection and transitive-override remediation -> target: skills/supply-chain/SKILL.md
   > evidence: check-freshness.py: All current; OSV undici 6.29.1/7.30.1/8.12.2 empty and npm audit zero re-verified; engines/dist-tags/Aikido ranges verified; spec MET, quality CONFIRMED after one fix loop (Node >=22.19.0 warning, valid JSON fences) (2026-10-17)
-- [ ] Step 2: Add vendor-post check to framework-versions lookup and source caveat to audit report; freshness green -> target: skills/framework-versions/SKILL.md, skills/audit/SKILL.md, SOURCES.md
+- [x] Step 2: Add vendor-post check to framework-versions lookup and source caveat to audit report; freshness green -> target: skills/framework-versions/SKILL.md, skills/audit/SKILL.md, SOURCES.md
+  > evidence: check-freshness.py: All current; all new URLs 200 without redirect; spec check by parent (MET), quality by independent verifier (PARTIAL: 3 wording fixes applied by parent — framework scope, aligned report template, list-only-consulted-sources) (2026-10-17)

@@ -627,6 +627,13 @@ Fix both through one server-side `priceFor(productId)` lookup.
 Do not fold a failed worker into a general caveat. `expo-security` above did not run, so the
 mobile surface has *no* result — not a clean one.
 
+**Advisory sources:** OSV (osv-scanner, OSV API), npm audit (GitHub Advisory DB). OSV-only:
+vendor-only feeds (Aikido, Snyk, Socket) not consulted; vendor posts checked for: next, react.
+
+List only the sources this run actually consulted. An OSV-only lookup misses vendor-only
+advisories and ones not yet ingested, so "no known vulnerabilities" means none in these sources.
+See `secaudit:supply-chain`, *An empty OSV / `npm audit` result is not a clean bill*.
+
 ### Next Steps
 
 Run these automated checks:

@@ -23,6 +23,12 @@ templates. A vulnerable framework version is often the single highest-impact iss
    step. Query OSV.dev (or run `osv-scanner` / `npm audit`) for the packages found, so a CVE
    disclosed after this skill was last edited is still caught. Full procedure and a worked
    OSV.dev example: `./references/live-advisory-lookup.md`.
+   Then check each framework's own security posts (vendor blog, or the repo's GitHub Security tab)
+   for releases newer than the OSV data, because vendor post → GHSA → OSV takes days (the
+   2026-10-14 Next.js advisories were still missing from OSV on 2026-10-17) — for example <https://nextjs.org/blog>, <https://react.dev/blog>, and
+   <https://nodejs.org/en/blog/vulnerability/> for the runtime. When a floor comes from a vendor
+   post that OSV doesn't have yet, say so in the finding ("source: vendor post, not yet in OSV").
+   Background: `secaudit:supply-chain`, *An empty OSV / `npm audit` result is not a clean bill*.
 3. **Check whether the runtime itself is EOL** (see *Runtime end-of-life* below). An EOL runtime
    never gets a patch, which outranks any individual CVE.
 4. **Look up EPSS for the CVEs you found** (see *Ranking by exploitation probability*), so the
@@ -533,3 +539,5 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-4mh8-r7rc-xpvc -- CVE-2026-92081 Fastify HTTP/2 trailer crash; sets the 5.12.5 floor
 - https://github.com/advisories/GHSA-9643-4qgh-g8mx -- CVE-2026-56669 Elysia quadratic form-data normalization DoS; sets the 1.4.29 floor
 - https://github.com/advisories/GHSA-qx66-fv34-fjm8 -- CVE-2026-102989 TanStack Start server-function reflected XSS; sets the 1.168.60 floor
+- https://react.dev/blog -- official React blog, where React security releases are posted
+- https://nodejs.org/en/blog/vulnerability/ -- Node.js security releases (the runtime is not OSV-indexed)

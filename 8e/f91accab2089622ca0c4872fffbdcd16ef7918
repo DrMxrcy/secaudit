@@ -1,0 +1,45 @@
+skills/mcp-agent-security/SKILL.md
+  s_46f42f15a4ddb4::t_b34f55819c886b 743-745
+  s_46f42f15a4ddb4::t_aea01ddb345a74 628-629
+  s_46f42f15a4ddb4::t_d2ba89d7442fd4 924-925
+  s_46f42f15a4ddb4::t_3fbf5b52360dd4 990-993
+  s_46f42f15a4ddb4::t_86d7f616fe0341 42-44
+  s_46f42f15a4ddb4::t_3d7017a36327e9 610-613
+  s_46f42f15a4ddb4::t_eeb9d00b4417ce 734,802-804,806,940,986
+  s_46f42f15a4ddb4::t_e27ffcaa3e7f3f 905-908
+  s_46f42f15a4ddb4::t_7fc700d0d3015c 862-865,867-870
+  s_46f42f15a4ddb4::t_64c484c32402ff 634-635,737-742,819-821,949-950,989
+  s_46f42f15a4ddb4::t_b8e6c95e1a39e7 3
+  s_46f42f15a4ddb4::t_2f55ff319b3973 637-638,640-658,672-678,732-733,778-779,783-797,799-801,805,808-813,815,877-887,890-902,928-939,941-944,985
+  s_46f42f15a4ddb4::t_d51b4b7d6b713c 582-595,599-609,614-627,636,639,659-660,664-671,679-731,735-736,746-777,780-782,798,807,814,816-817,825-861,866,871-876,888-889,903-904,909-923,926-927,945-947,952-984,987-988,994-1001,1007
+  s_46f42f15a4ddb4::t_0bfb46237f9cb7 596-598
+  s_46f42f15a4ddb4::t_907f69ee364c0c 661-663
+  s_46f42f15a4ddb4::t_572e24e6fe54d5 818,822-824
+  s_46f42f15a4ddb4::t_8fcb5ca1434019 630-633
+  s_46f42f15a4ddb4::t_2bfe0225b8919e 1002-1006
+  s_46f42f15a4ddb4::t_ec899dafe296a1 1053
+  s_46f42f15a4ddb4::t_1354e1e1faf136 948,951
+  s_46f42f15a4ddb4::t_f0646fbfccb3c1 1028-1052,1054
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_96476d31e27aff 720
+.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md
+  s_46f42f15a4ddb4::t_6649cacdab7eb9 6,33-34
+ROADMAP.md
+  s_46f42f15a4ddb4::t_633cba3d4e7af9 43,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8ef91accab2089622ca0c4872fffbdcd16ef7918",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

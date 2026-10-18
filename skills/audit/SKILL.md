@@ -559,14 +559,17 @@ const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 This version is exposed to a critical pre-auth Remote Code Execution vulnerability in React Server
 Components. Upgrade to a release with no open advisories — not merely to the release that first
 patched this CVE, which has since accrued others. Derive the target from a live OSV query for the
-package, not from a version named in a skill file.
+package plus the vendor's security posts, not from a version named in a skill file. OSV lags: on
+2026-10-17 it still reported zero advisories for 15.5.27, which the 2026-10-14 Next.js release
+fixed two Critical RCEs in.
 
 ```json
 // Before
 "next": "15.1.0"
 
-// After — a version OSV currently reports zero advisories for
-"next": "15.5.27"
+// After — zero OSV advisories and past every fix in the vendor's security posts
+// (15.5.28 still accepts sharp 0.34.x: confirm the lockfile resolves sharp >= 0.35.5)
+"next": "15.5.28"
 ```
 
 #### High

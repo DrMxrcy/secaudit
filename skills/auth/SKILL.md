@@ -87,6 +87,11 @@ Every Server Action needs three things at the top:
 2. **Authentication** (verify the user is logged in)
 3. **Authorization** (verify the user owns the resource)
 
+The framework parses the action request before any of that runs, so a parsing bug hits even a
+fully guarded action — `GHSA-p3m5-59mp-jv5r` (2026-10-14, DoS by CPU exhaustion in App Router
+Server Action parsing). The Next.js version is part of the Server Action check; see
+`secaudit:framework-versions`.
+
 ## Authentication vs Authorization
 
 "Logged in" is not "allowed." Authentication confirms *who* the user is; authorization confirms

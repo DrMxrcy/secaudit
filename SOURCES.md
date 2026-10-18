@@ -60,6 +60,8 @@ Last verified: 2026-10-16.
 - https://github.com/advisories/GHSA-f87g-xv8r-7p7x — CVE-2026-94485 Next.js metadata image routes ignore dynamicParams
 - https://github.com/advisories/GHSA-3w37-wq28-93x7 — CVE-2026-94544 Next.js `use cache` leaks Draft Mode content
 - https://github.com/advisories/GHSA-39w2-rjm5-chcv — CVE-2026-94486 Next.js dev-server MCP endpoint disclosure
+- https://nextjs.org/blog/nextjs-security-update-october-14-2026 — Next.js 2026-10-14 out-of-band release: GHSA-673q-mjm6-r5xr, CVE-2026-96889 / GHSA-2464-fhr4-w9xw, GHSA-p3m5-59mp-jv5r; sets the 15.5.28 / 16.4.1 floors; the only source until OSV ingests them
+- https://rustsec.org/advisories/RUSTSEC-2026-0305.html — librsvg XInclude entity use-after-free behind CVE-2026-96889; lists the safe librsvg releases
 - https://github.com/advisories/GHSA-hxh3-vqpv-xpqv — CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor
 - https://github.com/advisories/GHSA-p68q-wchp-6fh7 — CVE-2026-76169 Fastify auth bypass via a sibling plugin's not-found handler
 - https://github.com/advisories/GHSA-9q9j-q6p8-xq58 — CVE-2026-84428 Fastify header-schema `dependencies` never enforced

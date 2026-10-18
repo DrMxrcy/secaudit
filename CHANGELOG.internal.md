@@ -5,7 +5,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ## v3.12.0 — (in progress)
 
 ### ✨ New
-- (pending) Next.js and React version checks now flag the latest critical fixes.
+- Next.js and React version checks now flag the latest critical fixes.
 - (pending) Dependency checks no longer treat an empty advisory lookup as proof a package is safe.
 - (pending) New checks for rich-text editors, document import and HTML sanitizing.
 - (pending) New checks for keeping each tenant's data separate across caches, jobs, domains and search.

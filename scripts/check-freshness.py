@@ -74,6 +74,21 @@ URL_ALLOWLIST = {
     "https://token.actions.githubusercontent.com": "OIDC issuer ID, not a web page",
 }
 
+# Advisories a vendor published before OSV ingested them. Each needs the vendor URL that
+# proves it exists and the date it was added: id -> (vendor URL, ISO date added). Only GHSA
+# ids belong here — ADVISORY_RE is the only OSV existence probe; a 404 CVE is skipped silently.
+# An entry is a debt with a due date, not an exemption: once OSV resolves it, or it has
+# waited longer than PENDING_OSV_MAX_DAYS, the checker reports drift so it cannot rot here.
+_NEXT_2026_10_14 = "https://nextjs.org/blog/nextjs-security-update-october-14-2026"
+PENDING_OSV = {
+    "GHSA-673q-mjm6-r5xr": (_NEXT_2026_10_14, "2026-10-17"),  # Next RSC typed-array RCE
+    "GHSA-xqc2-xf4c-x3h3": (_NEXT_2026_10_14, "2026-10-17"),  # React upstream of the above
+    "GHSA-2464-fhr4-w9xw": (_NEXT_2026_10_14, "2026-10-17"),  # Image Optimization SVG RCE
+    "GHSA-p3m5-59mp-jv5r": (_NEXT_2026_10_14, "2026-10-17"),  # Server Action parsing DoS
+    "GHSA-h3gv-c5rc-p453": (_NEXT_2026_10_14, "2026-10-17"),  # React upstream of the above
+}
+PENDING_OSV_MAX_DAYS = 30
+
 
 def is_placeholder(text: str) -> bool:
     return any(re.search(p, text) for p in PLACEHOLDER_PATTERNS)
@@ -362,6 +377,19 @@ def _self_check() -> None:
     for line, want in cases.items():
         got = _claims_for_line(line)
         assert got == want, (line, got, want)
+
+    # PENDING_OSV: a fresh 404 warns, a stale one or a resolved one is drift.
+    day = datetime.date.fromisoformat
+    today = day("2026-10-17")
+    assert _classify_advisory(True, None, today)[0] is None
+    assert _classify_advisory(False, None, today)[0] == "drift"           # not pending
+    assert _classify_advisory(False, day("2026-10-01"), today)[0] == "warning"
+    assert _classify_advisory(False, day("2026-09-17"), today)[0] == "warning"  # day 30
+    assert _classify_advisory(False, day("2026-09-16"), today)[0] == "drift"    # day 31
+    assert _classify_advisory(True, day("2026-10-01"), today)[0] == "drift"
+    for gid, (url, added) in PENDING_OSV.items():   # a typo'd entry must not slip through
+        assert ADVISORY_RE.fullmatch(gid) and url.startswith("https://"), gid
+        assert day(added) <= datetime.date.today(), gid   # a future date would never expire
     print("self-check OK")
 
 
@@ -466,6 +494,27 @@ def _safe(fn, *args, default=None):
     except Exception:
         return default
 
+
+def _classify_advisory(resolved: bool, pending_since: datetime.date | None,
+                       today: datetime.date) -> tuple[str | None, str]:
+    """(level, problem) for one cited advisory: level is None, "warning", or "drift".
+
+    Pure so the PENDING_OSV expiry is testable without the network. `pending_since` is the
+    PENDING_OSV date added, or None when the id is not pending.
+    """
+    if pending_since is None:
+        if resolved:
+            return None, ""
+        return "drift", "does not resolve on OSV (404 — advisory does not exist)"
+    if resolved:
+        return "drift", "resolves on OSV now — remove it from PENDING_OSV"
+    age = (today - pending_since).days
+    if age > PENDING_OSV_MAX_DAYS:
+        return "drift", (f"still not on OSV after {PENDING_OSV_MAX_DAYS} days — re-verify "
+                         "against the vendor post or remove")
+    return "warning", f"pending OSV ingestion for {age} day(s)"
+
+
 def check_advisories() -> list[dict]:
     findings = []
     cited: dict[str, set[str]] = {}
@@ -482,19 +531,39 @@ def check_advisories() -> list[dict]:
         except TransientError as e:
             return gid, False, str(e)
 
-    unreachable = []
+    unreachable, pending = [], []
+    today = datetime.date.today()
     # Modest concurrency: OSV rate-limits bursts, and a 429 storm would look like drift.
     with ThreadPoolExecutor(max_workers=4) as ex:
         for gid, data, err in ex.map(probe, cited):
             if err:
                 unreachable.append(gid)
-            elif data is None:
+                continue
+            since = PENDING_OSV.get(gid)
+            level, problem = _classify_advisory(
+                data is not None,
+                datetime.date.fromisoformat(since[1]) if since else None, today)
+            if level == "warning":
+                pending.append(f"{gid} ({problem}; {since[0]})")
+            elif level == "drift":
                 findings.append({
                     "check": "advisory",
                     "file": ", ".join(sorted(cited[gid])),
                     "subject": gid,
-                    "problem": "does not resolve on OSV (404 — advisory does not exist)",
+                    "problem": problem,
                 })
+    # A pending entry nothing cites any more is dead weight that would hide a future 404.
+    for gid in sorted(set(PENDING_OSV) - set(cited)):
+        findings.append({
+            "check": "advisory",
+            "file": "scripts/check-freshness.py",
+            "subject": gid,
+            "problem": "listed in PENDING_OSV but no longer cited",
+        })
+    if pending:
+        # Vendor-published, not yet on OSV: surfaced, but not drift until it expires.
+        print(f"warning: {len(pending)} advisories not on OSV yet (PENDING_OSV, not "
+              f"drift): {'; '.join(pending)}", file=sys.stderr)
     if unreachable:
         # Surfaced, but not as drift: we could not determine the answer either way.
         print(f"warning: could not reach OSV for {len(unreachable)} advisories "
@@ -714,7 +783,7 @@ def main() -> int:
     ap.add_argument("--only", choices=sorted(CHECKS), action="append",
                     help="run only this check (repeatable)")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
-    ap.add_argument("--self-check", action="store_true", help="run the fix-claim pairing self-check")
+    ap.add_argument("--self-check", action="store_true", help="run the offline self-checks (fix-claim pairing, PENDING_OSV expiry)")
     args = ap.parse_args()
     if args.self_check:
         _self_check()

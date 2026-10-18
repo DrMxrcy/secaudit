@@ -40,8 +40,8 @@
 
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.12.0 — 0%
-- [ ] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 0% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
+### [ ] v3.12.0 — 5%
+- [ ] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 33% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
 - [ ] **#60 Warn that OSV and npm audit miss vendor-only and unpublished advisories** `feature` — 0% ([plan](.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md))
 - [ ] **#61 Add a rich-text-security skill for editors, docx import and sanitizers** `feature` — 0% ([plan](.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md))
 - [ ] **#62 Add a multi-tenant-isolation hub skill** `feature` — 0% ([plan](.roadmap/plans/062-add-a-multi-tenant-isolation-hub-skill.md))

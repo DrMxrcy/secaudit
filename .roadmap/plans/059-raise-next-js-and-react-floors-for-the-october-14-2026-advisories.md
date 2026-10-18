@@ -3,7 +3,7 @@ id: 59
 title: Raise Next.js and React floors for the October 14 2026 advisories
 type: feature
 version: 3.12.0
-status: planned
+status: active
 created: 2026-10-17
 ---
 
@@ -30,6 +30,7 @@ created: 2026-10-17
 - **Fails if:** any claim disagrees with the vendor post, or older advisory bullets are altered beyond the floor line.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add PENDING_OSV allowance with expiry + self-check to the freshness script -> target: scripts/check-freshness.py
+- [x] Step 1: Add PENDING_OSV allowance with expiry + self-check to the freshness script -> target: scripts/check-freshness.py
+  > evidence: python3 -I scripts/check-freshness.py --self-check: self-check OK; check_advisories() returns only the 5 expected 'no longer cited' drifts until step 2 cites the ids; spec review all MET, quality review CONFIRMED (2026-10-17)
 - [ ] Step 2: Update Next.js/React floors, add 2026-10-14 advisory bullet and image-pipeline SVG/glibc/sharp caveats -> target: skills/framework-versions/SKILL.md
 - [ ] Step 3: Sync audit example and auth Server Action DoS line; cite sources; freshness green -> target: skills/audit/SKILL.md, skills/auth/SKILL.md, SOURCES.md

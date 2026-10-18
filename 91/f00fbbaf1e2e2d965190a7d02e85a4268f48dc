@@ -1,0 +1,43 @@
+skills/framework-versions/SKILL.md
+  s_46f42f15a4ddb4::t_7ddde35884fd4e 26-27,29
+  s_46f42f15a4ddb4::t_452a850fa9e632 543
+  s_46f42f15a4ddb4::t_8be19397ce9ea8 28,30-31
+  s_46f42f15a4ddb4::t_ba5334da1956ab 542
+SOURCES.md
+  s_46f42f15a4ddb4::t_452a850fa9e632 7,39,253-258
+skills/audit/SKILL.md
+  s_46f42f15a4ddb4::t_7ddde35884fd4e 630-635
+  s_46f42f15a4ddb4::t_80ba5344df6736 636
+.roadmap/config.json
+  s_4792c0a8c09b36::t_987e07163cf9ab 700
+.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md
+  s_4792c0a8c09b36::t_f785af1f951439 6,32-33
+CHANGELOG.internal.md
+  s_4792c0a8c09b36::t_37e5ca53ed839b 9
+ROADMAP.md
+  s_4792c0a8c09b36::t_e7a4d91cbc7181 43,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "91f00fbbaf1e2e2d965190a7d02e85a4268f48dc",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    },
+    "s_4792c0a8c09b36": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6ec4cec-2d53-4609-b9ea-53e010c0822e",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

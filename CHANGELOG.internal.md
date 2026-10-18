@@ -2,6 +2,21 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.12.0 — (in progress)
+
+### ✨ New
+- (pending) Next.js and React version checks now flag the latest critical fixes.
+- (pending) Dependency checks no longer treat an empty advisory lookup as proof a package is safe.
+- (pending) New checks for rich-text editors, document import and HTML sanitizing.
+- (pending) New checks for keeping each tenant's data separate across caches, jobs, domains and search.
+- (pending) Audits now review the AI-agent settings, hooks and MCP servers a project ships.
+- (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
+- (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.
+- (pending) New checks for cached per-user data, Server Actions and image settings in modern React apps.
+
+### 🐛 Fixed
+- (pending) Audits treat a project's bundled helper agents with appropriate caution.
+
 ## v3.11.0 — 2026-10-16
 
 ### ✨ New

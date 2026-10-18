@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.12.0",
-  "nextId": 59,
+  "nextId": 68,
   "items": [
     {
       "id": 1,
@@ -583,6 +583,99 @@
       "file": "plans/058-nuxt-blog-source-url-now-redirects-to-nuxt-com-updates.md",
       "note": "The Nuxt release-announcements source link points to its current address.",
       "audience": "public"
+    },
+    {
+      "id": 59,
+      "slug": "raise-next-js-and-react-floors-for-the-october-14-2026-advisories",
+      "title": "Raise Next.js and React floors for the October 14 2026 advisories",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md",
+      "note": "Next.js and React version checks now flag the latest critical fixes.",
+      "audience": "internal"
+    },
+    {
+      "id": 60,
+      "slug": "warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories",
+      "title": "Warn that OSV and npm audit miss vendor-only and unpublished advisories",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md",
+      "note": "Dependency checks no longer treat an empty advisory lookup as proof a package is safe.",
+      "audience": "internal"
+    },
+    {
+      "id": 61,
+      "slug": "add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers",
+      "title": "Add a rich-text-security skill for editors, docx import and sanitizers",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md",
+      "note": "New checks for rich-text editors, document import and HTML sanitizing.",
+      "audience": "public"
+    },
+    {
+      "id": 62,
+      "slug": "add-a-multi-tenant-isolation-hub-skill",
+      "title": "Add a multi-tenant-isolation hub skill",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/062-add-a-multi-tenant-isolation-hub-skill.md",
+      "note": "New checks for keeping each tenant's data separate across caches, jobs, domains and search.",
+      "audience": "public"
+    },
+    {
+      "id": 63,
+      "slug": "audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions",
+      "title": "Audit a target repo's committed AI-agent config and agent CI actions",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md",
+      "note": "Audits now review the AI-agent settings, hooks and MCP servers a project ships.",
+      "audience": "public"
+    },
+    {
+      "id": 64,
+      "slug": "audit-must-vet-project-agents-as-untrusted-before-delegating-to-them",
+      "title": "Audit must vet project agents as untrusted before delegating to them",
+      "type": "bug",
+      "version": "3.12.0",
+      "file": "plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md",
+      "note": "Audits treat a project's bundled helper agents with appropriate caution.",
+      "audience": "internal"
+    },
+    {
+      "id": 65,
+      "slug": "cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races",
+      "title": "Cover Drizzle write-path risks: mass assignment, unscoped writes, races",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md",
+      "note": "Deeper Drizzle ORM checks for unsafe writes and race conditions.",
+      "audience": "public"
+    },
+    {
+      "id": 66,
+      "slug": "cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks",
+      "title": "Cover modern browser defenses and DOM navigation and postMessage sinks",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md",
+      "note": "New browser-side checks for content security policy, Trusted Types and cross-window messaging.",
+      "audience": "public"
+    },
+    {
+      "id": 67,
+      "slug": "cover-next-js-16-caching-server-action-key-and-image-config-risks",
+      "title": "Cover Next.js 16 caching, Server Action key and image config risks",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/067-cover-next-js-16-caching-server-action-key-and-image-config-risks.md",
+      "note": "New checks for cached per-user data, Server Actions and image settings in modern React apps.",
+      "audience": "public",
+      "dependsOn": [
+        62
+      ]
     }
   ],
   "settings": {

@@ -1,0 +1,36 @@
+skills/rich-text-security/SKILL.md
+  s_46f42f15a4ddb4::t_75431a64f4f163 685-690,709,728-732,980-982
+  s_46f42f15a4ddb4::t_c8237fe00deede 561-684,691-708,710-727,733-880,882-979,983-1049
+  s_46f42f15a4ddb4::t_bdfec96a7e130b 881
+  s_46f42f15a4ddb4::t_31ba7f3a5a33d2 1050-1052
+.roadmap/config.json
+  s_4792c0a8c09b36::t_4feb6d22031b96 720
+.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md
+  s_4792c0a8c09b36::t_7875599c210976 41-42
+ROADMAP.md
+  s_4792c0a8c09b36::t_83523f9b5aa041 43,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8d12944f98b7395f17da3346874113b577216682",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    },
+    "s_4792c0a8c09b36": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6ec4cec-2d53-4609-b9ea-53e010c0822e",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

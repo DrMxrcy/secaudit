@@ -1,0 +1,31 @@
+skills/rich-text-security/SKILL.md
+  s_46f42f15a4ddb4::t_1c22000ec43b7c 212
+  s_46f42f15a4ddb4::t_51c6ed017eb645 182-185,235-238,324-327,412-420,422,427,431-434,438-442,444
+  s_46f42f15a4ddb4::t_eb3651b9508e1c 447-450
+  s_46f42f15a4ddb4::t_4ec8c24cdb6ac9 39-41
+  s_46f42f15a4ddb4::t_556d12222a5f6f 1-38,42-92,94-117,127-153,157-158,163-181,186-211,213-234,239-323,328-333,354-411,421,423-426,428-430,443,445-446,451-484,490-493,495,497-559
+  s_46f42f15a4ddb4::t_481e3f2197d874 93,118-126,154-156,159-162,334-353,435-437,485-489,494,496
+  s_46f42f15a4ddb4::t_7ff3a1dda5eb39 560-561
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_68e18ebc41b48d 720
+.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md
+  s_46f42f15a4ddb4::t_87868499ebb8c3 6,39-40
+ROADMAP.md
+  s_46f42f15a4ddb4::t_d4958a6be57511 43,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4267a6cd7f505da539897d27fb75c7ac37de88ea",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

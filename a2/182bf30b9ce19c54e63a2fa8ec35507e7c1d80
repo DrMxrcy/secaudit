@@ -1,0 +1,30 @@
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_f907bc36973913 4,699-706
+  s_46f42f15a4ddb4::t_1ccf499f711876 728
+.roadmap/plans/069-owasp-secure-headers-project-page-moved-to-owasp-org-projects.md
+  s_46f42f15a4ddb4::t_f907bc36973913 1-26
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_f907bc36973913 20
+SOURCES.md
+  s_46f42f15a4ddb4::t_f907bc36973913 779
+skills/deployment/SKILL.md
+  s_46f42f15a4ddb4::t_f907bc36973913 113
+ROADMAP.md
+  s_46f42f15a4ddb4::t_f907bc36973913 43,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a2182bf30b9ce19c54e63a2fa8ec35507e7c1d80",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

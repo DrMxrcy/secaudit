@@ -13,7 +13,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
 - (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.
 - (pending) New checks for cached per-user data, Server Actions and image settings in modern React apps.
-- (pending) Deeper FiveM server checks for server settings, game events and cross-resource calls.
+- Deeper FiveM server checks for server settings, game events and cross-resource calls.
 
 ### 🐛 Fixed
 - (pending) Audits treat a project's bundled helper agents with appropriate caution.

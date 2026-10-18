@@ -40,11 +40,11 @@
 
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.12.0 — 42%
+### [ ] v3.12.0 — 46%
 - [x] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 100% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
 - [x] **#60 Warn that OSV and npm audit miss vendor-only and unpublished advisories** `feature` — 100% ([plan](.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md))
 - [x] **#61 Add a rich-text-security skill for editors, docx import and sanitizers** `feature` — 100% ([plan](.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md))
-- [ ] **#68 Deepen fivem-security: server.cfg convars, game-event vetoes, exports** `feature` — 75% ([plan](.roadmap/plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md))
+- [x] **#68 Deepen fivem-security: server.cfg convars, game-event vetoes, exports** `feature` — 100% ([plan](.roadmap/plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md))
 - [ ] **#62 Add a multi-tenant-isolation hub skill** `feature` — 0% ([plan](.roadmap/plans/062-add-a-multi-tenant-isolation-hub-skill.md))
 - [ ] **#63 Audit a target repo's committed AI-agent config and agent CI actions** `feature` — 0% ([plan](.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md))
 - [ ] **#64 Audit must vet project agents as untrusted before delegating to them** `bug` — 0% ([plan](.roadmap/plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md))

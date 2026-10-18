@@ -275,6 +275,36 @@ AddEventHandler('playerDropped', function()
 end)
 ```
 
+**Two-party events, rejections, and value caps** (pattern from pyth3rex, 2026-03-24 — supporting):
+
+- An event naming a second player (transfer, give, cuff, revive) normalizes the target and requires
+  `target ~= src` and `DoesPlayerExist(target)` before touching either side — and proximity when the
+  action is physical (the `near()` check above).
+- Every early `return` is a rejection honest play never triggers: log it with `src` and the event
+  name, and flag a player who trips several.
+- Cap value moved per account per time window, and flag fan-in — many accounts paying one recipient is
+  how duped or stolen money is consolidated.
+
+```lua
+local function flag(src, event, why)            -- rejections never happen in honest play
+  print(('[flag] %s (%s) %s: %s'):format(src, GetPlayerName(src), event, why))
+end
+RegisterNetEvent('bank:transfer', function(target, amount)
+  local src = source
+  target = math.tointeger(tonumber(target))     -- msgpack may deliver 3.0; nil on anything else
+  if not target or target == src or not DoesPlayerExist(target) or not isPositiveInt(amount, 1, 50000) then
+    return flag(src, 'bank:transfer', 'bad target or amount')
+  end
+  ...
+end)
+```
+
+```bash
+# Two-party net events (heuristic: names and first-argument names vary) — check each for target ~= src + DoesPlayerExist
+grep -rnE "RegisterNetEvent\(\s*['\"][^'\"]*(transfer|give|send|pay|cuff|revive|trade|rob)[^'\"]*['\"]\s*,\s*function\s*\(\s*(target|player|id|playerId|targetId|tgt)\b" \
+  --include='*.lua' resources/
+```
+
 ## 4. Everything the Manifest Ships to Players Is Public
 
 **What to look for.** Secrets, internal URLs, or authorization logic in any client-downloaded file.
@@ -431,13 +461,112 @@ end)
 resources sometimes call the web API from the NUI page with `fetch` and an embedded key — which is
 then public (§4). Route it through a server event that authorizes on `source`.
 
-**XSS.** Player names, chat, and report text rendered with `innerHTML`/`v-html`/
-`dangerouslySetInnerHTML` run script in every viewer's NUI context, where it can call that
-resource's NUI callbacks as the victim. Use `textContent` or default escaping (`secaudit:web-vulns`).
+**Stored and blind XSS from player-written data.** Anything a player wrote and the server stored —
+item metadata and labels, evidence notes, vehicle descriptions and plates, gang tags, report and
+ticket text, character bios, chat — reaches *other* players' NUI through `SendNUIMessage`. Rendered
+with `innerHTML`/`insertAdjacentHTML`/jQuery `.html()` or `.append('<…>')`/`v-html`/
+`dangerouslySetInnerHTML`, it runs script in every viewer's frame, where it can call that resource's
+NUI callbacks as the victim. The attacker can be offline; the payload travels with the item. Staff
+tools — report queues, admin panels, MDT/CAD-style screens that list other players' text — are the
+high-value case: **blind XSS** fires in a staff member's client and calls staff-only callbacks whose
+server events trust that staff `source`. (A worked case of item-metadata and report-queue XSS:
+pyth3rex, 2026-03-26 — supporting reference.) Use `textContent` or the framework's default escaping
+(`{{ }}` in Vue, JSX text in React). If rich text is genuinely needed, sanitize on the server when it
+is written and with a sanitizer at render (`secaudit:rich-text-security`), and cap length on write (§3).
+XSS fundamentals: `secaudit:web-vulns`.
 
 ```js
 row.innerHTML = `<td>${player.name}</td>`;                                         // BAD
 const td = document.createElement('td'); td.textContent = player.name; row.append(td); // GOOD
+
+$('#tickets').append(`<li>${t.author}: ${t.body}</li>`);           // BAD — staff panel, player-written body
+$('<li>').text(`${t.author}: ${t.body}`).appendTo('#tickets');      // GOOD
+```
+
+**Callback routers widen one XSS to everything.** A generic NUI callback that triggers whatever event
+or export the page names turns an XSS in *any* page that can reach it into a call to every server
+event and export it can name.
+
+```lua
+-- BAD — the page chooses the event and its arguments
+RegisterNUICallback('ui:call', function(data, cb)
+  TriggerServerEvent(data.event, table.unpack(data.args or {}))
+  cb({ ok = true })
+end)
+
+-- GOOD — fixed routes, each with its own argument checks (the server events still authorize on source, §1)
+local MAX_SLOTS = 50
+local ROUTES = {
+  ['inventory:use'] = function(d)
+    local slot = math.tointeger(d.slot)
+    if slot and slot >= 1 and slot <= MAX_SLOTS then TriggerServerEvent('inventory:use', slot) end
+  end,
+  ['phone:call'] = function(d)
+    if type(d.number) == 'string' and #d.number <= 10 then TriggerServerEvent('phone:call', d.number) end
+  end,
+}
+RegisterNUICallback('ui:call', function(data, cb)
+  local route = type(data) == 'table' and ROUTES[data.action] or nil
+  if route then route(data) end
+  cb({ ok = route ~= nil })
+end)
+```
+
+**Which frame can call a callback.** The docs: *"The NUI system registers a `https://cfx-nui-`
+protocol scope for resource files"* (formerly `nui://`), callbacks are `fetch`ed from
+`` `https://${GetParentResourceName()}/<name>` ``, and resources *"are currently implemented as
+full-screen iframes"*. In the source (`ResourceUI.cpp`) a `fx_version 'cerulean'`-or-later page loads
+from `https://cfx-nui-<resource>/<page>`, so each resource's page is its own origin and cannot read
+another's DOM — unless a central UI or notification resource renders everyone's data in one frame,
+which puts all of its callbacks behind any XSS in it. The callback handler checks the caller's origin
+only when the manifest opts in with `nui_callback_strict_mode 'true'` (source, commit `ef3d8e0`,
+2024-08; read from the resource's single `ui_page` — a second `ui_page` already stops the UI loading; not on the docs' manifest page — verify on your client build):
+then it accepts only `Origin: https://cfx-nui-<same resource>` (or `nui://<same resource>`), and an
+externally hosted `ui_page` would be blocked too. Without it, a request from another resource's frame
+is not rejected by origin. Missing strict mode is advisory.
+
+**CSP on `ui_page`.** NUI's scheme handler sends no CSP header (`NUISchemeHandler.cpp` sets content
+type, CORS and cache headers only), so a policy has to be a `<meta http-equiv>` in the page; missing
+is advisory. It blocks injected inline script and `onerror=` handlers and stops exfiltration to other
+hosts, but not a payload that only abuses allowed sinks. Inline `<script>` blocks must move to files
+(or use hashes). Policy basics: `secaudit:deployment`.
+
+```html
+<!-- resource "inventory" — connect-src must name the callback host https://<resource> -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';
+  style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://inventory;
+  object-src 'none'; base-uri 'none'; form-action 'none'">
+```
+
+Chromium's CSP parser accepts only letters, digits and `-` in a host (`content_security_policy.cc`),
+so a resource named with `_` cannot be listed in `connect-src`/`img-src` — the source is dropped and
+callbacks break. Rename it with `-`, or fall back to `connect-src https:` (weaker: any HTTPS host).
+List each other resource whose images you load (`https://cfx-nui-<name>`); there is no `cfx-nui-*`
+wildcard. Test the page in game after adding the policy.
+
+Kept out deliberately: claims that NUI XSS escalates through `window.invokeNative` or the CEF debug
+port to the player's OS are unverified research here (described in pyth3rex, 2026-03-26), not
+something this skill asserts.
+
+```bash
+# HTML sinks in NUI code (heuristic first pass: noisy, and not exhaustive) — then trace whether the
+# value comes from SendNUIMessage data (server/DB/other players). `.html()` with no argument is a getter, skipped.
+grep -rnE "innerHTML|outerHTML|insertAdjacentHTML|document\.write|setHTMLUnsafe|createContextualFragment|\.srcdoc\s*=|setAttribute\(\s*['\"]on|eval\(|new Function\(|\.html\(\s*[^)[:space:]]|\.(append|prepend|before|after|replaceWith)\(\s*([\`'\"]\s*<|[A-Za-z_\$])|\\\$\(\s*(['\"]\s*<.*\+|\`[^\`]*\\\$\{)|v-html|dangerouslySetInnerHTML|\{@html" \
+  --include='*.html' --include='*.js' --include='*.ts' --include='*.jsx' --include='*.tsx' --include='*.vue' --include='*.svelte' resources/
+# Callback routers: within 8 lines of a NUI callback registration (longer bodies need reading), an
+# event whose name is a variable or a concatenation, or an export indexed by a variable
+grep -rnE -A8 "RegisterNU[Ii]Callback" --include='*.lua' resources/ \
+  | grep -E "Trigger(Server)?Event\(\s*([A-Za-z_][A-Za-z0-9_.]*\s*[,)]|[^)]*\.\.)|exports\[\s*[A-Za-z_]"
+# JS fetching a callback on a page-chosen resource (template or concatenation)
+grep -rnE "fetch\(\s*(\`https?://\\\$\{|['\"]https?://['\"]\s*\+)" --include='*.js' --include='*.ts' --include='*.vue' --include='*.html' resources/ \
+  | grep -v GetParentResourceName
+# ui_page without a CSP meta tag or callback strict mode (both advisory; if the built page isn't committed, check its source HTML)
+grep -rlE "^[[:space:]]*ui_page" --include='fxmanifest.lua' resources/ | while IFS= read -r m; do
+  d=$(dirname "$m"); pg=$(sed -nE "s/^[[:space:]]*ui_page[[:space:](]*['\"]([^'\"]+)['\"].*/\1/p" "$m" | head -n 1)
+  case $pg in *://*) echo "EXTERNAL ui_page: $m -> $pg"; continue;; esac
+  grep -qi 'Content-Security-Policy' "$d/$pg" 2>/dev/null || echo "ADVISORY no CSP (or page not in repo): $d/$pg"
+  grep -qE "nui_callback_strict_mode[[:space:](]*['\"]true" "$m" || echo "ADVISORY no nui_callback_strict_mode: $m"
+done
 ```
 
 ## 9. Server → Web API: `PerformHttpRequest` With a Server-Held, Community-Scoped Key
@@ -976,6 +1105,9 @@ done
 - Player identity accepted as an event argument; accounts keyed on `ip:`.
 - Authorization read from a client-writable state bag with `sv_stateBagStrictMode` off.
 - A NUI callback forwarding price/amount/target; a backend key in NUI; player strings via `innerHTML`.
+- Player-written DB fields (item metadata, notes, tickets) rendered as HTML in NUI, especially staff
+  panels; a NUI callback routing to an event/export named by the page; no CSP meta / strict mode (advisory).
+- Two-party events without `target ~= src` / `DoesPlayerExist`; rejections never logged.
 - `PerformHttpRequest` URL from client input, `http://` base, key in logs, non-2xx ignored, retries
   without an idempotency key.
 - Web API scoped by a path/body community id instead of the key; unscoped stream cursors; one key
@@ -1013,8 +1145,14 @@ done
 - https://docs.fivem.net/docs/scripting-reference/convars/ -- `set` server-only, `setr` readable by clients, `sets` exposed in `info.json` and the server list
 - https://docs.fivem.net/docs/developers/sandbox/ -- `add_convar_permission`; "ConVars are readable by all resources" by default; filesystem/worker/child-process restrictions and overrides
 - https://docs.fivem.net/docs/scripting-reference/resource-manifest/ -- `client_script`/`shared_script` add files to the packfile; `file` "to be downloaded by clients"; `ui_page`; `server_only`; globbing; `escrow_ignore`
-- https://docs.fivem.net/docs/scripting-manual/nui-development/full-screen-nui/ -- client-side NUI files must be in the packfile; CEF remote debugging on `localhost:13172`
-- https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/ -- `RegisterNuiCallback`, JSON-parsed POST data, always return via `cb`
+- https://docs.fivem.net/docs/scripting-manual/nui-development/full-screen-nui/ -- client-side NUI files must be in the packfile; CEF remote debugging on `localhost:13172`; `https://cfx-nui-` scope (formerly `nui://`); resources are full-screen iframes
+- https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/ -- `RegisterNuiCallback`, JSON-parsed POST data, always return via `cb`; callbacks fetched from `https://${GetParentResourceName()}/<name>`
+- https://github.com/citizenfx/fivem/blob/master/code/components/nui-resources/src/ResourceUI.cpp -- page origin `https://cfx-nui-<resource>/` (cerulean+, else `nui://`); `nui_callback_strict_mode` origin check; cross-origin whitelist to the callback host
+- https://github.com/citizenfx/fivem/commit/ef3d8e0eb4 -- "strict mode for callbacks" (2024-08)
+- https://github.com/citizenfx/fivem/blob/master/code/components/nui-core/src/NUISchemeHandler.cpp -- NUI responses set content type, CORS and cache headers, no CSP
+- https://chromium.googlesource.com/chromium/src/+/main/services/network/public/cpp/content_security_policy/content_security_policy.cc -- CSP host sources: letters, digits and `-` only; wildcard only as a leading `*.`
+- https://pyth3rex.github.io/blog/2026/03/26/fivem-web-surface/ -- supporting reference: stored XSS via item metadata, blind XSS in report queues, a generic NUI callback pass-through; its `invokeNative`/OS-escape claims are not adopted
+- https://pyth3rex.github.io/blog/2026/03/24/fivem-server-events/ -- supporting reference: default-deny handlers, logging rejections, `src ~= target` + `DoesPlayerExist` on transfers
 - https://docs.fivem.net/docs/scripting-manual/networking/state-bags/ -- default write policy (player/owner/server), client sets replicated only on opt-in
 - https://github.com/citizenfx/fivem/blob/master/ext/native-decls/AddStateBagChangeHandler.md -- "the change handler can't opt to reject changes"
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/ -- identifier types `steam`, `discord`, `license`, `license2`, `fivem`, `ip`; `license2` can equal `license`

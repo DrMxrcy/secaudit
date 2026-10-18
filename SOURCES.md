@@ -421,8 +421,14 @@ Last verified: 2026-10-17.
 - https://docs.fivem.net/docs/scripting-reference/convars/ — `set` server-only, `setr` readable by clients, `sets` exposed in `info.json` and the server list
 - https://docs.fivem.net/docs/developers/sandbox/ — `add_convar_permission`; "ConVars are readable by all resources" by default; filesystem/worker/child-process restrictions and overrides
 - https://docs.fivem.net/docs/scripting-reference/resource-manifest/ — `client_script`/`shared_script` add files to the packfile; `file` "to be downloaded by clients"; `ui_page`; `server_only`; globbing; `escrow_ignore`
-- https://docs.fivem.net/docs/scripting-manual/nui-development/full-screen-nui/ — client-side NUI files must be in the packfile; CEF remote debugging on `localhost:13172`
-- https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/ — `RegisterNuiCallback`, JSON-parsed POST data, always return via `cb`
+- https://docs.fivem.net/docs/scripting-manual/nui-development/full-screen-nui/ — client-side NUI files must be in the packfile; CEF remote debugging on `localhost:13172`; `https://cfx-nui-` scope (formerly `nui://`); resources are full-screen iframes
+- https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/ — `RegisterNuiCallback`, JSON-parsed POST data, always return via `cb`; callbacks fetched from `https://${GetParentResourceName()}/<name>`
+- https://github.com/citizenfx/fivem/blob/master/code/components/nui-resources/src/ResourceUI.cpp — page origin `https://cfx-nui-<resource>/` (cerulean+, else `nui://`); `nui_callback_strict_mode` origin check; cross-origin whitelist to the callback host
+- https://github.com/citizenfx/fivem/commit/ef3d8e0eb4 — "strict mode for callbacks" (2024-08)
+- https://github.com/citizenfx/fivem/blob/master/code/components/nui-core/src/NUISchemeHandler.cpp — NUI responses set content type, CORS and cache headers, no CSP
+- https://chromium.googlesource.com/chromium/src/+/main/services/network/public/cpp/content_security_policy/content_security_policy.cc — CSP host sources: letters, digits and `-` only; wildcard only as a leading `*.`
+- https://pyth3rex.github.io/blog/2026/03/26/fivem-web-surface/ — supporting reference: stored XSS via item metadata, blind XSS in report queues, a generic NUI callback pass-through; its `invokeNative`/OS-escape claims are not adopted
+- https://pyth3rex.github.io/blog/2026/03/24/fivem-server-events/ — supporting reference: default-deny handlers, logging rejections, `src ~= target` + `DoesPlayerExist` on transfers
 - https://docs.fivem.net/docs/scripting-manual/networking/state-bags/ — default write policy (player/owner/server), client sets replicated only on opt-in
 - https://github.com/citizenfx/fivem/blob/master/ext/native-decls/AddStateBagChangeHandler.md — "the change handler can't opt to reject changes"
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/ — identifier types `steam`, `discord`, `license`, `license2`, `fivem`, `ip`; `license2` can equal `license`

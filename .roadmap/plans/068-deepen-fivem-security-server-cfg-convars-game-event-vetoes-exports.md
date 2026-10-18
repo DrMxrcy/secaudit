@@ -3,7 +3,7 @@ id: 68
 title: Deepen fivem-security: server.cfg convars, game-event vetoes, exports
 type: feature
 version: 3.12.0
-status: active
+status: done
 created: 2026-10-17
 ---
 
@@ -39,4 +39,5 @@ created: 2026-10-17
   > evidence: check-freshness.py: All current; claims verified vs citizenfx/fivem master (event args, routeEvent cancel, entityCreating, POPTYPE, GetInvokingResource, ACE, docs example cfg); greps tested on 2 fixtures bash+zsh; Lua parsed; spec MET; quality PARTIAL -> fixed entityCreating pop-type bypass + 5 grep gaps -> CONFIRMED; parent fixed relaxed-lockdown overclaim (2026-10-18)
 - [x] Step 3: HTTP surface — sv_requestParanoia row, info/players/dynamic.json probe block, SetHttpHandler subsection; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
   > evidence: check-freshness.py: All current; d52296e (sv_endpointPrivacy removed 2026-07-08), sv_requestParanoia, info/dynamic/players.json fields, SetHttpHandler API + limiter, bodyless-POST behaviour all verified vs citizenfx/fivem source; walker no regressions; spec MET; quality PARTIAL x2 -> fixed; parent applied last 2 nits (digit-only Content-Length, HTTP/2 note) and re-parsed §13 Lua (2026-10-18)
-- [ ] Step 4: NUI hardening — DB fields to innerHTML incl. blind XSS in staff UIs, cross-resource callback pass-through, CSP on ui_page; §3 one-liners; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
+- [x] Step 4: NUI hardening — DB fields to innerHTML incl. blind XSS in staff UIs, cross-resource callback pass-through, CSP on ui_page; §3 one-liners; sources; freshness green -> target: skills/fivem-security/SKILL.md, SOURCES.md
+  > evidence: check-freshness.py: All current; strict mode (ef3d8e0), NUI origins, no-CSP header, Chromium host grammar verified vs source; greps tested on 3 fixtures bash+zsh; Lua parsed; spec MET after 2 additions; quality PARTIAL x2 -> fixed; parent widened jQuery constructor regex for inner-quoted attrs (4/4 unsafe caught, safe quiet) (2026-10-18)

@@ -3,7 +3,7 @@ id: 61
 title: Add a rich-text-security skill for editors, docx import and sanitizers
 type: feature
 version: 3.12.0
-status: planned
+status: active
 created: 2026-10-17
 ---
 
@@ -36,6 +36,7 @@ created: 2026-10-17
 - **Fails if:** generic XSS content is duplicated from web-vulns instead of linked, or any version claim disagrees with OSV.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write rich-text-security SKILL.md sections 1-6 (format, sinks, Link, Image, paste, custom nodes) -> target: skills/rich-text-security/SKILL.md
+- [x] Step 1: Write rich-text-security SKILL.md sections 1-6 (format, sinks, Link, Image, paste, custom nodes) -> target: skills/rich-text-security/SKILL.md
+  > evidence: freshness --only fixclaims/cves/links/versions: All current (manifest drift expected until step 3); 24 grep heuristics tested BSD+GNU; GOOD snippets tsc --strict vs TipTap 3.32.0; spec MET; quality CONFIRMED after one fix loop (2.27.3 guard, isOwnAsset %2e%2e bypass, attr allowlist, 5 happy-dom advisories) (2026-10-17)
 - [ ] Step 2: Write sections 7-11 (mammoth, unified pipeline, alt sanitizers, blast radius, checklist, sources) -> target: skills/rich-text-security/SKILL.md
 - [ ] Step 3: Register: audit dispatch + OWASP map, README, plugin.json, cross-links, framework-versions floors, SOURCES; freshness green -> target: skills/audit/SKILL.md, README.md, .claude-plugin/plugin.json, skills/web-vulns/SKILL.md, skills/ai-integration/SKILL.md, skills/framework-versions/SKILL.md, SOURCES.md

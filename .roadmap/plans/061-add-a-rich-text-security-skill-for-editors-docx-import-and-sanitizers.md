@@ -38,5 +38,6 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Write rich-text-security SKILL.md sections 1-6 (format, sinks, Link, Image, paste, custom nodes) -> target: skills/rich-text-security/SKILL.md
   > evidence: freshness --only fixclaims/cves/links/versions: All current (manifest drift expected until step 3); 24 grep heuristics tested BSD+GNU; GOOD snippets tsc --strict vs TipTap 3.32.0; spec MET; quality CONFIRMED after one fix loop (2.27.3 guard, isOwnAsset %2e%2e bypass, attr allowlist, 5 happy-dom advisories) (2026-10-17)
-- [ ] Step 2: Write sections 7-11 (mammoth, unified pipeline, alt sanitizers, blast radius, checklist, sources) -> target: skills/rich-text-security/SKILL.md
+- [x] Step 2: Write sections 7-11 (mammoth, unified pipeline, alt sanitizers, blast radius, checklist, sources) -> target: skills/rich-text-security/SKILL.md
+  > evidence: freshness --only fixclaims/cves/links/versions: All current; 40 grep heuristics BSD+GNU; GOOD snippets tsc --strict; mammoth/rehype-sanitize/DOMPurify/sanitize-html behaviours reproduced in node by implementer and reviewer; spec MET, quality CONFIRMED; 3 reviewer suggestions applied (zip-bomb control, rehypePlugins grep, IN_PLACE range) (2026-10-18)
 - [ ] Step 3: Register: audit dispatch + OWASP map, README, plugin.json, cross-links, framework-versions floors, SOURCES; freshness green -> target: skills/audit/SKILL.md, README.md, .claude-plugin/plugin.json, skills/web-vulns/SKILL.md, skills/ai-integration/SKILL.md, skills/framework-versions/SKILL.md, SOURCES.md

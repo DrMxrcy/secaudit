@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.12.0",
-  "nextId": 68,
+  "nextId": 69,
   "items": [
     {
       "id": 1,
@@ -592,7 +592,8 @@
       "version": "3.12.0",
       "file": "plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md",
       "note": "Next.js and React version checks now flag the latest critical fixes.",
-      "audience": "internal"
+      "audience": "internal",
+      "order": 0
     },
     {
       "id": 60,
@@ -602,7 +603,8 @@
       "version": "3.12.0",
       "file": "plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md",
       "note": "Dependency checks no longer treat an empty advisory lookup as proof a package is safe.",
-      "audience": "internal"
+      "audience": "internal",
+      "order": 1
     },
     {
       "id": 61,
@@ -612,7 +614,8 @@
       "version": "3.12.0",
       "file": "plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md",
       "note": "New checks for rich-text editors, document import and HTML sanitizing.",
-      "audience": "public"
+      "audience": "public",
+      "order": 2
     },
     {
       "id": 62,
@@ -622,7 +625,8 @@
       "version": "3.12.0",
       "file": "plans/062-add-a-multi-tenant-isolation-hub-skill.md",
       "note": "New checks for keeping each tenant's data separate across caches, jobs, domains and search.",
-      "audience": "public"
+      "audience": "public",
+      "order": 4
     },
     {
       "id": 63,
@@ -632,7 +636,8 @@
       "version": "3.12.0",
       "file": "plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md",
       "note": "Audits now review the AI-agent settings, hooks and MCP servers a project ships.",
-      "audience": "public"
+      "audience": "public",
+      "order": 5
     },
     {
       "id": 64,
@@ -642,7 +647,8 @@
       "version": "3.12.0",
       "file": "plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md",
       "note": "Audits treat a project's bundled helper agents with appropriate caution.",
-      "audience": "internal"
+      "audience": "internal",
+      "order": 6
     },
     {
       "id": 65,
@@ -652,7 +658,8 @@
       "version": "3.12.0",
       "file": "plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md",
       "note": "Deeper Drizzle ORM checks for unsafe writes and race conditions.",
-      "audience": "public"
+      "audience": "public",
+      "order": 7
     },
     {
       "id": 66,
@@ -662,7 +669,8 @@
       "version": "3.12.0",
       "file": "plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md",
       "note": "New browser-side checks for content security policy, Trusted Types and cross-window messaging.",
-      "audience": "public"
+      "audience": "public",
+      "order": 8
     },
     {
       "id": 67,
@@ -675,7 +683,19 @@
       "audience": "public",
       "dependsOn": [
         62
-      ]
+      ],
+      "order": 9
+    },
+    {
+      "id": 68,
+      "slug": "deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports",
+      "title": "Deepen fivem-security: server.cfg convars, game-event vetoes, exports",
+      "type": "feature",
+      "version": "3.12.0",
+      "file": "plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md",
+      "note": "Deeper FiveM server checks for server settings, game events and cross-resource calls.",
+      "audience": "public",
+      "order": 3
     }
   ],
   "settings": {

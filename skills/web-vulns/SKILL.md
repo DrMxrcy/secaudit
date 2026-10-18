@@ -166,6 +166,8 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 
 See also `secaudit:auth` (authorization), `secaudit:database` (RLS as a second layer), and
 `secaudit:deployment` (CSP and security headers).
+Cross-tenant access outside the object lookup (tenant id from a header or subdomain, cache keys, jobs,
+webhooks, search indexes, impersonation) is covered by `secaudit:multi-tenant-isolation`.
 
 ## Open Redirects (cross-cutting)
 

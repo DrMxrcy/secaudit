@@ -4,7 +4,7 @@
 
 ### ✨ New
 - New checks for rich-text editors, document import and HTML sanitizing.
-- (pending) New checks for keeping each tenant's data separate across caches, jobs, domains and search.
+- New checks for keeping each tenant's data separate across caches, jobs, domains and search.
 - (pending) Audits now review the AI-agent settings, hooks and MCP servers a project ships.
 - (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
 - (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.

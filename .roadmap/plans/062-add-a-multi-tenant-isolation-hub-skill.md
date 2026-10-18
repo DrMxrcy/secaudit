@@ -3,7 +3,7 @@ id: 62
 title: Add a multi-tenant-isolation hub skill
 type: feature
 version: 3.12.0
-status: active
+status: done
 created: 2026-10-17
 ---
 
@@ -35,4 +35,5 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Write multi-tenant-isolation SKILL.md sections 1-9 -> target: skills/multi-tenant-isolation/SKILL.md
   > evidence: freshness --only links/fixclaims/cves: All current (manifest drift expected until step 2); 33/33 pointers resolve; 18 greps BSD+GNU; host resolver failed closed on all attack hosts; spec MET; quality PARTIAL x2 -> fixed (fetch cache, Stripe guard, worker lease/retry, ES wording); parent reviewed final worker snippet and fixed lease-duration overclaim (2026-10-18)
-- [ ] Step 2: Register: audit dispatch + OWASP map, README, plugin.json, web-vulns pointer, SOURCES; freshness green -> target: skills/audit/SKILL.md, README.md, .claude-plugin/plugin.json, skills/web-vulns/SKILL.md, SOURCES.md
+- [x] Step 2: Register: audit dispatch + OWASP map, README, plugin.json, web-vulns pointer, SOURCES; freshness green -> target: skills/audit/SKILL.md, README.md, .claude-plugin/plugin.json, skills/web-vulns/SKILL.md, SOURCES.md
+  > evidence: full check-freshness.py: All current; manifests parse and match; README count 38 matches skills dir; parent self-review of mechanical registration diff (2026-10-18)

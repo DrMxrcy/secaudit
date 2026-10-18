@@ -6,7 +6,7 @@ A security plugin that audits "vibe-coded" apps (projects built rapidly with AI 
 
 ## What changed
 
-v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 36 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
+v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 38 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
 
 - **Installable as a plugin** via `/plugin marketplace add` (no more copying a folder).
 - **Focused skills** that trigger independently: ask "check my Supabase RLS" and only the database skill loads.
@@ -74,6 +74,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:data-access` | SQL injection, ORM operator injection, Drizzle `sql.raw()` / identifier injection, SQLite / Turso / D1 file and tenancy specifics, runtime input validation, mass assignment |
 | `secaudit:web-vulns` | XSS, SSRF, file upload + path traversal, IDOR (broken object-level authorization) |
 | `secaudit:rich-text-security` | Rich-text editors and HTML sanitizers: TipTap/ProseMirror stored HTML vs JSON and sanitize-on-write, render sinks and server-side `@tiptap/html` on happy-dom, Link `isAllowedUri` and Image `src`, paste handlers, custom nodes, mammoth .docx import, rehype-sanitize schemas and plugin order, DOMPurify / sanitize-html configs and version floors |
+| `secaudit:multi-tenant-isolation` | Hub for tenant isolation outside the row: tenant id from membership (never a header, body or subdomain alone), host→tenant routing with no default-tenant fallback, reserved and reused slugs, tenant in every cache key (Redis/KV, `unstable_cache`/`'use cache'`, CDN `private`), jobs and workers that re-authorize, webhook→tenant mapping, server-minted search keys (Meilisearch tenant tokens, Algolia secured keys, Elasticsearch DLS), scoped and audited impersonation |
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion, API-key/join-code/session-token storage by entropy, encrypted stored secrets (webhook URLs) |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
 | `secaudit:python-web-security` | FastAPI/Django: per-route auth gaps, response_model leakage, production settings, TLS verification |

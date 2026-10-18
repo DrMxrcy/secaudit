@@ -858,6 +858,41 @@ Last verified: 2026-10-17.
 - https://top10.owasp.org/2025/A05_2025-Injection/ — A05:2025, where the XSS findings land
 - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where image-fetch SSRF and cross-tenant reads land
 
+## Multi-tenant isolation (`multi-tenant-isolation`)
+- https://cheatsheetseries.owasp.org/cheatsheets/Multi_Tenant_Security_Cheat_Sheet.html — threat classes; tenant context from the authenticated principal; "Include the tenant identifier in every cache key"; privileged jobs must constrain their tenant set
+- https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html — deny by default; authorization checked on every request
+- https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ — A01:2025, where cross-tenant findings land
+- https://wstg.owasp.org/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management/10-Subdomain_Takeover/ — WSTG-CONF-10 subdomain takeover: dangling CNAME/NS records, expired domains
+- https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/Subdomain_takeover — subdomain takeover and the hosting vendor's duty to verify claims
+- https://nextjs.org/docs/app/api-reference/functions/unstable_cache — key = arguments + stringified function + `keyParts`; replaced by `use cache` in Next.js 16
+- https://nextjs.org/docs/app/api-reference/directives/use-cache — cache key composition; closed-over variables become part of the key
+- https://nextjs.org/docs/app/api-reference/functions/cacheTag — tag-based invalidation
+- https://nextjs.org/docs/app/api-reference/functions/revalidateTag — `revalidateTag(tag, profile)`; the one-argument form is deprecated
+- https://nextjs.org/docs/app/api-reference/functions/updateTag — read-your-own-writes invalidation from Server Actions
+- https://nextjs.org/docs/app/api-reference/functions/fetch — caching is opt-in; a cached request matches on URL, method, headers, and body
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control — `private`, `no-store`, `s-maxage`
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary — `Vary` and shared-cache keying
+- https://docs.bullmq.io/guide/jobs/job-ids — duplicate `jobId` is ignored; custom ids must not contain `:`
+- https://docs.bullmq.io/guide/jobs/ — BullMQ job model
+- https://pgboss.io/ — pg-boss `send` / `work`
+- https://www.inngest.com/docs/durable-execution/flow-control — per-tenant flow-control keys
+- https://docs.stripe.com/connect/webhooks — the top-level `account` property on connected-account events
+- https://docs.stripe.com/api/webhook_endpoints/create — the `connect` parameter: a Connect endpoint receives events from connected accounts
+- https://docs.github.com/en/webhooks/webhook-events-and-payloads — the `installation` property on GitHub App webhook payloads
+- https://www.meilisearch.com/docs/capabilities/security/overview — tenant tokens; search key "safe ... when data is not multi-tenant"; search-endpoint only
+- https://www.meilisearch.com/docs/capabilities/security/getting_started — `generateTenantToken({ apiKey, apiKeyUid, searchRules, expiresAt })` from `meilisearch/token`
+- https://www.meilisearch.com/docs/capabilities/security/advanced/tenant_token_payload — search rules, `*` rules, parent-key scope, expiry
+- https://www.algolia.com/doc/libraries/sdk/methods/search/generate-secured-api-key — `generateSecuredApiKey`, `parentApiKey`, `filters`, `validUntil`, `restrictIndices`
+- https://www.algolia.com/doc/guides/security/api-keys/how-to/user-restricted-access-to-data — embedded filters users "can't alter"; `filterOnly`; `unretrievableAttributes`
+- https://www.elastic.co/docs/manage-data/data-store/aliases — filtered aliases; filters not applied to get-by-ID
+- https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/granting-privileges-for-data-streams-aliases — "Don't use filtered aliases in place of document level security"; data stream read also grants read on backing indices
+- https://www.elastic.co/docs/deploy-manage/security/limitations — "Aliases containing filters are not a secure way to restrict access to individual documents"
+- https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/controlling-access-at-document-field-level — document-level security role queries; not applied to write APIs
+- https://github.com/pgvector/pgvector — filtering with approximate indexes
+- https://better-auth.com/docs/plugins/admin — `impersonateUser`, `impersonationSessionDuration` (default 1 h), `session.impersonatedBy`, `impersonate-admins`, `stopImpersonating`
+- https://better-auth.com/docs/plugins/organization — `activeOrganizationId`, `setActiveOrganization`
+- https://better-auth.com/docs/concepts/hooks — `hooks.after`, `createAuthMiddleware`, `ctx.path`, `ctx.context.newSession`
+
 ## Cryptography (`cryptography`)
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html — hashing parameters
 - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html — algorithms, randomness, keys

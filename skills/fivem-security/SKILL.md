@@ -620,13 +620,14 @@ only where the docs state one.
 | `sv_stateBagStrictMode` | `true` (server 12739+) when no resource needs client writes (advisory) | Default `false`: the network owner can modify its entities' and its player state. `true`: *"Only the server can modify the state of networked entities and the player state"* (§7). The docs show `setr`; the server registers its own non-replicated copy (`ServerGameState.cpp`), so a plain `set` still reaches the server-side check, and `setr` also tells clients, which then refuse writes locally with the documented console error. | [cmds], source |
 | **Rate limiting** | | | |
 | `rateLimiter_<name>_rate` / `_burst` | flag any value raised above the documented default | Token buckets per traffic class (rate/burst): `netEvent` 50/200, `netEventFlood` 75/300, `netCommand` 7/14, `netCommandFlood` 25/45, `netCommandSize` 1024/8192, `stateBag` 75/125, `stateBagFlood` 150/175, `stateBagSize` 131072/262144, `rcon` 2/5, `handshake` 4/10, `handshakeUDP` 1/5, `challenge` 4/10, `resourceList` 10/25, `res_http_handler` 10/25, `http_info`/`http_dynamic`/`http_players` 4/10, `http_perf` 2/5. Raising one to silence a chatty resource removes flood protection for every client — fix the resource. These are not per-event limits (§3). | [cmds] |
+| `sv_requestParanoia` | optional `1`/`2`/`3`; `0` (default) is advisory only | Docs: *"This helps counter proxy-based HTTP floods"* — `1` blocks IPs sending a `Via` header, `2` also `Upgrade-Insecure-Requests` (*"all browser-based attempts at requesting .json endpoints, so use with care"*), `3` also closes the socket. In the source (`InfoHttpHandler.cpp`) a matching request to `/info.json`, `/players.json` or `/dynamic.json` gets `403 Nope.` **and its peer is blocked** (`BlockPeer`); level `3`'s socket close applies to `/info.json` and `/players.json` only, not `/dynamic.json`; requests without those headers are served normally — the docs' "all requests ... will return Nope." overstates it. Trade-off: `1` blocks a reverse proxy or CDN that adds `Via`; `2` blocks browser-based tools and dashboards that fetch the JSON (§13). | [cmds], source |
 | `sv_proxyIPRanges` | narrow to your real proxies | Default `10.0.0.0/8 127.0.0.0/8 192.168.0.0/16 172.16.0.0/12`; listed ranges may send `X-Real-IP` and bypass the rate limiter (§6). | [cmds] |
 | **Secrets, privacy, and dev settings** | | | |
 | `steam_webApiKey` | never in a committed cfg; never `setr`/`sets` | A Steam Web API key (*"required to allow for Steam identifiers to be returned by the server"*) is a credential: put it in the untracked `exec`'d secrets file (§5, `secaudit:secrets`). A launch-time `+set steam_webApiKey "$STEAM_WEB_API_KEY"` (the same `+` syntax as the docs' `FXServer.exe +exec server.cfg`; `%STEAM_WEB_API_KEY%` in Windows `cmd`; under txAdmin, its additional-arguments setting) keeps it out of git but is visible in the host's process list. Rotate any key ever committed. | [cmds] |
-| `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword` | same as `steam_webApiKey` | License key, the Tebex server-authentication secret, and the `/perf` basic-auth password (*"Also sent to txAdmin"*). | [cmds] |
+| `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword`, `sv_playersToken` | same as `steam_webApiKey` | License key, the Tebex server-authentication secret, the `/perf` basic-auth password (*"Also sent to txAdmin"*), and the token that unlocks player names and identifiers on `/players.json` (source; §13). | [cmds], source |
 | `rcon_password` | unset unless needed; if set, long and random, from the secrets file | *"if unset then RCon will be disabled. FXServer RCon uses UDP."* The documented `rcon` limiter (2/s, burst 5) throttles guessing. | [cmds] |
 | `sv_devMode` | default `false`; flag `true` | Enables dev mode for joining clients and caps clients at 8 — *"Do not enable in production."* | [cmds] |
-| `sv_endpointPrivacy` | `true` (advisory) | *"hides player IP addresses from public reports output by the server."* | [cmds] |
+| `sv_endpointPrivacy`, `sv_exposePlayerIdentifiersInHttpEndpoint` | older builds: flag `sv_endpointPrivacy false` or `sv_exposePlayerIdentifiersInHttpEndpoint true`; current builds: both are deprecated no-ops — remove them | Docs: `sv_endpointPrivacy` *"hides player IP addresses from public reports"*. Source: until commit `d52296e` (2026-07-08) it defaulted to `true` (`false` put real IPs in `/players.json` and kept `ip:` identifiers), and public identifiers needed `sv_exposePlayerIdentifiersInHttpEndpoint true` (default `false`). Since then both are removed in effect: they still exist as no-op variables (default `false`) and the server logs a deprecation warning only when one is set to `true`; public `/players.json` is anonymized (§13). The docs page has not caught up; check which you run. | [cmds], source |
 | **Cfx anti-cheat defaults — do not weaken** | | | |
 | `sv_kick_players_cnl_timeout_sec`, `sv_kick_players_cnl_update_rate_sec`, `sv_kick_players_cnl_consecutive_failures` | leave unset; flag any override, especially a raised timeout or failure count | CnL check-in kicks (*"Connection to CNL timed out."*). The docs give `600` = 10 minutes as an example timeout and `2` as the consecutive-failures default; no other defaults stated. | [sec] |
 | `sv_pure_verify_client_settings` | leave unset; flag an override that disables it | Verifies *"some of the `sv_settings` such as pureLevel, scripthook and other settings"* over the `adhesive`<->`svadhesive` connection. | [sec] |
@@ -700,11 +701,14 @@ printf '%s\n' "$ALL" | awk -F'\t' 'BEGIN { n = split("challenge 4 10 handshake 4
   for (i = 1; i < n; i += 3) { def["ratelimiter_" d[i] "_rate"] = d[i+1]; def["ratelimiter_" d[i] "_burst"] = d[i+2] } }
   $1 in def { e[$1] = $2 } END { for (k in e) if (e[k] + 0 > def[k] + 0) print "FLAG: " k "=" e[k] " (default " def[k] ")" }'
 [ -n "$(val sv_proxyIPRanges)" ] && echo "REVIEW: sv_proxyIPRanges='$(val sv_proxyIPRanges)'"
+case $(val sv_requestParanoia) in 1|2|3) ;; *) echo 'ADVISORY: sv_requestParanoia off (optional, §13)';; esac
 # Secrets: EVERY assignment counts, not just the last; committed if `git ls-files <file>` lists it
-printf '%s\n' "$ALL" | awk -F'\t' '$1 ~ /^(steam_webapikey|sv_licensekey|sv_tebexsecret|sv_prometheusbasicauthpassword|rcon_password)$/ && $2 != "" {
+printf '%s\n' "$ALL" | awk -F'\t' '$1 ~ /^(steam_webapikey|sv_licensekey|sv_tebexsecret|sv_prometheusbasicauthpassword|sv_playerstoken|rcon_password)$/ && $2 != "" {
   print "SECRET: " $1 " at " $4 ($3 ~ /^set[rs]$/ ? " via " $3 " - PUBLIC (§5)" : "") }'
 on sv_devMode false && echo 'FLAG: sv_devMode on'
-on sv_endpointPrivacy false || echo 'ADVISORY: sv_endpointPrivacy off'
+# Older builds only (both removed in current source): real IPs / identifiers on public /players.json
+on sv_endpointPrivacy true || echo 'FLAG (older builds): sv_endpointPrivacy false'
+on sv_exposePlayerIdentifiersInHttpEndpoint false && echo 'FLAG (older builds): sv_exposePlayerIdentifiersInHttpEndpoint on'
 # Cfx anti-cheat: any override is a review item; loosening one is a finding
 printf '%s\n' "$ALL" | awk -F'\t' '$1 ~ /^(sv_kick_players_cnl_.*|sv_pure_verify_client_settings|sv_authmaxvariance|sv_authmintrust)$/ {
   e[$1] = $2 " (" $4 ")" } END { for (k in e) print "REVIEW: " k "=" e[k] }'
@@ -830,6 +834,133 @@ grep -rnE "(Create(VehicleServerSetter|Vehicle|ObjectNoOffset|Object)\s*\(|Creat
   --include='*.lua' resources/
 ```
 
+## 13. Inbound HTTP on the Game Port: the JSON Endpoints and `SetHttpHandler` Routes
+
+The game port (default 30120, TCP) is also an HTTP server. It serves the server's own JSON endpoints
+to anyone, and every resource that calls `SetHttpHandler` gets a public route on it. This is its own
+section because §9 is the server *calling out* with a key it holds, and §10 is your separate web API;
+here the game server *is* the web endpoint.
+
+**What the built-in endpoints return** (source: `InfoHttpHandler.cpp`, current master):
+
+- `/info.json` — `server` (`FXServer-<version>`, handy to compare against advisories),
+  `enhancedHostSupport`, `resources` (every *started* resource's name, plus `hardcap`), `vars` (every
+  convar carrying the server-info flag except `sv_hostname`/`sv_infoVersion` — built-ins that have it
+  plus everything you set with `sets`, which sets that flag: `Console.Variables.cpp`),
+  `requestSteamTicket` (`unset` when `steam_webApiKey` is empty, `off` when it is `none`, else `on`
+  — never the key), `enforceSteamAuth`, `version`, and `icon` if one is loaded. Rate limited per address (`http_info`).
+- `/dynamic.json` — `hostname`, `gametype`, `mapname`, `clients`, `iv`, `sv_maxclients`.
+- `/players.json` — current source: one anonymized entry per player (`name: "Player"`, `id: 0`, no
+  identifiers, `endpoint: "127.0.0.1"`). With `sv_playersToken` sent as `X-Players-Token` (or
+  `?token=`, which lands in proxy and access logs — prefer the header) it returns `id`, `name`,
+  `identifiers` and `ping`. Older builds (before commit `d52296e`, 2026-07-08) published names, ids
+  and pings, real IPs when `sv_endpointPrivacy` was `false`, and identifiers when
+  `sv_exposePlayerIdentifiersInHttpEndpoint` was `true` (§11). Anything not listed here: verify on a
+  live server.
+
+So the checks are: a secret set with `sets` is published in `vars` (§5, §11); the `resources` list
+names every started resource, including internal admin tools — assume an attacker knows which
+free resources you run and looks up their known bugs; on older builds, player IPs and
+identifiers.
+
+**Probe** — only a server you own or are explicitly authorized to test, under the "Authorization gate
+(browser probes)" in `secaudit:dynamic-verification` (state the target in one line first). Read-only GETs; each one
+spends a token of the per-address limiter.
+
+```bash
+H=http://HOST:30120
+curl -s "$H/info.json" | jq '{server, requestSteamTicket, enforceSteamAuth, resources: (.resources | length)}'
+curl -s "$H/info.json" | jq -r '.vars | to_entries[]
+  | select(.key | test("key|token|secret|pass|webhook|license|db|mysql"; "i")) | "SECRET? \(.key)=\(.value)"'
+curl -s "$H/info.json" | jq -r '.resources[]' | sort     # anything internal or admin-only by name?
+curl -s "$H/dynamic.json" | jq .
+curl -s "$H/players.json" | jq '.[0]'   # identifiers or a real endpoint here = older build / leak
+```
+
+Don't probe `sv_requestParanoia` from your workstation: a matching request gets the probing address
+blocked by the server.
+
+**`SetHttpHandler` routes are public.** The reference: *"Sets the handler for HTTP requests made to
+the executing resource. Example request URL: `http://localhost:30120/http-test/ping` - this request
+will be sent to the `http-test` resource with the `/ping` path."* Nothing authenticates the caller;
+the only built-in brake is a per-resource, per-address rate limiter (`http_<resource>`, rate 10,
+burst 25 in `ResourceHttpHandler.cpp`, skipped for addresses in `sv_proxyIPRanges` — §6). The request
+object has `address`, `headers`, `method`, `path`, `setDataHandler`, `setCancelHandler`; the
+response has `writeHead`, `write`, `send`. A route that runs `ExecuteCommand` inherits the resource's
+ACE grants (§1, §11): with `command` granted, it is a remote console.
+
+```lua
+-- BAD — anyone who can reach the game port runs console commands and pays themselves
+SetHttpHandler(function(req, res)
+  req.setDataHandler(function(body)
+    local data = json.decode(body)
+    if req.path == '/exec' then ExecuteCommand(data.cmd) end
+    if req.path == '/pay' then Framework.GetPlayer(data.id).addMoney(data.amount) end
+    res.send('ok')
+  end)
+end)
+
+-- GOOD — fail closed without a token; constant-time compare; one method, one path; capped, validated body
+local TOKEN = GetConvar('ops_http_token', '')    -- plain `set` in the untracked secrets file + add_convar_permission (§5)
+local MAX_BODY = 4096
+
+local function safeEqual(a, b)                   -- Lua has no constant-time compare built in
+  if type(a) ~= 'string' or type(b) ~= 'string' or #a ~= #b then return false end
+  local diff = 0
+  for i = 1, #a do diff = diff | (a:byte(i) ~ b:byte(i)) end
+  return diff == 0
+end
+
+local function header(req, name)                 -- header names arrive as the client sent them
+  for k, v in pairs(req.headers) do if k:lower() == name then return v end end
+end
+
+SetHttpHandler(function(req, res)
+  local function reply(code, body)
+    res.writeHead(code, { ['Content-Type'] = 'application/json' })
+    res.send(body or '{}')
+  end
+  if TOKEN == '' then return reply(503) end
+  if not safeEqual(header(req, 'authorization') or '', 'Bearer ' .. TOKEN) then return reply(401) end
+  if req.method ~= 'POST' or req.path ~= '/announce' then return reply(404) end
+  -- the data handler only runs when a body arrives: without one the request would never be answered
+  local cl = header(req, 'content-length') or ''
+  local len = cl:match('^%d+$') and tonumber(cl)   -- digits only: the server parses it with atoi
+  local chunked = (header(req, 'transfer-encoding') or ''):lower() == 'chunked'
+  if not chunked and (not len or len == 0) then return reply(400) end
+  if len and len > MAX_BODY then return reply(413) end
+  req.setDataHandler(function(body)
+    if #body > MAX_BODY then return reply(413) end
+    local ok, data = pcall(json.decode, body)
+    if not ok or type(data) ~= 'table' or type(data.text) ~= 'string' or #data.text > 200 then
+      return reply(400)
+    end
+    TriggerClientEvent('chat:addMessage', -1, { args = { 'Server', data.text } })
+    reply(200)
+  end)
+end)
+```
+
+In the source (`Http1Server.cpp`, `HttpServer.h`) the data handler is called once with the whole
+body, and only when a body is read (`Content-Length` > 0 or chunked) — a bodyless POST never reaches
+it, hence the early `400`. (HTTP/2, off by default via `sv_netHttp2`, needs no `Content-Length`, so
+a valid h2 POST without one gets the same `400` — fails closed.) The size checks limit what your handler processes, not memory: the server
+buffers the whole body first and no size limit is visible in the source
+— put a proxy with a body limit in front if that matters (`secaudit:rate-limiting`). Don't rely on
+`req.address` for an IP allowlist behind a proxy (§6), and keep `ExecuteCommand`/`PerformHttpRequest`
+off any route that does not pass the token check (SSRF: `secaudit:web-vulns`).
+
+```bash
+# Every SetHttpHandler is a public route. First filter only (read every hit): flags a file where no
+# non-comment line both compares (==, ~=, !=, safeEqual/timingSafeEqual) and names a token/auth/key
+grep -rlE "SetHttpHandler" --include='*.lua' --include='*.js' resources/ | while IFS= read -r f; do
+  grep -vE '^\s*(--|//)' "$f" | grep -E "(safeEqual|timingSafeEqual)\(|[=~!]=" \
+    | grep -qiE "token|auth|api.?key|secret|bearer" || echo "NO AUTH CHECK: $f"
+  grep -nE "ExecuteCommand|PerformHttpRequest|addMoney|addItem|DropPlayer|TriggerEvent" "$f" | sed "s|^|$f:|"
+  grep -nE "[!~=]=\s*['\"]Bearer|headers\[[^]]+\]\s*[!~=]=" "$f" | sed "s|^|$f: non-constant-time compare? |"
+done
+```
+
 ## FiveM Footgun Checklist
 
 - A net event taking a target id, identifier, amount, price, role, or `isAdmin` from its arguments
@@ -855,6 +986,8 @@ grep -rnE "(Create(VehicleServerSetter|Vehicle|ObjectNoOffset|Object)\s*\(|Creat
   `builtin.everyone`/`resource.*` granted `command`, or `ip:`-keyed admins, in cfg.
 - A net event passing a client-chosen model to `CreateVehicle*`/`CreatePed`/`CreateObject*`;
   game-event "anticheat" handlers that log but never `CancelEvent()` (no handlers at all: advisory).
+- A `SetHttpHandler` route with no token check, or reaching `ExecuteCommand`/money/`PerformHttpRequest`;
+  a secret in `info.json` `vars` via `sets`; `sv_playersToken` committed or sent as `?token=`.
 - `server.cfg` (or an `exec`'d cfg) with `sv_pureLevel` unset, `sv_scriptHookAllowed`/`sv_devMode`/
   `sv_enableNetworkedPhoneExplosions`/`sv_netEventReassemblyUnlimitedPendingEvents` true, raised
   `rateLimiter_*` values, overridden CnL anti-cheat convars, or `steam_webApiKey` committed (§11).
@@ -889,7 +1022,7 @@ grep -rnE "(Create(VehicleServerSetter|Vehicle|ObjectNoOffset|Object)\s*\(|Creat
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequest/ -- signature, callback `(statusCode, body, headers, errorData)`, `followLocation = true` default
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequestAwait/ -- definition of `followLocation` ("Makes cURL follow the redirects of the URL"); server build 9515+
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/server-functions/ -- `PerformHttpRequest` listed as a server-side Lua function
-- https://docs.fivem.net/docs/server-manual/server-commands/ -- `exec` (relative to server data dir or `@resource`); `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown` modes, `sv_filterRequestControl` modes and `sv_filterRequestControlSettleTimer` (30000 ms, modes 1/3), `sv_pureLevel` levels 1/2, `sv_enableNetworkedSounds`/`sv_enableNetworkedScriptEntityStates` (default true, 8540+)/`sv_enableNetworkedPhoneExplosions` (default false, 6831+), `sv_enableNetEventReassembly`/`sv_netEventReassemblyMaxPendingEvents` (100, 0-254)/`sv_netEventReassemblyUnlimitedPendingEvents` (false), `sv_authMaxVariance` (1-5, default 5), `sv_authMinTrust` (1-5, default 1), `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), `rcon_password` (unset = disabled, UDP), `steam_webApiKey`, `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword`, `sv_devMode` ("Do not enable in production"), "Rate limiters" table (all bucket names and defaults; `rateLimiter_<name>_rate`/`_burst`)
+- https://docs.fivem.net/docs/server-manual/server-commands/ -- `exec` (relative to server data dir or `@resource`); `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown` modes, `sv_filterRequestControl` modes and `sv_filterRequestControlSettleTimer` (30000 ms, modes 1/3), `sv_pureLevel` levels 1/2, `sv_enableNetworkedSounds`/`sv_enableNetworkedScriptEntityStates` (default true, 8540+)/`sv_enableNetworkedPhoneExplosions` (default false, 6831+), `sv_enableNetEventReassembly`/`sv_netEventReassemblyMaxPendingEvents` (100, 0-254)/`sv_netEventReassemblyUnlimitedPendingEvents` (false), `sv_authMaxVariance` (1-5, default 5), `sv_authMinTrust` (1-5, default 1), `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), `rcon_password` (unset = disabled, UDP), `steam_webApiKey`, `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword`, `sv_devMode` ("Do not enable in production"), `sv_requestParanoia` levels, "Rate limiters" table (all bucket names and defaults; `rateLimiter_<name>_rate`/`_burst`)
 - https://docs.fivem.net/docs/server-manual/setting-up-a-server-vanilla/ -- `sv_licenseKey` in `server.cfg`, commented `rcon_password`, OneSync for server-side state awareness
 - https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/state/ServerGameState.cpp -- server registers `sv_stateBagStrictMode` as its own non-replicated variable; entity-lockdown checks (population, control-request filter) compare against `strict` exactly; `entityCreating` raised while processing client clones; game events (`explosionEvent`, `weaponDamageEvent`, `giveWeaponEvent`, `removeWeaponEvent`, `removeAllWeaponsEvent`, `clearPedTasksEvent`, `fireEvent`, `startProjectileEvent`, `ptFxEvent`) passed as `(tostring(netId), data)` and not routed when cancelled
 - https://github.com/citizenfx/fivem/blob/master/code/client/citicore/console/Console.Commands.h -- boolean convar parsing: `true`/`false` case-insensitive, else integer non-zero = true, unparseable = false
@@ -910,6 +1043,14 @@ grep -rnE "(Create(VehicleServerSetter|Vehicle|ObjectNoOffset|Object)\s*\(|Creat
 - https://github.com/citizenfx/fivem/blob/master/ext/natives/rpc_spec_natives.lua -- server `CREATE_VEHICLE`/`CREATE_PED`/`CREATE_OBJECT`/`CREATE_OBJECT_NO_OFFSET` are entity RPC natives
 - https://github.com/citizenfx/fivem/blob/master/ext/native-decls/server/CreateVehicleServerSetter.md -- `CreateVehicleServerSetter(modelHash, type, x, y, z, heading)`
 - https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/include/OneSyncVars.h -- `sv_entityLockdown` parser accepts `strict`/`relaxed`/`no_dummy`/`inactive`
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/InfoHttpHandler.cpp -- `/info.json` fields (`vars` = server-info convars, started `resources`, `server` version, `requestSteamTicket`), `/dynamic.json` fields, anonymized public `/players.json`, `sv_playersToken` via `X-Players-Token`/`?token=`, `sv_endpointPrivacy`/`sv_exposePlayerIdentifiersInHttpEndpoint` removed, `sv_requestParanoia` `Via`/`Upgrade-Insecure-Requests` checks, `403 Nope.` and `BlockPeer`
+- https://github.com/citizenfx/fivem/commit/d52296e06e -- "anonymize player data in HTTP endpoints" (2026-07-08)
+- https://github.com/citizenfx/fivem/blob/master/code/client/citicore/console/Console.Variables.cpp -- `sets` sets the server-info flag that `/info.json` publishes
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/GameServer.cpp -- `sv_playersToken` convar
+- https://github.com/citizenfx/fivem/blob/master/ext/native-decls/SetHttpHandler.md -- `SetHttpHandler`: route `http://localhost:30120/<resource>/<path>`, request/response API
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/ResourceHttpHandler.cpp -- `/<resource>/` prefix, per-resource `http_<resource>` limiter (10/25, skipped for proxy addresses)
+- https://github.com/citizenfx/fivem/blob/master/code/components/net-http-server/src/Http1Server.cpp -- request body read in full per `Content-Length`/chunked (no body state otherwise), no size cap visible
+- https://github.com/citizenfx/fivem/blob/master/code/components/net-http-server/include/HttpServer.h -- `SetDataHandler` delivers pending body data once; no call when no body was read
 - https://docs.fivem.net/docs/scripting-manual/runtimes/lua/ -- `json` global is dkjson; `exports('Name', fn)`, `server_export`, `exports.res:Name()`
 - https://docs.discord.com/developers/resources/webhook -- webhooks "do not require a bot user or authentication"; token-based Get/Modify/Delete need no auth
 - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/ -- A01:2025 (unauthorized net events, cross-community IDOR)

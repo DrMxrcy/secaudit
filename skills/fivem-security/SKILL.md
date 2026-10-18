@@ -492,31 +492,152 @@ tighter write limits (`secaudit:rate-limiting`). Allow several active keys per s
 rotation, show `lastUsedAt`, make revocation immediate (no long-lived cache of valid keys), and log
 key id + community — never the raw key.
 
-## 11. Server Operations: txAdmin, RCON, and Hardening Convars
+## 11. Server Operations: txAdmin, RCON, and the `server.cfg` Hardening Checklist
 
 - **txAdmin** ships with FXServer; `txAdminPort` defaults to **40120** and `txAdminInterface` to
   **`0.0.0.0`** (every interface). Its in-game menu includes spawn, teleport, heal and ban. Firewall
   40120 to admin IPs/VPN or bind to `127.0.0.1` behind an SSH tunnel; otherwise only its login
   (password or CitizenFX) and brute-force protection stand in the way.
-- **RCON** — the example `server.cfg` leaves `rcon_password` commented out; keep it unset unless
-  needed, and if set use a long random value from the untracked secrets file (§5).
-- **`sv_endpointPrivacy true`** *"hides player IP addresses from public reports output by the
-  server."* **`sv_scriptHookAllowed`** defaults to `false`; enabling it is *"Not recommended - makes
-  the server vulnerable to security issues."*
-- **`sv_entityLockdown`** (default `inactive`: *"Clients can create any entity"*) — `strict`: *"No
-  entities can be created by clients"*; `relaxed` blocks client-created script-owned entities.
-- **`sv_filterRequestControl`** (default `0`, off) — mode `2` *"Blocks control requests to all
-  entities controlled by players"*; any non-off mode also blocks control requests across routing
-  buckets.
-- **`setr sv_stateBagStrictMode true`** (12739+) — server-only state bag writes (§7).
-- **Rate limiters** — `rateLimiter_<name>_rate`/`_burst` (`netEvent`, `stateBag`, `rcon` 2/s burst
-  5, ...). Don't raise them to silence a chatty resource; fix the resource.
 - **ACL** — grant resources only the commands they need (`add_ace resource.x command.y allow`). The
   ACL cookbook shows a resource granted `command.add_ace`/`command.add_principal` rewriting the ACL
   at runtime via `ExecuteCommand`; treat those grants as admin-equivalent.
 - The sandbox blocks cross-resource file writes, `os.execute`, and child processes by default;
   each `add_filesystem_permission`, `add_unsafe_worker_permission`, or
   `add_unsafe_child_process_permission` in `server.cfg` is a finding to justify.
+
+**The convar checklist.** Audit `server.cfg` *and every file it `exec`s* — `exec` *"Runs the
+commands specified in the filename, relative to the server data directory, or any resource name
+specified with `@`"* (`exec @vMenu/config/permissions.cfg`), so a setting can live inside a resource.
+When a convar is set twice, the later command wins, so judge each convar by its *effective* value —
+the last assignment in `exec` order — not by whether a good line exists somewhere (the script below
+resolves this). A convar line may be bare (`sv_pureLevel 1`) or prefixed with `set`/`setr`/`sets`
+(§5). FXServer parses booleans as `true`/`false` in any case, otherwise as an integer (non-zero,
+even `-1`, is true; anything unparseable is false — `Console.Commands.h`), so `1`/`0` count the same as
+`true`/`false`. Sources: **[cmds]** =
+server-commands page, **[sec]** = server-security page ("Server owner options"), **source** = the
+citizenfx/fivem files listed in Sources. Defaults are quoted
+only where the docs state one.
+
+| Convar | Safe value / what to flag | Why | Source |
+| --- | --- | --- | --- |
+| **Client integrity** | | | |
+| `sv_pureLevel` | `1` or `2`; flag missing or `0` (advisory) | `1` *"Will block all modified client files except audio files and known graphics mods"*, `2` *"Will block all modified client files"*. Only levels 1 and 2 are documented; the page names no default. `2` can break players' graphics mods — owner's call. | [cmds] |
+| `sv_scriptHookAllowed` | default `false`; flag `true` | Lets Script Hook V clients connect — *"Not recommended - makes the server vulnerable to security issues."* | [cmds] |
+| `sv_disableClientReplays` | optional; enabling is a hardening choice, absence is not a finding | *"Enabling this will aim to reduce chances of cheating options"*; it also *"will disable Rockstar Editor"*. No default stated. | [sec] |
+| **Networked-event abuse** | | | |
+| `sv_enableNetworkedSounds` | default `true`; recommend `false` unless a resource needs networked sounds (advisory) | Stops clients routing `NETWORK_PLAY_SOUND_EVENT` through the server, *"which is commonly used by malicious actors."* | [cmds] |
+| `sv_enableNetworkedScriptEntityStates` | default `true` (server 8540+); recommend `false` unless needed (advisory) | Same, for `SCRIPT_ENTITY_STATE_CHANGE_EVENT`, *"commonly used by malicious actors."* | [cmds] |
+| `sv_enableNetworkedPhoneExplosions` | default `false` (server 6831+); flag `true` | `true` routes `REQUEST_PHONE_EXPLOSION_EVENT`; the drawback is that *"it can also be used by malicious actors."* | [cmds] |
+| `sv_netEventReassemblyUnlimitedPendingEvents` | default `false`; flag `true` | Allows *"unlimited pending reassembled events per client"* and overrides the cap below. Our reading: one client can then make the server hold unbounded partial events in memory. | [cmds] |
+| `sv_netEventReassemblyMaxPendingEvents` | default `100` (range 0-254); flag a raised value | Per-client cap on pending reassembled events; the docs: *"decrease to limit memory usage."* `sv_enableNetEventReassembly` (default `true`) is the feature switch, not a security setting. | [cmds] |
+| **Entity and state control** | | | |
+| `sv_entityLockdown` | `strict` or `relaxed`; flag default `inactive` (advisory); `full` is a review item | `inactive`: *"Clients can create any entity."* `strict`: *"No entities can be created by clients"*; `relaxed` blocks only client-created script-owned entities. `full` *"Disables dummy object creation. Only usable on FiveM for GTAV Enhanced"* — the docs don't say it also blocks client entities, and the server source's lockdown checks (including the control-request filter) test for `strict` exactly, so don't count `full` as `strict`. | [cmds], source |
+| `sv_filterRequestControl` | non-zero, e.g. `2`; missing or `0` is advisory only | Default `0` is off. `1` blocks control requests to player-controlled entities (*"currently, occupied vehicles only"*) once "settled" (older than the settle timer); `2` *"Blocks control requests to all entities controlled by players"*; `3` blocks all player-controlled entities regardless of age plus settled non-player entities; `4` routes no `REQUEST_CONTROL_EVENT` at all; `-1` = `2` plus a console warning. Any non-off mode also stops control requests across routing buckets and always blocks senders in `strict` lockdown. [sec] puts this convar in its *"shouldn't be touched unless you know what you are doing"* group, so recommending non-zero is our judgement (it can break resources that take control of player entities) — hence advisory, not a finding. | [cmds], [sec] |
+| `sv_filterRequestControlSettleTimer` | default `30000` **milliseconds**; only matters with modes `1`/`3`; flag a raised value | Entities younger than the timer are not yet "settled": mode `1` leaves them open (occupied vehicles), mode `3` leaves only *non-player* entities open (player-controlled ones are always blocked in 3). Our reading: a larger value widens that window. The argument *"must be provided in milliseconds."* | [cmds] |
+| `sv_stateBagStrictMode` | `true` (server 12739+) when no resource needs client writes (advisory) | Default `false`: the network owner can modify its entities' and its player state. `true`: *"Only the server can modify the state of networked entities and the player state"* (§7). The docs show `setr`; the server registers its own non-replicated copy (`ServerGameState.cpp`), so a plain `set` still reaches the server-side check, and `setr` also tells clients, which then refuse writes locally with the documented console error. | [cmds], source |
+| **Rate limiting** | | | |
+| `rateLimiter_<name>_rate` / `_burst` | flag any value raised above the documented default | Token buckets per traffic class (rate/burst): `netEvent` 50/200, `netEventFlood` 75/300, `netCommand` 7/14, `netCommandFlood` 25/45, `netCommandSize` 1024/8192, `stateBag` 75/125, `stateBagFlood` 150/175, `stateBagSize` 131072/262144, `rcon` 2/5, `handshake` 4/10, `handshakeUDP` 1/5, `challenge` 4/10, `resourceList` 10/25, `res_http_handler` 10/25, `http_info`/`http_dynamic`/`http_players` 4/10, `http_perf` 2/5. Raising one to silence a chatty resource removes flood protection for every client — fix the resource. These are not per-event limits (§3). | [cmds] |
+| `sv_proxyIPRanges` | narrow to your real proxies | Default `10.0.0.0/8 127.0.0.0/8 192.168.0.0/16 172.16.0.0/12`; listed ranges may send `X-Real-IP` and bypass the rate limiter (§6). | [cmds] |
+| **Secrets, privacy, and dev settings** | | | |
+| `steam_webApiKey` | never in a committed cfg; never `setr`/`sets` | A Steam Web API key (*"required to allow for Steam identifiers to be returned by the server"*) is a credential: put it in the untracked `exec`'d secrets file (§5, `secaudit:secrets`). A launch-time `+set steam_webApiKey "$STEAM_WEB_API_KEY"` (the same `+` syntax as the docs' `FXServer.exe +exec server.cfg`; `%STEAM_WEB_API_KEY%` in Windows `cmd`; under txAdmin, its additional-arguments setting) keeps it out of git but is visible in the host's process list. Rotate any key ever committed. | [cmds] |
+| `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword` | same as `steam_webApiKey` | License key, the Tebex server-authentication secret, and the `/perf` basic-auth password (*"Also sent to txAdmin"*). | [cmds] |
+| `rcon_password` | unset unless needed; if set, long and random, from the secrets file | *"if unset then RCon will be disabled. FXServer RCon uses UDP."* The documented `rcon` limiter (2/s, burst 5) throttles guessing. | [cmds] |
+| `sv_devMode` | default `false`; flag `true` | Enables dev mode for joining clients and caps clients at 8 — *"Do not enable in production."* | [cmds] |
+| `sv_endpointPrivacy` | `true` (advisory) | *"hides player IP addresses from public reports output by the server."* | [cmds] |
+| **Cfx anti-cheat defaults — do not weaken** | | | |
+| `sv_kick_players_cnl_timeout_sec`, `sv_kick_players_cnl_update_rate_sec`, `sv_kick_players_cnl_consecutive_failures` | leave unset; flag any override, especially a raised timeout or failure count | CnL check-in kicks (*"Connection to CNL timed out."*). The docs give `600` = 10 minutes as an example timeout and `2` as the consecutive-failures default; no other defaults stated. | [sec] |
+| `sv_pure_verify_client_settings` | leave unset; flag an override that disables it | Verifies *"some of the `sv_settings` such as pureLevel, scripthook and other settings"* over the `adhesive`<->`svadhesive` connection. | [sec] |
+| `sv_authMaxVariance`, `sv_authMinTrust` | report the value; no finding at default | Defaults `5` and `1` (range 1-5) are already the most permissive, so these can only be tightened, which may lock out players. Resources must not assume they were raised (§6). | [cmds], [sec] |
+
+[sec] says these anti-cheat options *"shouldn't be touched unless you know what you are doing"* and
+that *"You will have most of those features enabled by default with FXServer `8450` build version
+and higher."*
+
+```bash
+# Run from the server data dir. Walk server.cfg in exec order (any extension; `exec @res/x.cfg`
+# = x.cfg inside resource `res`) and emit every assignment: name<TAB>value<TAB>set|setr|sets<TAB>file:line.
+# The LAST assignment of a name is the effective value. Cfg files never exec'd don't count, and a
+# `grep -r` hit is not proof of the effective value. MISSING = not in the repo (often the
+# untracked secrets file - good - but unaudited here).
+ALL=$(awk -v bom="$(printf '\357\273\277')" '
+function walk(f, depth,   l, ln, j, m, q, ch, c, part) {
+  if (depth > 8 || f in stk) { print "CYCLE exec " f > "/dev/stderr"; return }
+  if (system("test -f \"" f "\"")) { print "MISSING exec " f > "/dev/stderr"; return }
+  stk[f] = 1                                         # on the exec stack: blocks exec loops
+  while ((getline l < f) > 0) {
+    ln++; sub(/\r$/, "", l); if (index(l, bom) == 1) l = substr(l, length(bom) + 1)   # BOM
+    m = 0; q = 0; c = ""                             # split on ; outside quotes
+    for (j = 1; j <= length(l); j++) { ch = substr(l, j, 1); if (ch == "\"") q = !q
+      if (ch == ";" && !q) { part[++m] = c; c = "" } else c = c ch }
+    part[++m] = c
+    for (j = 1; j <= m; j++) one(part[j], f, ln, depth)
+  }
+  close(f); delete stk[f]                            # a later, non-nested exec of f walks it again
+}
+function one(l, f, ln, depth,   n, a, k, i, v, d, r, cmd) {
+  sub(/^[ \t]+/, "", l)
+  if (l == "" || l ~ /^(#|\/\/)/) return
+  n = split(l, a, /[ \t]+/); k = tolower(a[1])
+  if (k == "exec") {
+    d = a[2]; gsub(/"/, "", d)
+    if (d ~ /^@/) {
+      r = ""; cmd = "find . -type d -name \"" substr(d, 2, index(d, "/") - 2) "\" | head -n 1"
+      cmd | getline r; close(cmd); if (r != "") d = r substr(d, index(d, "/"))
+    }
+    walk(d, depth + 1); return
+  }
+  i = (k ~ /^set[rs]?$/) ? 2 : 1                    # convar name position
+  v = ""; if (n > i) { v = l; sub(/^[^ \t]+[ \t]+/, "", v); if (i == 2) sub(/^[^ \t]+[ \t]*/, "", v) }
+  if (v ~ /^"/) { v = substr(v, 2); sub(/".*/, "", v) } else sub(/[ \t].*/, "", v)
+  gsub(/"/, "", a[i])
+  print tolower(a[i]) "\t" v "\t" (i == 2 ? k : "") "\t" f ":" ln
+}
+BEGIN { walk("server.cfg", 0) }')
+val() { printf '%s\n' "$ALL" | awk -F'\t' -v k="$(printf %s "$1" | tr A-Z a-z)" '$1 == k { v = $2 } END { print v }'; }
+# FXServer bools: "true"/"false" any case, else a leading integer != 0 (even -1) is true, else false
+on() { v=$(val "$1"); [ -n "$v" ] || v=$2
+  case $(printf %s "$v" | tr A-Z a-z) in true) return 0;; -[0-9]*|[0-9]*) n=${v#-}; [ "${n%%[!0-9]*}" -ne 0 ];; *) return 1;; esac; }
+# Client integrity
+case $(val sv_pureLevel) in 1|2) ;; *) echo "ADVISORY: sv_pureLevel='$(val sv_pureLevel)' (want 1 or 2)";; esac
+on sv_scriptHookAllowed false && echo 'FLAG: sv_scriptHookAllowed on'
+on sv_disableClientReplays false && echo 'info: sv_disableClientReplays on (Rockstar Editor disabled)'
+# Networked-event abuse (first two default true)
+on sv_enableNetworkedSounds true && echo 'ADVISORY: sv_enableNetworkedSounds on'
+on sv_enableNetworkedScriptEntityStates true && echo 'ADVISORY: sv_enableNetworkedScriptEntityStates on'
+on sv_enableNetworkedPhoneExplosions false && echo 'FLAG: sv_enableNetworkedPhoneExplosions on'
+on sv_netEventReassemblyUnlimitedPendingEvents false && echo 'FLAG: sv_netEventReassemblyUnlimitedPendingEvents on'
+[ "$(val sv_netEventReassemblyMaxPendingEvents)" -gt 100 ] 2>/dev/null && echo 'FLAG: sv_netEventReassemblyMaxPendingEvents > 100'
+# Entity and state control
+case $(val sv_entityLockdown | tr A-Z a-z) in strict|relaxed) ;; *) echo "ADVISORY: sv_entityLockdown='$(val sv_entityLockdown)'";; esac
+case $(val sv_filterRequestControl) in -1|1|2|3|4) ;; *) echo "ADVISORY: sv_filterRequestControl off";; esac
+[ "$(val sv_filterRequestControlSettleTimer)" -gt 30000 ] 2>/dev/null && echo 'FLAG: sv_filterRequestControlSettleTimer > 30000 ms'
+on sv_stateBagStrictMode false || echo 'ADVISORY: sv_stateBagStrictMode off (§7)'
+# Rate limiting: effective values above the documented defaults; proxy ranges to review
+printf '%s\n' "$ALL" | awk -F'\t' 'BEGIN { n = split("challenge 4 10 handshake 4 10 handshakeudp 1 5 http_dynamic 4 10 http_info 4 10 http_perf 2 5 http_players 4 10 netcommand 7 14 netcommandflood 25 45 netcommandsize 1024 8192 netevent 50 200 neteventflood 75 300 rcon 2 5 res_http_handler 10 25 resourcelist 10 25 statebag 75 125 statebagflood 150 175 statebagsize 131072 262144", d, " ")
+  for (i = 1; i < n; i += 3) { def["ratelimiter_" d[i] "_rate"] = d[i+1]; def["ratelimiter_" d[i] "_burst"] = d[i+2] } }
+  $1 in def { e[$1] = $2 } END { for (k in e) if (e[k] + 0 > def[k] + 0) print "FLAG: " k "=" e[k] " (default " def[k] ")" }'
+[ -n "$(val sv_proxyIPRanges)" ] && echo "REVIEW: sv_proxyIPRanges='$(val sv_proxyIPRanges)'"
+# Secrets: EVERY assignment counts, not just the last; committed if `git ls-files <file>` lists it
+printf '%s\n' "$ALL" | awk -F'\t' '$1 ~ /^(steam_webapikey|sv_licensekey|sv_tebexsecret|sv_prometheusbasicauthpassword|rcon_password)$/ && $2 != "" {
+  print "SECRET: " $1 " at " $4 ($3 ~ /^set[rs]$/ ? " via " $3 " - PUBLIC (§5)" : "") }'
+on sv_devMode false && echo 'FLAG: sv_devMode on'
+on sv_endpointPrivacy false || echo 'ADVISORY: sv_endpointPrivacy off'
+# Cfx anti-cheat: any override is a review item; loosening one is a finding
+printf '%s\n' "$ALL" | awk -F'\t' '$1 ~ /^(sv_kick_players_cnl_.*|sv_pure_verify_client_settings|sv_authmaxvariance|sv_authmintrust)$/ {
+  e[$1] = $2 " (" $4 ")" } END { for (k in e) print "REVIEW: " k "=" e[k] }'
+# Not in the walk: launch-time +set/+exec (scripts, service units; txAdmin keeps its own startup args)
+grep -rnE '\+(set[rs]?|exec)[[:space:]]' --include='*.bat' --include='*.cmd' --include='*.sh' \
+  --include='*.ps1' --include='*.service' --include='*.yml' --include='*.yaml' .
+```
+
+Scope limits: the walk follows `exec` lines from `server.cfg` only, so a cfg that is never `exec`'d
+doesn't count, and launch-time `+set`/`+exec` (in `.bat`/`.sh`/service files, or txAdmin's startup
+arguments, which live outside the repo) applies in command-line order and needs a separate look —
+the last grep only finds the in-repo ones. `git ls-files` needs a git checkout; without one, treat
+every secret hit as possibly committed. `@res` resolves to the first directory named `res`, so check
+duplicates by hand. The walk handles CRLF, a UTF-8 BOM, `;`-joined commands and quoted names; it reports
+`CYCLE` for an `exec` loop and skips it, and walks a file again when it is `exec`'d again later (not
+nested), as the server would.
 
 ## FiveM Footgun Checklist
 
@@ -538,6 +659,9 @@ key id + community — never the raw key.
 - Web API scoped by a path/body community id instead of the key; unscoped stream cursors; one key
   shared across communities; no revocation; a game-server call alone granting portal privileges.
 - txAdmin on `0.0.0.0:40120` unfirewalled; RCON with a weak or committed password.
+- `server.cfg` (or an `exec`'d cfg) with `sv_pureLevel` unset, `sv_scriptHookAllowed`/`sv_devMode`/
+  `sv_enableNetworkedPhoneExplosions`/`sv_netEventReassemblyUnlimitedPendingEvents` true, raised
+  `rateLimiter_*` values, overridden CnL anti-cheat convars, or `steam_webApiKey` committed (§11).
 
 ## Related skills
 
@@ -553,7 +677,7 @@ key id + community — never the raw key.
 
 ## Sources
 
-- https://docs.fivem.net/docs/developers/server-security/ -- "Cheats can allow the client to trigger events in any context"; AddEventHandler vs RegisterNetEvent; RegisterNetEvent is a wrapper; `65535` server source on client; server-side checks list; bad `job:givePlayerItem` example
+- https://docs.fivem.net/docs/developers/server-security/ -- "Cheats can allow the client to trigger events in any context"; AddEventHandler vs RegisterNetEvent; RegisterNetEvent is a wrapper; `65535` server source on client; server-side checks list; bad `job:givePlayerItem` example; "Server owner options": `sv_kick_players_cnl_*`, `sv_pure_verify_client_settings`, `sv_authMaxVariance`/`sv_authMinTrust`, `sv_filterRequestControl` "shouldn't be touched", most enabled by default from build 8450, `sv_disableClientReplays` disables Rockstar Editor
 - https://docs.fivem.net/docs/scripting-manual/working-with-events/listening-for-events/ -- `source` holds the triggering player, valid only for the initial call; registering is what lets a client-side script trigger a server event
 - https://docs.fivem.net/docs/scripting-manual/working-with-events/triggering-events/ -- `TriggerServerEvent`/`emitNet`, `TriggerClientEvent` with `-1` for all clients
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/RegisterNetEvent/ -- "Marks the event safe for network use" (triggerability itself rests on the two pages above)
@@ -569,8 +693,10 @@ key id + community — never the raw key.
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequest/ -- signature, callback `(statusCode, body, headers, errorData)`, `followLocation = true` default
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/PerformHttpRequestAwait/ -- definition of `followLocation` ("Makes cURL follow the redirects of the URL"); server build 9515+
 - https://docs.fivem.net/docs/scripting-reference/runtimes/lua/server-functions/ -- `PerformHttpRequest` listed as a server-side Lua function
-- https://docs.fivem.net/docs/server-manual/server-commands/ -- `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown`, `sv_filterRequestControl` modes, `sv_authMaxVariance`, `sv_authMinTrust`, `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), "Rate limiters" section (`netEvent`, `stateBag`, `rcon` buckets; `rateLimiter_<name>_rate`/`_burst`)
+- https://docs.fivem.net/docs/server-manual/server-commands/ -- `exec` (relative to server data dir or `@resource`); `sv_endpointPrivacy`, `sv_scriptHookAllowed`, `sv_entityLockdown` modes, `sv_filterRequestControl` modes and `sv_filterRequestControlSettleTimer` (30000 ms, modes 1/3), `sv_pureLevel` levels 1/2, `sv_enableNetworkedSounds`/`sv_enableNetworkedScriptEntityStates` (default true, 8540+)/`sv_enableNetworkedPhoneExplosions` (default false, 6831+), `sv_enableNetEventReassembly`/`sv_netEventReassemblyMaxPendingEvents` (100, 0-254)/`sv_netEventReassemblyUnlimitedPendingEvents` (false), `sv_authMaxVariance` (1-5, default 5), `sv_authMinTrust` (1-5, default 1), `sv_proxyIPRanges` default, `setr sv_stateBagStrictMode` (12739+, non-replicated entities unaffected), `rcon_password` (unset = disabled, UDP), `steam_webApiKey`, `sv_licenseKey`, `sv_tebexSecret`, `sv_prometheusBasicAuthPassword`, `sv_devMode` ("Do not enable in production"), "Rate limiters" table (all bucket names and defaults; `rateLimiter_<name>_rate`/`_burst`)
 - https://docs.fivem.net/docs/server-manual/setting-up-a-server-vanilla/ -- `sv_licenseKey` in `server.cfg`, commented `rcon_password`, OneSync for server-side state awareness
+- https://github.com/citizenfx/fivem/blob/master/code/components/citizen-server-impl/src/state/ServerGameState.cpp -- server registers `sv_stateBagStrictMode` as its own non-replicated variable; entity-lockdown checks (population, control-request filter) compare against `strict` exactly
+- https://github.com/citizenfx/fivem/blob/master/code/client/citicore/console/Console.Commands.h -- boolean convar parsing: `true`/`false` case-insensitive, else integer non-zero = true, unparseable = false
 - https://docs.fivem.net/docs/server-manual/proxy-setup/ -- `sv_proxyIPRanges` allows `X-Real-IP` and bypasses the rate limiter
 - https://docs.fivem.net/docs/resources/txAdmin/ -- `txAdminPort` default 40120, `txAdminInterface` default `0.0.0.0`, admin menu actions, brute-force protection
 - https://docs.fivem.net/docs/server-manual/asset-escrow/ -- Escrow scope (Lua/YFT/YDD/YDR), NUI not supported, `escrow_ignore`

@@ -3,7 +3,7 @@ id: 63
 title: Audit a target repo's committed AI-agent config and agent CI actions
 type: feature
 version: 3.12.0
-status: planned
+status: active
 created: 2026-10-17
 ---
 
@@ -30,6 +30,7 @@ created: 2026-10-17
 - **Fails if:** a cited CVE/URL does not resolve, or the hidden-Unicode grep is not valid for GNU/BSD grep (state `grep -P` needs GNU grep / `ggrep`, give a `perl -ne` fallback).
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add "Agent configuration committed to the repo" section with checks 1-6 -> target: skills/mcp-agent-security/SKILL.md
+- [x] Step 1: Add "Agent configuration committed to the repo" section with checks 1-6 -> target: skills/mcp-agent-security/SKILL.md
+  > evidence: check-freshness.py: All current; CVE-2025-59536/2026-21852/2026-33068, GHSA-ph6w, CVE-2025-6514 and all Claude Code keys verified; §9 blocks extracted and run on bad/good/edge fixtures (macOS + GNU container): all planted cases flagged, good fixture silent; spec MET; quality PARTIAL x2 -> fixed; implementer hit usage limit mid round 3, parent verified the final 4 regex fixes on the edge fixture (2026-10-18)
 - [ ] Step 2: Add AI agent GitHub Actions subsection -> target: skills/ci-cd-security/SKILL.md
 - [ ] Step 3: Audit dispatch + OWASP row, supply-chain pointer, SOURCES; freshness green -> target: skills/audit/SKILL.md, skills/supply-chain/SKILL.md, SOURCES.md

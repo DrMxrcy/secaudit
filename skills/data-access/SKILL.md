@@ -1,6 +1,6 @@
 ---
 name: data-access
-description: Audits data access and input validation — SQL injection, ORM operator injection (e.g. Prisma filter injection and $queryRawUnsafe), Drizzle raw SQL and identifier injection (sql.raw(), sql.identifier()/.as() aliases, dynamic orderBy), SQLite/Turso/D1 specifics (no row-level security so tenant predicates are application code, database file and -wal/-shm exposure, auth tokens as secrets, prepared statements and bound params), runtime input validation at every boundary with a schema validator (Zod/Yup/Joi), and mass assignment from spread request bodies. Covers JS/TS (Prisma, Drizzle, better-sqlite3, libSQL, D1) and Python (SQLAlchemy text(), Pydantic). Use whenever writing or reviewing database queries, API handlers, Server Actions, webhook handlers, or form/URL input processing, or when auditing how untrusted input reaches the data layer.
+description: Audits data access and input validation — SQL injection, ORM operator injection (e.g. Prisma filter injection and $queryRawUnsafe), Drizzle raw SQL and identifier injection (sql.raw() triaged by value provenance, sql.identifier()/.as() aliases, dynamic orderBy), Drizzle write-path risks (drizzle-zod createInsertSchema without pick/omit, update/delete with no or non-tenant where, check-then-act races and .for('update'), the outer db used inside a transaction), SQLite/Turso/D1 specifics (no row-level security so tenant predicates are application code, database file and -wal/-shm exposure, auth tokens as secrets, prepared statements and bound params), runtime input validation at every boundary with a schema validator (Zod/Yup/Joi), and mass assignment from spread request bodies. Covers JS/TS (Prisma, Drizzle, better-sqlite3, libSQL, D1) and Python (SQLAlchemy text(), Pydantic). Use whenever writing or reviewing database queries, API handlers, Server Actions, webhook handlers, or form/URL input processing, or when auditing how untrusted input reaches the data layer.
 license: MIT
 ---
 
@@ -118,6 +118,59 @@ await db.execute(sql.raw(`select * from users where email = '${email}'`));
 await db.execute(sql`select * from ${users} where ${users.email} = ${email}`);
 ```
 
+- **Triage every `sql.raw()` by where its argument came from, not by the grep hit.** SAST tools
+  rate any interpolated `sql.raw()` Critical ("easily exploitable") because they cannot see the
+  value's origin. The auditor has to trace each argument back to its source and grade it:
+
+| Argument origin | Severity | Reason |
+|---|---|---|
+| `req.query` / `body` / `params` / headers, a webhook payload, a JWT claim, a form field | **Critical** | attacker-controlled SQL, the BAD example above |
+| A database column, tenant setting or third-party response that a user or org admin can write | **High** | stored injection: the payload sits in a row until the query runs |
+| A compile-time constant: an `as const` array, an enum, a ternary between literals such as `sql.raw(asc ? '>' : '<')` | **Low / informational** | no attacker-reachable value; record it and move on |
+| A helper that wraps `'${v}'` with no escaping, today fed only constants | **Low, latent footgun** | the next refactor (an enum that becomes a settings table) makes it Critical, and nothing in the helper stops it |
+
+  The common legitimate case is a `CHECK (col in ('a','b'))` built from a domain enum. **Bound
+  parameters are not the fix there:** DDL cannot take placeholders, and drizzle-kit 0.31 renders a
+  `sql.join` of bound values inside `check()` as `CHECK ("t"."event" in ($1, $2))`, which Postgres
+  rejects (verified). Use `sql.join` of bound values in *queries*, and in schema DDL escape the
+  quote and restrict the helper to literal types so a plain `string` cannot reach it.
+
+```typescript
+const WEBHOOK_EVENTS = ['push', 'release'] as const;
+
+// BAD (latent footgun): any value containing ' breaks out of the literal. With "b'c" drizzle-kit
+// writes CHECK (event in ('a', 'b'c')) into the migration. Fine today, Critical the day a
+// non-constant list is passed in.
+const quoted = (vs: readonly string[]) => sql.raw(vs.map((v) => `'${v}'`).join(', '));
+check('hooks_event_check', sql`${t.event} in (${quoted(WEBHOOK_EVENTS)})`);
+
+// GOOD (schema DDL): double the quote, and refuse anything that is not a literal tuple
+const inList = <const V extends readonly string[]>(
+  values: V & (string extends V[number] ? never : unknown),
+) => sql.raw(values.map((v) => `'${v.replace(/'/g, "''")}'`).join(', '));
+check('hooks_event_check', sql`${t.event} in (${inList(WEBHOOK_EVENTS)})`);
+// inList(req.body.events as string[]) is a compile error; the escaping covers the `as` cast
+
+// GOOD (queries): values stay bound parameters
+await db.execute(
+  sql`select * from ${users} where ${users.role} in (${sql.join(roles.map((r) => sql`${r}`), sql`, `)})`,
+);
+await db.select().from(users).where(inArray(users.role, roles));   // simplest form
+```
+
+  The literal-type guard is compile-time only (`as string[]` defeats it), which is why the escaping
+  stays. Doubling `'` is sufficient under Postgres's default `standard_conforming_strings = on`;
+  never extend the helper to `E'...'` strings, and if a value could carry a backslash, validate
+  against a charset (`/^[\w.:-]+$/`) instead.
+
+  Detection:
+
+```bash
+grep -rnE "sql\.raw\(" --include="*.ts"                    # inventory
+grep -rnE "sql\.raw\([^)]*[$][{]" --include="*.ts"         # interpolated: trace each argument
+grep -rnE "'[$][{]\w+[}]'" --include="*.ts"                # quote-wrapping helpers
+```
+
 - **Identifiers built from request input were injectable even without `sql.raw()`.**
   `CVE-2026-39356` (`GHSA-gpj5-g38j-94v9`) — fixed 0.45.2 / 1.0.0-beta.20. Drizzle's
   dialect-specific `escapeName()` did not double the quote character, so a `"` (PostgreSQL,
@@ -177,6 +230,140 @@ const byId = db.select().from(users)
 const rows = await byId.execute({ id: parsed.id });
 ```
 
+## Drizzle Write Paths: Unscoped Writes and Check-Then-Act Races
+
+The select-only examples elsewhere in this skill are the easy half. `update` and `delete` are where
+a missing predicate destroys data instead of leaking it, and where two concurrent requests turn a
+correct-looking read-then-write into a double spend.
+
+### Unscoped `update` / `delete`
+
+Threat: a write whose `where` is missing, empty, or id-only touches every row, or another tenant's
+row. Drizzle does not guard against it: `db.delete(t)` and `db.update(t).set(...)` with no
+`.where()` run against the whole table (the delete docs introduce `db.delete(users)` with "You can delete all rows in the table"), and
+there is no error and no warning.
+
+```typescript
+// BAD: no where() — every session row / every user is hit
+await db.delete(sessions);
+await db.update(users).set({ role: 'member' });
+
+// BAD: id only — any caller can void any tenant's invoice
+await db.update(invoices).set({ status: 'void' }).where(eq(invoices.id, id));
+
+// BAD: and() of nothing is undefined, and .where(undefined) means "no filter" — verified:
+// this compiles to `delete from "invoices"`
+const filters: { id?: string } = parseFilters(req.query);
+await db.delete(invoices).where(and(filters.id ? eq(invoices.id, filters.id) : undefined));
+
+// GOOD: tenant from the server-verified session in the same where; the affected row is checked
+const voided = await db.update(invoices).set({ status: 'void' })
+  .where(and(eq(invoices.id, id), eq(invoices.orgId, session.orgId)))
+  .returning({ id: invoices.id });
+if (voided.length === 0) throw new NotFound();   // not found OR not yours: indistinguishable
+```
+
+- Build optional filters as an array and fail closed: `const conds = [...]; if (conds.length === 0)
+  throw new Error('refusing unscoped write'); ...where(and(...conds))`.
+- Check the affected rows (`.returning({ id })` and `.length`) so a miss is a 404, not a silent
+  success. This is the same rule as the SQLite tenant example below and applies to every dialect;
+  Prisma has the same hole with `update({ where: { id } })`: put the tenant in the `where` too, or use
+  `updateMany({ where: { id, orgId } })` and check `count`.
+- Postgres RLS (see `secaudit:postgres-security`) is the backstop for this, not a replacement: it
+  only holds when the runtime role is neither the table owner nor `BYPASSRLS`.
+
+Detection (multi-line aware; prints the statements to read):
+
+```bash
+# update/delete statements with no .where() at all
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
+  'while (/\b(?:db|tx)\.(?:update|delete)\(\s*\w+\s*\)[^;]*?;/g) { $m=$&; $m =~ s/\s+/ /g;
+   print "$ARGV: $m\n" unless $m =~ /\.where\(/ }'
+
+# .where() present but no tenant/owner column in it (edit the column names to match the schema);
+# a hit that follows a tenant-scoped, locked read of the same row is fine
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
+  'while (/\b(?:db|tx)\.(?:update|delete)\(\s*\w+\s*\)[^;]*?;/g) { $m=$&; $m =~ s/\s+/ /g;
+   print "$ARGV: $m\n" if $m =~ /\.where\(/ && $m !~ /(org|tenant|owner|user|workspace|team)Id/i }'
+```
+
+### Transactions and races
+
+Threat: check-then-act. The handler reads a balance, quantity or counter, decides in JavaScript, then
+writes. Under Postgres's default `READ COMMITTED` isolation two requests both read `100`, both pass
+the check, both write: a double spend, an oversold item, a coupon redeemed twice. Wrapping the pair
+in `db.transaction` alone does not stop this; the transaction has to lock the row or the write has
+to be conditional. The same applies to a read-modify-write done in JS (`balance: acct.balance - amount`).
+
+```typescript
+// BAD: read, check in JS, write a JS-computed value — both requests see balance = 100
+await db.transaction(async (tx) => {
+  const [acct] = await tx.select().from(accounts).where(eq(accounts.id, id));
+  if (!acct || acct.balance < amount) throw new InsufficientFunds();
+  await tx.update(accounts).set({ balance: acct.balance - amount }).where(eq(accounts.id, id));
+});
+
+// BAD: the outer `db` inside the callback is a different connection — it is outside the
+// transaction, does not see its uncommitted rows, and is not rolled back with it
+await db.transaction(async (tx) => {
+  await tx.update(accounts).set({ balance: 0 }).where(eq(accounts.id, id));
+  await db.insert(auditLog).values({ accountId: id });
+});
+```
+
+```typescript
+// GOOD 1: lock the row for the length of the transaction (Postgres/MySQL), compute in SQL
+await db.transaction(async (tx) => {
+  const [acct] = await tx.select().from(accounts)
+    .where(and(eq(accounts.id, id), eq(accounts.orgId, session.orgId)))
+    .for('update');                       // other writers wait here until we commit
+  if (!acct || acct.balance < amount) throw new InsufficientFunds();   // a throw rolls back
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} - ${amount}` })
+    .where(eq(accounts.id, id));
+  await tx.insert(auditLog).values({ accountId: id, delta: -amount });   // tx, never db
+});
+
+// GOOD 2: one conditional statement, no lock needed, portable to SQLite — and check the row count
+const debited = await db.update(accounts)
+  .set({ balance: sql`${accounts.balance} - ${amount}` })
+  .where(and(eq(accounts.id, id), eq(accounts.orgId, session.orgId), gte(accounts.balance, amount)))
+  .returning({ id: accounts.id });
+if (debited.length === 0) throw new InsufficientFunds();
+
+// GOOD 3: "only once" is a unique constraint, not an if
+const claimed = await db.insert(redemptions).values({ couponId, userId })
+  .onConflictDoNothing().returning();     // unique index on (couponId, userId)
+if (claimed.length === 0) throw new AlreadyRedeemed();
+```
+
+- `.for('update')` takes `'update' | 'no key update' | 'share' | 'key share'` and a config
+  `{ of, noWait } | { of, skipLocked }`; it is typed in the query builder but not described on the
+  docs site, and exists on the Postgres and MySQL builders only. SQLite
+  has no row locks: use the conditional `UPDATE` above, or `db.transaction(fn, { behavior: 'immediate' })`.
+- Lock multiple rows in a consistent order (sort by id) so two transfers cannot deadlock.
+- For multi-statement logic that cannot be one statement, `db.transaction(fn, { isolationLevel:
+  'serializable' })` is the alternative; the caller must retry on SQLSTATE `40001`.
+- Back the invariant in the database too: ``check('balance_nonneg', sql`${t.balance} >= 0`)`` turns
+  a missed code path into a failed write instead of a negative balance.
+- Inside the callback every query goes through the `tx` argument. The same applies to helper
+  functions: pass `tx` down, do not let them import the module-level `db`.
+
+Detection:
+
+```bash
+# read-modify-write computed in JS (balance: row.balance - n), then check-then-act on the same fields
+grep -rnE "\.set\(\{[^}]*:\s*\w+\.(balance|quantity|stock|credits|count|remaining)\s*[-+]" --include="*.ts"
+grep -rnE "if \(.*\.(balance|quantity|stock|credits|remaining)\s*[<>]=?" --include="*.ts"
+# files that open transactions but never lock, never use a conditional where, never compute in SQL
+grep -rlE "\.transaction\(" --include="*.ts" . | xargs grep -LE "\.for\(['\"](update|no key update)|gte\(|sql\`[^\`]*\s[-+]\s"
+# the outer db used inside db.transaction(async (tx) => { ... })
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
+  'while (/\b(\w+)\.transaction\(\s*async\s*\(\s*(\w+)\s*\)\s*=>\s*(\{(?:[^{}]++|(?3))*\})/g) {
+     ($o,$t,$b)=($1,$2,$3);
+     while ($b =~ /\b\Q$o\E\.(select|insert|update|delete|execute|query)\b/g) {
+       print "$ARGV: $o.$1 inside $o.transaction, use $t\n" } }'
+```
+
 ## SQLite, Turso and D1
 
 ### Tenant isolation is application code
@@ -196,6 +383,9 @@ const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
 const [invoice] = await db.select().from(invoices)
   .where(and(eq(invoices.id, id), eq(invoices.orgId, session.orgId)));
 ```
+
+The same predicate belongs on every `update` and `delete`, on every dialect, not just SQLite — the
+write forms are in "Drizzle Write Paths" above.
 
 ### The database file, and its siblings
 
@@ -310,6 +500,56 @@ const { name, email } = validated.data;
 await db.users.update({ where: { id }, data: { name, email } });
 ```
 
+### Drizzle: `createInsertSchema` and spread bodies
+
+Threat: a privileged column (`role`, `isAdmin`, `orgId`, `credits`, `passwordHash`) becomes
+client-writable. Drizzle makes it easy in two ways:
+
+1. **`createInsertSchema(table)` / `createUpdateSchema(table)` (drizzle-zod, or `drizzle-orm/zod` in
+   v1) is a schema of every writable column.** Parsing a request body with it validates the types
+   and then admits `role`, `isAdmin`, `orgId` and `credits`. Verified on drizzle-zod 0.8: the
+   unpicked insert schema returned `orgId`, `role`, `isAdmin` and `credits` from an attacker body;
+   the unpicked update schema returned `{ isAdmin: true, credits: 5 }`. Community guidance such as
+   honra-io/drizzle-best-practices (`types-validators.md`) teaches `createInsertSchema(users)` and
+   then `db.insert(users).values(parsed)` as the model pattern. Treat that as the anti-pattern for
+   anything fed by a request: the generated schema is the table, not the API contract.
+2. **A body or parsed object spread straight into `.values()` / `.set()`.**
+
+```typescript
+// BAD: the table's full insert shape accepts { role: 'admin', isAdmin: true, credits: 99999, orgId }
+const InsertUser = createInsertSchema(users);
+await db.insert(users).values(InsertUser.parse(await c.req.json()));
+await db.update(users).set(createUpdateSchema(users).parse(req.body)).where(eq(users.id, id));
+
+// BAD: spread of the raw body
+await db.insert(users).values({ ...req.body });
+await db.update(users).set(req.body).where(eq(users.id, id));
+
+// GOOD: allow-list the columns the client may write; .strict() makes an attempt loud (a 400)
+// instead of silently dropped. Server-owned columns are set after, from the verified session.
+const SignupBody = createInsertSchema(users).pick({ name: true, email: true }).strict();
+const ProfilePatch = createUpdateSchema(users).pick({ name: true }).strict();
+
+const body = SignupBody.parse(await c.req.json());
+await db.insert(users).values({ ...body, orgId: session.orgId });   // plus any other server-owned columns
+await db.update(users).set(ProfilePatch.parse(req.body))
+  .where(and(eq(users.id, session.userId), eq(users.orgId, session.orgId)));
+```
+
+- Prefer `.pick()` (an allow-list) over `.omit()` (a deny-list): with `.omit({ role: true })` the next
+  sensitive column added to the table is writable by default. Both exist on the returned Zod object.
+- Without `.strict()` a `z.object` strips unknown keys silently (verified), which is safe but hides
+  the attack; with it, extra keys fail the parse.
+
+Detection (each hit is a lead: trace the schema and the value that reaches `.values()` / `.set()`):
+
+```bash
+# generated schemas that are never narrowed (a .pick/.omit on the next line is a false positive)
+grep -rnE "create(Insert|Update)Schema\(\w+[,)]" --include="*.ts" --include="*.tsx" . | grep -vE "\.(pick|omit)\("
+# a body / parsed object handed to values() or set()
+grep -rnE "\.(values|set)\(\s*(\{[^}]*\.\.\.\s*)?(req\.body|body|input|data|payload)\s*[,})]" --include="*.ts" .
+```
+
 ### Python / Pydantic — the risk has a different shape
 
 **Pydantic already ignores undeclared fields by default** (verified: an undeclared `is_admin` is
@@ -347,6 +587,17 @@ and `grep -rn "(\*\*request\|(\*\*body\|(\*\*data\|setattr(" --include="*.py"`
 - https://osv.dev/vulnerability/GHSA-gpj5-g38j-94v9 -- affected and fixed versions
 - https://orm.drizzle.team/docs/dynamic-query-building -- $dynamic() for conditional queries
 - https://orm.drizzle.team/docs/perf-queries -- sql.placeholder in prepared statements
+- https://orm.drizzle.team/docs/zod -- createInsertSchema / createUpdateSchema generate a schema from the table's columns; Refinements
+- https://zod.dev/api -- .pick() / .omit() / .strict() on the Zod object the generator returns
+- https://orm.drizzle.team/docs/delete -- db.delete(table) with no where deletes all rows
+- https://orm.drizzle.team/docs/update -- update().set().where() and returning()
+- https://orm.drizzle.team/docs/transactions -- db.transaction(async (tx) => ...), tx.rollback(), isolationLevel config
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts -- .for(strength, { of, noWait, skipLocked }) row locking (not documented on the docs site; verified in the 0.45 types)
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/sqlite-core/session.ts -- SQLite transaction config `behavior: 'deferred' | 'immediate' | 'exclusive'`
+- https://www.postgresql.org/docs/current/transaction-iso.html -- READ COMMITTED default; lost updates and serialization failures (40001)
+- https://www.postgresql.org/docs/current/explicit-locking.html -- SELECT FOR UPDATE row-level locks
+- https://github.com/honra-io/drizzle-best-practices/blob/main/references/types-validators.md -- teaches createInsertSchema(table) parsed straight into values() (the anti-pattern named above)
+- https://github.com/honra-io/drizzle-best-practices/blob/main/references/query-error-handling.md -- shows the read-then-decrement inventory transaction without a lock (the race named above)
 - https://sqlite.org/wal.html -- the -wal and -shm sibling files
 - https://sqlite.org/backup.html -- why a file copy can be a corrupt backup
 - https://sqlite.org/uri.html -- mode=ro and immutable=1

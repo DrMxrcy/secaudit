@@ -1,0 +1,33 @@
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_a48b1660e4a490 728
+.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md
+  s_46f42f15a4ddb4::t_192b2ec64e2275 6,37-38
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_dab7be216f9334 12
+CHANGELOG.md
+  s_46f42f15a4ddb4::t_14b9e0fe44a75f 8
+ROADMAP.md
+  s_46f42f15a4ddb4::t_0ad19dd449ab1f 43,49
+SOURCES.md
+  s_46f42f15a4ddb4::t_9396b2c18c510b 498-524,616-622
+skills/audit/SKILL.md
+  s_46f42f15a4ddb4::t_e19e727857fac6 310-314,329-330,463,469
+skills/supply-chain/SKILL.md
+  s_46f42f15a4ddb4::t_bb1671080ad8bd 156-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "732f63fe345fed3ff24b2664dd72f9f72e3225f2",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

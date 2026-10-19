@@ -1,0 +1,24 @@
+skills/web-vulns/SKILL.md
+  s_46f42f15a4ddb4::t_c89bb3dd4a8e89 3
+  s_46f42f15a4ddb4::t_6b2d063e24e82c 348-349
+  s_46f42f15a4ddb4::t_def1b3d64fa4c1 363-369
+  s_46f42f15a4ddb4::t_25327643873a34 67-83,85-89,91-235
+  s_46f42f15a4ddb4::t_df5a3bba0030c6 84,90
+  s_46f42f15a4ddb4::t_71a169c22ac955 22-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f47065ddaa39c3e8a23d857b345d3bbcaadfb3fd",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

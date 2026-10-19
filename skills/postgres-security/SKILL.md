@@ -187,6 +187,54 @@ by whoever minted the token. Map an allow-listed set of role names server-side, 
 parameters (§3). The login role must not itself be a superuser or owner — `RESET ROLE` is one
 statement away for any injected SQL.
 
+**Runtime code that reaches for the owner or `BYPASSRLS` URL.** The split above is undone one
+import at a time. Cron jobs, webhook handlers, admin tooling and "this one query RLS blocks" fixes
+get a second `drizzle()` client built from the migration URL (the owner) or another `BYPASSRLS`
+login. Every query through that client skips RLS, so an injection, a missing `where`, or a wrong
+tenant id in any such path is cross-tenant read and write, and nothing in the schema shows it. The
+usual origin is an empty result under RLS "fixed" by switching connections (the checklist below: that is the
+vulnerability, not the fix).
+
+```ts
+// BAD: a "system" path built from the owner URL — table owners are exempt from RLS
+// src/jobs/db.ts
+export const systemDb = drizzle(postgres(process.env.MIGRATION_DATABASE_URL!))
+
+// GOOD: its own least-privileged role, one audited entry point, small pool
+// src/db/system.ts — the only module that reads SYSTEM_DATABASE_URL (postgresql://app_system:...)
+type Db = PostgresJsDatabase<Record<string, never>>
+type Tx = Parameters<Parameters<Db['transaction']>[0]>[0]
+const systemClient = postgres(process.env.SYSTEM_DATABASE_URL!, { max: 3 })
+
+export function withSystemDb<T>(actor: string, reason: string, fn: (tx: Tx) => Promise<T>) {
+  audit.log({ event: 'rls_bypass', actor, reason })        // who, why, when: reviewable afterwards
+  return drizzle(systemClient).transaction(fn)
+}
+```
+
+```sql
+-- the system role is NOT the owner and gets only the tables and verbs its jobs need
+CREATE ROLE app_system LOGIN PASSWORD '...' NOSUPERUSER NOCREATEDB NOCREATEROLE BYPASSRLS;
+GRANT SELECT, UPDATE ON abuse_reports TO app_system;     -- no GRANT ALL, no TRUNCATE, no DDL
+```
+
+Prefer no `BYPASSRLS` at all where a policy `TO app_system` on the few tables it needs would do; if
+the bypass stays, every query inside `withSystemDb` must carry its own tenant predicate
+(`secaudit:data-access`), because RLS is no longer the net. Keep the owner credential in CI/deploy
+only: the running app and workers should not be able to read `MIGRATION_DATABASE_URL` at all.
+
+Detection: the owner/migration URL should appear only in `drizzle.config.ts` and migration scripts.
+
+```bash
+grep -rnE "MIGRATION_DATABASE_URL|OWNER_DATABASE_URL|DATABASE_ADMIN_URL|DIRECT_URL" \
+  --include="*.ts" --include="*.js" --include="*.env*" . \
+  | grep -vE "drizzle\.config|/migrat|/scripts/|node_modules"
+```
+
+Then confirm what each runtime connection really is, through that connection:
+`SELECT current_user, rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user` and
+`SELECT tablename FROM pg_tables WHERE tableowner = current_user` (the second must be empty).
+
 ## 3. Tenant Context in Drizzle Transactions — and the NULL vs Empty-String Trap
 
 The pooled-connection leak from `set_config(..., false)` is `secaudit:prisma-security` §3. In
@@ -586,6 +634,8 @@ sampled values that RLS hides in partitioning/inheritance hierarchies; fixed 16.
 - Check `relrowsecurity` / `relforcerowsecurity` / `pg_policies` live; drizzle-kit never emits `FORCE`.
 - One role for `drizzle.config.ts` and the app = owner = inert RLS; `push` drops hand-written policies.
 - Default-deny empty results "fixed" by reconnecting as the owner is the real vulnerability.
+- `MIGRATION_DATABASE_URL` / owner / `BYPASSRLS` URL read outside `drizzle.config.ts` and migrations:
+  give system paths their own narrow role behind one audited entry point.
 - `set_config(..., false)` leaks across pooled connections; inside `db.transaction` use `tx`.
 - `current_setting(name, true)` is NULL fresh and `''` after an earlier local set — use
   `nullif(..., '')`, never `IS NULL OR ...`.
@@ -605,7 +655,8 @@ sampled values that RLS hides in partitioning/inheritance hierarchies; fixed 16.
 
 - `secaudit:prisma-security` — §2 owner/BYPASSRLS bypass and `FORCE`, §3 transaction-local
   `set_config`, §7 `sslmode=require`; this skill gives the Drizzle form.
-- `secaudit:data-access` — Drizzle `sql.raw()`, identifier injection (CVE-2026-39356).
+- `secaudit:data-access` — Drizzle `sql.raw()`, identifier injection (CVE-2026-39356), unscoped
+  `update`/`delete` and `.for('update')` races.
 - `secaudit:database` — Supabase RLS. `secaudit:realtime-security` — websocket/SSE fan-out authz.
 - `secaudit:object-storage-security` — the backup bucket. `secaudit:docker-security` — `0.0.0.0`.
 - `secaudit:secrets` (DB credentials), `secaudit:cryptography` (keys for what ends up in dumps),

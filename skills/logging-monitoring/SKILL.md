@@ -61,6 +61,41 @@ export const logger = pino({
 
 See `secaudit:secrets` and `secaudit:react-native-security` (mobile log/crash leaks).
 
+### ORM query loggers: Drizzle `logger` writes every bound parameter
+
+The query text of a parameterized query is harmless (`... where "email" = $1`); the **params
+array is where the secrets are**: password hashes on insert, session and reset tokens on lookup,
+OAuth tokens, emails and other PII. Drizzle's `logger: true` and `new DefaultLogger()` both print
+them (the source builds `Query: <sql> -- params: [<JSON of every param>]`), and the logger-interface
+example in Drizzle's docs is `logQuery(query, params) { console.log({ query, params }) }`, which
+copies the same leak into the structured log pipeline. `logger: true` is also the first thing
+assistants add when asked to "debug the query" and it is rarely taken out.
+
+```ts
+// BAD: every bound value reaches stdout / the log aggregator
+const db = drizzle(client, { logger: true })
+const db2 = drizzle(client, { logger: new DefaultLogger() })
+const db3 = drizzle(client, {
+  logger: { logQuery(query, params) { log.info({ query, params }) } },
+})
+
+// GOOD: log the statement text only (placeholders, no values); params are never read
+const db = drizzle(client, {
+  logger: { logQuery(query) { log.debug({ query }) } },
+})
+// ACCEPTABLE only against a database with no real data: on in development, params included
+const dbDev = drizzle(client, { logger: process.env.NODE_ENV === 'development' })
+```
+
+The last form still prints params. Treat dev logs that include production-copied rows as production logs.
+If parameters are genuinely needed for an incident, log them per-request behind a short-lived flag
+and redact with the same `redact` paths as the pino config above. Postgres has the same failure
+server-side (`log_statement = all`, see `secaudit:postgres-security` §11), and the OpenTelemetry
+exporters below carry statements into traces.
+
+Detection: `grep -rnE "logger:\s*(true|new DefaultLogger)|logQuery\s*\([^)]*,\s*\w+" --include="*.ts"`;
+also search for `DefaultLogger` with a custom `writer`, which still receives the params.
+
 ### Tracing exporters: OpenTelemetry `db.user` (CVE-2026-104872)
 
 Traces are logs too. Until the coordinated 2026-07-23 release, eight OpenTelemetry JS database
@@ -250,3 +285,5 @@ Detection: `grep -rn "shell=True\|os.system(\|os.popen(\|\beval(\|\bexec(" --inc
 - https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ -- OWASP A08:2025 overview
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html -- command injection defense
 - https://nodejs.org/api/child_process.html -- execFile/spawn (args as array, no shell)
+- https://orm.drizzle.team/docs/goodies -- Logging: `logger: true`, `DefaultLogger`, custom `LogWriter`, and the `Logger` interface `logQuery(query, params)`
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/logger.ts -- DefaultLogger formats `Query: <sql> -- params: [...]` from every bound param

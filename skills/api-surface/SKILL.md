@@ -459,6 +459,34 @@ app.get('/servers/:id', async (c) => {
 })
 ```
 
+**Drizzle relational queries return the whole nested row.** `db.query.posts.findFirst({ with: {
+author: true } })` selects every column of the post *and* of the author, including `passwordHash`,
+session or API tokens and email. The nesting hides it: the handler "returns a post", the JSON carries
+the user's secrets. `columns` is the allow-list, and it has to be written at every level of `with`.
+
+```ts
+// BAD: with: { author: true } ships users.passwordHash, users.apiKeyHash, users.email
+const post = await db.query.posts.findFirst({ where: eq(posts.id, id), with: { author: true } })
+return c.json(post)
+
+// GOOD: columns allow-list on the root and on every relation (true = include; verified on 0.45)
+const post = await db.query.posts.findFirst({
+  where: eq(posts.id, id),
+  columns: { id: true, title: true, body: true },
+  with: { author: { columns: { id: true, name: true } } },
+})
+```
+
+Prefer `true` entries over `columns: { passwordHash: false }`: the `false` form is a deny-list, so the
+next sensitive column added to `users` is returned by default. Drizzle's RQB docs say that when both
+`true` and `false` appear, the `false` entries are ignored. The §8 response schema above still
+applies on top, as the contract that survives a forgotten `columns`.
+
+Detection: `grep -rnE "with:\s*\{\s*\w+:\s*true" --include="*.ts"` finds the unscoped relation, and
+`grep -rnE "columns:\s*\{[^}]*:\s*false" --include="*.ts"` finds deny-lists; for the rest, read every
+`db.query.<table>.find(First|Many)` whose result reaches `c.json` / `res.json` / a Server Action
+return without a `columns` key.
+
 The input-side half of API3 (mass assignment from a spread request body) is `secaudit:data-access`.
 
 ## 9. Unsafe Consumption of Third-Party APIs (API10)
@@ -619,3 +647,4 @@ Then flag any of:
 - https://api.osv.dev/v1/vulns/CVE-2026-55602 -- http-proxy-middleware router host+path substring match; fixed 2.0.10 / 3.0.6 / 4.1.0
 - https://api.osv.dev/v1/vulns/CVE-2024-34351 -- self-hosted Next.js Server Actions relative redirect + modified Host header SSRF; fixed 14.1.1
 - https://api.osv.dev/v1/vulns/CVE-2025-57822 -- Next.js middleware `next()` SSRF when forwarding user headers; fixed 14.2.32 / 15.4.7
+- https://orm.drizzle.team/docs/rqb -- relational queries: `with` returns full nested rows; `columns` true/false selection (false ignored when any true is present)

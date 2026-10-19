@@ -105,7 +105,8 @@ defined inside a component can read the component's variables. Per the Next.js d
 encrypted, and the guide itself says not to rely on encryption alone. Two failures follow: a secret
 captured by closure (an API key read from `process.env`, a token) is shipped to every visitor's
 browser as ciphertext, and an authorization decision captured by closure (`isAdmin`, `userId`) is
-a render-time snapshot the client holds and can send back later, not a check made at call time.
+a render-time snapshot, not a check made at call time. The docs do not promise one-time use, so treat
+a captured decision as replayable by the client for the life of that build.
 Fix: read secrets inside the action from server-only modules, and re-derive identity and permission
 inside the action from the session (the three steps above). Closing over a harmless snapshot, such as
 a version number to compare, is the intended use.
@@ -116,7 +117,8 @@ instances must use the same encryption key", otherwise an action encrypted by on
 decrypted by another and callers see intermittent "Failed to find Server Action" errors. The fix
 (a base64 value of 16, 24 or 32 bytes, e.g. `openssl rand -base64 32`, set when `next build` runs and
 embedded in the build output) creates the opposite risk: a key that now survives across builds
-decrypts the closure data of every deploy, so a leaked key is a lasting exposure. Keep it in the
+decrypts the closure data of every deploy (my inference from "persistent across builds"; the docs do not
+state it), so treat a leaked key as a lasting exposure. Keep it in the
 secret store and inject it as a build secret (see `secaudit:docker-security` for `ARG`/`ENV` layer
 leakage), never in a tracked `.env`, and never with a `NEXT_PUBLIC_` prefix, which inlines the value
 into the client bundle. Rotate it on a schedule you can name.
@@ -138,7 +140,7 @@ experimental: { serverActions: { bodySizeLimit: "2176kb" } }
 ```
 
 ```tsx
-// BAD — apiKey and isAdmin are captured, serialized to the browser, and replayable
+// BAD — apiKey and isAdmin are captured and round-trip through the browser; treat them as replayable
 export default async function Page() {
   const apiKey = process.env.PARTNER_KEY!;
   const isAdmin = await checkAdmin();
@@ -166,8 +168,8 @@ grep -rnE "^[[:space:]]+['\"]use server['\"]" --include='*.ts' --include='*.tsx'
 grep -rnE "NEXT_PUBLIC_[A-Z_]*SERVER_ACTIONS_ENCRYPTION|SERVER_ACTIONS_ENCRYPTION_KEY[\"']?[=: ]+[\"']?[A-Za-z0-9+/]{16,}" --exclude-dir=node_modules --exclude-dir=.next .
 # Multi-instance deploy files that never mention the key (check the CI build env too)
 grep -rl --null -E "replicas: *([2-9]|[1-9][0-9])|instances: *[2-9]|DesiredCount|desired_count" --include='*.yml' --include='*.yaml' --include='*.tf' --exclude-dir=node_modules . | xargs -0 -r grep -L SERVER_ACTIONS_ENCRYPTION_KEY
-# bodySizeLimit of 2 MB or more: each hit needs an authenticated action and a named file cap
-grep -rniE "bodySizeLimit: *['\"]?([2-9]|[1-9][0-9]+)(\.[0-9]+)? *(mb|gb)|bodySizeLimit: *['\"]?[0-9]+ *gb|bodySizeLimit: *[0-9]{8,}" --include='next.config.*' --exclude-dir=node_modules .
+# bodySizeLimit above ~1 MB (any unit, quoted key, bytes): each hit needs an authenticated action and a named file cap
+grep -rniE "bodySizeLimit['\"]?: *['\"]?(([1-9][0-9]*\.[0-9]+|[2-9]|[1-9][0-9]+) *(mb|gb)|[0-9]{4,} *kb|[0-9]+ *gb|[0-9]{7,})" --include='next.config.*' --exclude-dir=node_modules .
 ```
 
 ## Authentication vs Authorization

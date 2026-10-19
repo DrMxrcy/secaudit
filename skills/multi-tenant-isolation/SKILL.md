@@ -280,7 +280,7 @@ grep -rnE --include='*.ts' --include='*.tsx' --exclude-dir=node_modules \
 # responses that ask shared caches to keep them
 grep -rniE --include='*.ts' --include='*.js' --include='*.json' --exclude-dir=node_modules 's-maxage|public, *max-age' .
 # cached functions that also touch a session or request API (hoisted-session variant: read each hit)
-grep -rl --null -E "['\"]use cache|unstable_cache\(" --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -nE "getSession|[^a-zA-Z.]auth\(\)|currentUser\(|cookies\(|headers\("
+grep -rl --null -E "['\"]use cache|unstable_cache\(" --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -nE "getServerSession|getSession|getToken|(^|[^a-zA-Z.])auth\(\)|currentUser\(|cookies\(|headers\("
 ```
 
 ## 4. Jobs, Queues, and Cron: The Worker Has No Session

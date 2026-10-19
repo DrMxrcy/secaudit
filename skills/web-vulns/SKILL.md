@@ -263,7 +263,7 @@ value), as the guide's own snippet does, or serialize with a library built for i
 
 ```bash
 # files that emit JSON-LD without any < escape (a file with two scripts needs a manual look)
-grep -rl --null "ld+json" --include='*.tsx' --include='*.jsx' --include='*.ts' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -L 'u003c'
+grep -rl --null "ld+json" --include='*.tsx' --include='*.jsx' --include='*.ts' --include='*.js' --include='*.mdx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -L 'u003c'
 ```
 
 ### Rewrites: a destination built from the request is an open proxy
@@ -288,19 +288,22 @@ constrained parameters (`:id(\\d{1,})`) in `rewrites()`; refuse anything not in 
 const target = req.nextUrl.searchParams.get("u")!;
 return NextResponse.rewrite(new URL(target));
 
-// GOOD — the caller picks a key; the origin is yours
-const ORIGINS: Record<string, string> = { a: "https://a.internal" };
-const origin = ORIGINS[req.nextUrl.searchParams.get("t") ?? ""];
-return origin
-  ? NextResponse.rewrite(new URL(req.nextUrl.pathname, origin))
-  : new NextResponse(null, { status: 404 });
+// GOOD — the caller picks a key from a Map (no `constructor` / `__proto__` lookups); the origin is yours;
+// a path starting with `//` would be read as a host by new URL(), so reject it and re-check the origin
+const ORIGINS = new Map([["a", "https://a.internal"]]);
+const origin = ORIGINS.get(req.nextUrl.searchParams.get("t") ?? "");
+const path = req.nextUrl.pathname;
+if (!origin || !path.startsWith("/") || path.startsWith("//")) return new NextResponse(null, { status: 404 });
+const upstream = new URL(path, origin);
+if (upstream.origin !== origin) return new NextResponse(null, { status: 404 });
+return NextResponse.rewrite(upstream);
 ```
 
 ```bash
 # external destinations with a host parameter or wildcard path, and template-built destinations
 grep -nE "destination: *[\`'\"]https?://([^/'\"\`]*:[A-Za-z_]|[^'\"\`]*:[A-Za-z_]+[*+])|destination: *\`\\\$\{" next.config.*
-# NextResponse.rewrite fed a request-derived URL
-grep -rl --null "NextResponse\.rewrite" --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -nE "new URL\((target|url|dest|u|[a-z]+\.nextUrl\.searchParams|[a-z]+\.headers\.get|[a-z]+\.cookies)|NextResponse\.rewrite\(new URL\([a-zA-Z_]+\)\)"
+# NextResponse.rewrite fed a request-derived URL (also trace variables built from the request, e.g. nextUrl.clone() with its host or pathname changed)
+grep -rl --null "NextResponse\.rewrite" --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -nE "new URL\((target|url|dest|u|[a-z]+\.nextUrl\.(searchParams|pathname)|[a-z]+\.headers\.get|[a-z]+\.cookies)|NextResponse\.rewrite\(new URL\([a-zA-Z_]+\)\)|NextResponse\.rewrite\(\`https?://\\\$\{|nextUrl\.clone\(\)"
 ```
 
 ### Taint API: an optional net, checked at runtime, not at build
@@ -347,8 +350,7 @@ grep -rnE "taint: *true|experimental_taint" --exclude-dir=node_modules --exclude
 - https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ -- OWASP API #1 (BOLA)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP -- Content-Security-Policy as defense-in-depth
 - https://portswigger.net/web-security -- worked examples (XSS, SSRF, file upload, access control)
-- https://nextjs.org/docs/app/api-reference/config/next-config-js/images -- `images` config: remotePatterns, dangerouslyAllowLocalIP, dangerouslyAllowSVG, contentDispositionType, contentSecurityPolicy
-- https://nextjs.org/docs/app/api-reference/components/image -- `next/image`: remotePatterns wildcard rules, omitted fields imply `**`, deprecated `domains`, `unoptimized`, SVG guidance
+- https://nextjs.org/docs/app/api-reference/components/image -- `images` config keys (remotePatterns wildcard rules and omitted fields implying `**`, dangerouslyAllowLocalIP, dangerouslyAllowSVG, contentDispositionType, contentSecurityPolicy), deprecated `domains`, `unoptimized`
 - https://nextjs.org/docs/app/guides/json-ld -- JSON-LD: `JSON.stringify` does not sanitize; replace `<` with `\u003c`
 - https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites -- rewrites act as a URL proxy; external destinations; matched params in the destination
 - https://nextjs.org/docs/app/api-reference/functions/next-response -- `NextResponse.rewrite()` proxies the given URL

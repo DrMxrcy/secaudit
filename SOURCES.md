@@ -846,8 +846,7 @@ Last verified: 2026-10-17.
 - https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html — IDOR
 - https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ — BOLA
 - https://portswigger.net/web-security — worked examples
-- https://nextjs.org/docs/app/api-reference/config/next-config-js/images — `images` config: remotePatterns, dangerouslyAllowLocalIP, dangerouslyAllowSVG, contentDispositionType, contentSecurityPolicy
-- https://nextjs.org/docs/app/api-reference/components/image — `next/image`: remotePatterns wildcard rules, omitted fields imply `**`, deprecated `domains`, `unoptimized`, SVG guidance
+- https://nextjs.org/docs/app/api-reference/components/image — `images` config keys (remotePatterns wildcard rules and omitted fields implying `**`, dangerouslyAllowLocalIP, dangerouslyAllowSVG, contentDispositionType, contentSecurityPolicy), deprecated `domains`, `unoptimized`
 - https://nextjs.org/docs/app/guides/json-ld — JSON-LD: `JSON.stringify` does not sanitize; replace `<` with `\u003c`
 - https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites — rewrites act as a URL proxy; external destinations; matched params in the destination
 - https://nextjs.org/docs/app/api-reference/functions/next-response — `NextResponse.rewrite()` proxies the given URL

@@ -1,0 +1,26 @@
+SOURCES.md
+  s_46f42f15a4ddb4::t_3ffe252bb61143 784-794
+  s_46f42f15a4ddb4::t_32ca562bba6b54 823-829
+skills/deployment/SKILL.md
+  s_46f42f15a4ddb4::t_5e7458810927e5 201
+  s_46f42f15a4ddb4::t_d3416c35475b98 216
+skills/cloudflare-workers-security/SKILL.md
+  s_46f42f15a4ddb4::t_31605ee7d65756 218-219
+  s_46f42f15a4ddb4::t_58603e97f5cb7a 241,243-245
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ccc2f2c0b5775e2e56dd8ed6110dfd32e2793233",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -482,7 +482,9 @@ next sensitive column added to `users` is returned by default. Drizzle's RQB doc
 `true` and `false` appear, the `false` entries are ignored. The §8 response schema above still
 applies on top, as the contract that survives a forgotten `columns`.
 
-Detection: `grep -rnE "with:\s*\{\s*\w+:\s*true" --include="*.ts"` finds the unscoped relation, and
+Detection: the multi-line-aware
+`find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 -r perl -0777ne 'print "$ARGV: $&\n" while /with:\s*\{\s*\w+:\s*true/g'`
+finds the unscoped relation, including `with: {` with `author: true` on the next line, and
 `grep -rnE "columns:\s*\{[^}]*:\s*false" --include="*.ts"` finds deny-lists; for the rest, read every
 `db.query.<table>.find(First|Many)` whose result reaches `c.json` / `res.json` / a Server Action
 return without a `columns` key.

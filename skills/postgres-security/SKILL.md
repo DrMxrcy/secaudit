@@ -231,6 +231,9 @@ grep -rnE "MIGRATION_DATABASE_URL|OWNER_DATABASE_URL|DATABASE_ADMIN_URL|DIRECT_U
   | grep -vE "drizzle\.config|/migrat|/scripts/|node_modules"
 ```
 
+`DIRECT_URL` is a Prisma/Supabase convention (the unpooled URL), not necessarily an owner credential:
+a hit on it is a false positive unless that URL really connects as the table owner or a `BYPASSRLS` role.
+
 Then confirm what each runtime connection really is, through that connection:
 `SELECT current_user, rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user` and
 `SELECT tablename FROM pg_tables WHERE tableowner = current_user` (the second must be empty).

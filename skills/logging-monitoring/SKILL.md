@@ -93,8 +93,10 @@ and redact with the same `redact` paths as the pino config above. Postgres has t
 server-side (`log_statement = all`, see `secaudit:postgres-security` §11), and the OpenTelemetry
 exporters below carry statements into traces.
 
-Detection: `grep -rnE "logger:\s*(true|new DefaultLogger)|logQuery\s*\([^)]*,\s*\w+" --include="*.ts"`;
-also search for `DefaultLogger` with a custom `writer`, which still receives the params.
+Detection: `grep -rnE "logger:\s*(true|new DefaultLogger|[^,}]*(===|!==|\?|&&|\|\|))|logQuery\s*\([^)]*,\s*\w+" --include="*.ts"`;
+a `logger: <expression>` such as `process.env.NODE_ENV === 'development'` or `DEBUG_SQL === '1'` prints
+params whenever the expression is true, so read what it gates. Also search for `DefaultLogger` with a
+custom `writer`, which still receives the params.
 
 ### Tracing exporters: OpenTelemetry `db.user` (CVE-2026-104872)
 

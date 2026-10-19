@@ -272,20 +272,31 @@ if (voided.length === 0) throw new NotFound();   // not found OR not yours: indi
 - Postgres RLS (see `secaudit:postgres-security`) is the backstop for this, not a replacement: it
   only holds when the runtime role is neither the table owner nor `BYPASSRLS`.
 
-Detection (multi-line aware; prints the statements to read):
+Detection (multi-line aware; prints the statements to read). A statement is taken to end at the
+next `;`, `await`, another `db.update(`/`db.delete(`, or a blank line, so it works without semicolons
+and a `;` inside a string literal does not cut it short:
 
 ```bash
-# update/delete statements with no .where() at all
-find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
-  'while (/\b(?:db|tx)\.(?:update|delete)\(\s*\w+\s*\)[^;]*?;/g) { $m=$&; $m =~ s/\s+/ /g;
-   print "$ARGV: $m\n" unless $m =~ /\.where\(/ }'
+# NOWHERE: update/delete with no .where(), or .where(undefined). Receivers: db, tx, database,
+#   this.db, ctx.db (anything ending in db/tx/database). \x27 is a single quote (the script is quoted).
+# NOTENANT: .where() present but no tenant/owner column compared. EDIT the tenant word list for
+#   your schema. Words match as a column access (x.orgId, x.org_id); a bare userId variable does not
+#   count, only eq(<table>.userId, ...) / createdBy. A hit that follows a tenant-scoped, locked read
+#   of the same row is fine. A spread array, .where(and(...conds)), is skipped: read where conds is built.
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 -r perl -0777ne \
+  'while (/\b[\w.]*(?:db|tx|database)\.(?:update|delete)\(\s*[\w.]+\s*\)(?:"(?:[^"\\\n]|\\.)*"|\x27(?:[^\x27\\\n]|\\.)*\x27|`[^`]*`|(?!\bawait\b|\n\s*\n|[\w.]*(?:db|tx|database)\.(?:update|delete)\()[^;"\x27`])*/gi) {
+     $m=$&; $m =~ s/\s+/ /g;
+     if ($m !~ /\.where\((?!\s*undefined\s*\))/) { print "NOWHERE   $ARGV: $m\n" }
+     elsif ($m !~ /\.where\(\s*and\(\s*\.\.\.|\.(?:org|organization|tenant|owner|workspace|team|account|company|project|community)_?id\b|\beq\(\s*[\w.]+\.(?:user|created_?by)_?id\s*,/i) { print "NOTENANT  $ARGV: $m\n" } }'
 
-# .where() present but no tenant/owner column in it (edit the column names to match the schema);
-# a hit that follows a tenant-scoped, locked read of the same row is fine
-find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
-  'while (/\b(?:db|tx)\.(?:update|delete)\(\s*\w+\s*\)[^;]*?;/g) { $m=$&; $m =~ s/\s+/ /g;
-   print "$ARGV: $m\n" if $m =~ /\.where\(/ && $m !~ /(org|tenant|owner|user|workspace|team)Id/i }'
+# a conditional condition handed to and()/or(): and(undefined) compiles to NO filter
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 -r perl -0777ne \
+  'while (/\.where\(\s*(?:and|or)\((?:(?!;|\bawait\b)[\s\S])*?(?:\?(?:(?!;)[\s\S])*?undefined|&&)/g) { $m=$&; $m =~ s/\s+/ /g; print "$ARGV: $m\n" }'
 ```
+
+The second command is the `and(undefined)` trap: `and()` silently drops `undefined`, so
+`.where(and(cond ? eq(...) : undefined))` or `and(flag && eq(...))` deletes every row when the
+condition is false. Keep the fix above (an array of conditions that fails closed when empty).
 
 ### Transactions and races
 
@@ -337,8 +348,8 @@ if (claimed.length === 0) throw new AlreadyRedeemed();
 ```
 
 - `.for('update')` takes `'update' | 'no key update' | 'share' | 'key share'` and a config
-  `{ of, noWait } | { of, skipLocked }`; it is typed in the query builder but not described on the
-  docs site, and exists on the Postgres and MySQL builders only. SQLite
+  `{ of, noWait } | { of, skipLocked }`; it is typed in the query builder but not found in the docs'
+  `llms-full.txt` (documented in the source), and exists on the Postgres and MySQL builders only. SQLite
   has no row locks: use the conditional `UPDATE` above, or `db.transaction(fn, { behavior: 'immediate' })`.
 - Lock multiple rows in a consistent order (sort by id) so two transfers cannot deadlock.
 - For multi-statement logic that cannot be one statement, `db.transaction(fn, { isolationLevel:
@@ -354,11 +365,16 @@ Detection:
 # read-modify-write computed in JS (balance: row.balance - n), then check-then-act on the same fields
 grep -rnE "\.set\(\{[^}]*:\s*\w+\.(balance|quantity|stock|credits|count|remaining)\s*[-+]" --include="*.ts"
 grep -rnE "if \(.*\.(balance|quantity|stock|credits|remaining)\s*[<>]=?" --include="*.ts"
-# files that open transactions but never lock, never use a conditional where, never compute in SQL
-grep -rlE "\.transaction\(" --include="*.ts" . | xargs grep -LE "\.for\(['\"](update|no key update)|gte\(|sql\`[^\`]*\s[-+]\s"
-# the outer db used inside db.transaction(async (tx) => { ... })
-find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 perl -0ne \
-  'while (/\b(\w+)\.transaction\(\s*async\s*\(\s*(\w+)\s*\)\s*=>\s*(\{(?:[^{}]++|(?3))*\})/g) {
+# files that open a transaction but have no row lock and no conditional/atomic UPDATE. The gte()/gt()
+# or sql`col - n` must sit inside the same .update(...) statement (up to the next ; or await): an
+# unrelated gte() elsewhere in the file does not suppress the file. Limit: it does not check that
+# the guarded update is the one that matters; read every hit and every near-miss.
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 -r perl -0777ne \
+  'print "$ARGV\n" if /\.transaction\(/ && !/\.for\([\x27"](?:update|no key update)/
+     && !/\.update\((?:(?!;|\bawait\b)[\s\S])*?(?:\bgte?\(|sql`[^`]*\s[-+]\s)/'
+# the outer db used inside db.transaction(async (tx) => { ... }); also async tx => and (tx: T) =>
+find . -name "*.ts" -not -path "*/node_modules/*" -print0 | xargs -0 -r perl -0777ne \
+  'while (/\b(\w+)\.transaction\(\s*async\s*(?|\(\s*(\w+)\s*(?::[^)]*)?\)|(\w+))\s*=>\s*(\{(?:[^{}]++|(?3))*\})/g) {
      ($o,$t,$b)=($1,$2,$3);
      while ($b =~ /\b\Q$o\E\.(select|insert|update|delete|execute|query)\b/g) {
        print "$ARGV: $o.$1 inside $o.transaction, use $t\n" } }'
@@ -545,9 +561,10 @@ Detection (each hit is a lead: trace the schema and the value that reaches `.val
 
 ```bash
 # generated schemas that are never narrowed (a .pick/.omit on the next line is a false positive)
-grep -rnE "create(Insert|Update)Schema\(\w+[,)]" --include="*.ts" --include="*.tsx" . | grep -vE "\.(pick|omit)\("
-# a body / parsed object handed to values() or set()
-grep -rnE "\.(values|set)\(\s*(\{[^}]*\.\.\.\s*)?(req\.body|body|input|data|payload)\s*[,})]" --include="*.ts" .
+grep -rnE "create(Insert|Update)Schema\(\s*[A-Za-z_][A-Za-z0-9_.]*\s*[,)]" --include="*.ts" --include="*.tsx" . | grep -vE "\.(pick|omit)\("
+# a body / parsed object handed to values() or set(), directly or spread (all leads: check what the
+# object was parsed with; { ...body, orgId } after a .pick().strict() parse is fine)
+grep -rnE "\.(values|set)\(\s*(\{[^}]*\.\.\.\s*)?((req\.body|body|input|data|payload|[A-Za-z_][A-Za-z0-9_.]*\.data)\s*[,})]|await\s+[A-Za-z_.]*json\(\)|[A-Za-z_][A-Za-z0-9_.]*\.parse\()" --include="*.ts" .
 ```
 
 ### Python / Pydantic — the risk has a different shape
@@ -592,7 +609,7 @@ and `grep -rn "(\*\*request\|(\*\*body\|(\*\*data\|setattr(" --include="*.py"`
 - https://orm.drizzle.team/docs/delete -- db.delete(table) with no where deletes all rows
 - https://orm.drizzle.team/docs/update -- update().set().where() and returning()
 - https://orm.drizzle.team/docs/transactions -- db.transaction(async (tx) => ...), tx.rollback(), isolationLevel config
-- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts -- .for(strength, { of, noWait, skipLocked }) row locking (not documented on the docs site; verified in the 0.45 types)
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts -- .for(strength, { of, noWait, skipLocked }) row locking (not found in the docs' llms-full.txt; documented in the source and verified in the 0.45 types)
 - https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/sqlite-core/session.ts -- SQLite transaction config `behavior: 'deferred' | 'immediate' | 'exclusive'`
 - https://www.postgresql.org/docs/current/transaction-iso.html -- READ COMMITTED default; lost updates and serialization failures (40001)
 - https://www.postgresql.org/docs/current/explicit-locking.html -- SELECT FOR UPDATE row-level locks

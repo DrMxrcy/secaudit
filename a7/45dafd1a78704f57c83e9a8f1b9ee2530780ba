@@ -1,0 +1,27 @@
+skills/better-auth-security/SKILL.md
+  s_46f42f15a4ddb4::t_f09c1ed9cd44bb 449-453
+skills/auth/SKILL.md
+  s_46f42f15a4ddb4::t_4d4892bbedd24c 3,126
+  s_46f42f15a4ddb4::t_1392ba15994a39 95-125,127-172
+  s_46f42f15a4ddb4::t_e8e5f05f42cb45 1148-1150
+skills/multi-tenant-isolation/SKILL.md
+  s_46f42f15a4ddb4::t_f09c1ed9cd44bb 282-283
+SOURCES.md
+  s_46f42f15a4ddb4::t_13917b622fec66 109-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a745dafd1a78704f57c83e9a8f1b9ee2530780ba",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

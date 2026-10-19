@@ -1,0 +1,26 @@
+skills/multi-tenant-isolation/SKILL.md
+  s_46f42f15a4ddb4::t_bdb1ac5c09099a 283
+SOURCES.md
+  s_46f42f15a4ddb4::t_bdb1ac5c09099a 849
+skills/auth/SKILL.md
+  s_46f42f15a4ddb4::t_bdb1ac5c09099a 108-109,120-121,143,171-172
+skills/web-vulns/SKILL.md
+  s_46f42f15a4ddb4::t_bdb1ac5c09099a 266,291-299,305,353
+  s_46f42f15a4ddb4::t_6bdf0d67b7102f 306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6eb8a657a448a58af8080f1a4d0c9cf976d48e26",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_5e73677befb314 726-727,729
+.roadmap/plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md
+  s_46f42f15a4ddb4::t_72b5a0d0875adc 6,33-38
+.roadmap/plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md
+  s_46f42f15a4ddb4::t_c660acff7a27e3 6,35-40
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_cbff046d21c8f2 5,13-14
+CHANGELOG.md
+  s_46f42f15a4ddb4::t_1dc86c45507f38 3,9-10
+ROADMAP.md
+  s_46f42f15a4ddb4::t_0a350ea127f0bf 43,51-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1f2086d9c00c52db9fe8837bb3212885aa22ec2",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

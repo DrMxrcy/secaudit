@@ -1,0 +1,27 @@
+skills/data-access/SKILL.md
+  s_46f42f15a4ddb4::t_1ef26a7099cfb3 340-341,590-591,594-596
+  s_46f42f15a4ddb4::t_f57977c3f1f4ae 3
+  s_46f42f15a4ddb4::t_f2a0a9d4635ae9 534
+  s_46f42f15a4ddb4::t_5108f63d25ef53 387-389,592-593,597-600
+  s_46f42f15a4ddb4::t_547d6b78719442 503-533,535-552
+  s_46f42f15a4ddb4::t_5df0efa03df3cf 121-165,173
+  s_46f42f15a4ddb4::t_4dd163361fcdcd 166-172
+  s_46f42f15a4ddb4::t_9c9ece88d84037 233-242,244-269,272-339,342-345,347-366
+  s_46f42f15a4ddb4::t_a8a27ce407a47f 243,270-271,346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "97a9c195b8d83301130725348ad68c12120571a6",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+skills/cloudflare-workers-security/SKILL.md
+  s_46f42f15a4ddb4::t_20402615d2d7ce 236
+skills/deployment/SKILL.md
+  s_46f42f15a4ddb4::t_20402615d2d7ce 133-134
+  s_46f42f15a4ddb4::t_f9d88d4f8fe059 247
+skills/web-vulns/SKILL.md
+  s_46f42f15a4ddb4::t_20402615d2d7ce 214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8597ccd6fc7d0a4dcc22678e657de088af62eb07",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

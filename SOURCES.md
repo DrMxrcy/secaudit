@@ -495,6 +495,33 @@ Last verified: 2026-10-17.
 - https://ai-sdk.dev/docs/agents/workflow-agent — workflow agents
 - https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling — tool definitions, approval
 - https://datatracker.ietf.org/doc/html/rfc8707 — RFC 8707 resource indicators (token audience binding)
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast01.md — OWASP Agentic Skills Top 10 (v1.0-2026) AST01 Malicious Skills
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast02.md — AST02 Supply Chain Compromise ("configuration files ... have become active execution paths")
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast03.md — AST03 Over-Privileged Skills
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast04.md — AST04 Insecure Metadata (frontmatter as attacker-controlled input)
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast05.md — AST05 Untrusted External Instructions (fetched content becomes instructions)
+- https://github.com/OWASP/www-project-agentic-skills-top-10/blob/main/ast08.md — AST08 Poor Scanning (pattern matching alone misses skill payloads)
+- https://research.checkpoint.com/2026/rce-and-api-token-exfiltration-through-claude-code-project-files-cve-2025-59536/ — Check Point Research, "Caught in the Hook" (2026-02-25): hooks, MCP consent bypass, ANTHROPIC_BASE_URL key exfiltration
+- https://github.com/advisories/GHSA-ph6w-f82w-28w6 — Claude Code insufficient startup warning for project hooks; fixed 1.0.87
+- https://github.com/advisories/GHSA-4fgq-fpq9-mr3g — CVE-2025-59536, Claude Code command execution before the startup trust dialog; fixed 1.0.111
+- https://github.com/advisories/GHSA-jh7p-qr78-84p7 — CVE-2026-21852, Claude Code API-key leak via repo-set ANTHROPIC_BASE_URL before trust; fixed 2.0.65
+- https://github.com/advisories/GHSA-mmgp-wc2j-qcv7 — CVE-2026-33068, repo `defaultMode: bypassPermissions` skipped the trust dialog; fixed 2.1.53
+- https://github.com/advisories/GHSA-6xpm-ggf7-wc3p — CVE-2025-6514, mcp-remote OS command injection via authorization_endpoint; fixed 0.1.16
+- https://code.claude.com/docs/en/settings-reference — hooks, env (and variables project settings cannot set), apiKeyHelper and other helper commands, enableAllProjectMcpServers / enabledMcpjsonServers / disabledMcpjsonServers, permissions.defaultMode values, disableBypassPermissionsMode, disableSkillShellExecution
+- https://code.claude.com/docs/en/settings — which keys wait for workspace trust; deny/ask apply before trust; settings.local.json is personal
+- https://code.claude.com/docs/en/permissions — rule syntax (Bash(*) = Bash, WebFetch(domain:), mcp__server), Bash deny limits, what runs before you trust a folder, -p/SDK behaviour, --setting-sources user
+- https://code.claude.com/docs/en/hooks — hook events and workspace-trust rule for hooks; -p runs committed hooks
+- https://code.claude.com/docs/en/mcp — .mcp.json project scope, ${VAR} expansion, project server approvals and workspace trust
+- https://code.claude.com/docs/en/skills — allowed-tools, frontmatter hooks, inline !`command` execution
+- https://code.claude.com/docs/en/sub-agents — tools field (omitted = inherit all), permissionMode handling
+- https://code.claude.com/docs/en/memory — CLAUDE.md / AGENTS.md loading, @path imports and external-import approval
+- https://cursor.com/docs/rules — .cursor/rules/*.mdc project rules; AGENTS.md
+- https://cursor.com/docs/mcp — .cursor/mcp.json, mcpServers, ${env:NAME} interpolation
+- https://code.visualstudio.com/docs/agent-customization/mcp-servers — .vscode/mcp.json (servers) and workspace .mcp.json (mcpServers); workspace servers start on Workspace Trust
+- https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions — .github/copilot-instructions.md, .github/instructions/*.instructions.md, AGENTS.md
+- https://geminicli.com/docs/cli/gemini-md/ — GEMINI.md context files
+- https://www.unicode.org/Public/18.0.0/charts/PDF/UE0000.pdf — Unicode 18.0 Tags block chart (U+E0000–E007F)
+- https://www.unicode.org/reports/tr9/ — Unicode Bidirectional Algorithm (bidi control characters)
 
 ## Mobile in-app purchase (`revenuecat-security`)
 - https://www.revenuecat.com/docs/integrations/webhooks — webhook delivery; authorization header and HMAC signing are both opt-in
@@ -586,6 +613,13 @@ Last verified: 2026-10-17.
 - https://docs.gitlab.com/ci/jobs/ci_job_token/ — `CI_JOB_TOKEN` scope and the job-token allowlist
 - https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/ — A03:2025, where §3, §6, §9 and §10 land
 - https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/ — A08:2025, where §1, §6, §8 and §9 land
+- https://github.com/anthropics/claude-code-action/blob/main/docs/security.md — access control, `allowed_non_write_users`/`allowed_bots`, `pull_request_target` checkout guidance, files restored from the base branch
+- https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md — `claude_args` / `--allowedTools`; `allowed_tools` deprecated
+- https://github.com/anthropics/claude-code-action — repository and README
+- https://github.com/openai/codex-action/blob/main/docs/security.md — write-access default, `allow-users`, untrusted-input sources incl. `AGENTS.md`, `safety-strategy`, run-as-last-step
+- https://github.com/openai/codex-action — repository and README (`permission-profile`, `safety-strategy`, `drop-sudo` and self-hosted runners)
+- https://github.com/google-github-actions/run-gemini-cli/blob/main/docs/trust-guidance.md — untrusted data, least-privilege token, tool allowlisting, `GEMINI_CLI_TRUST_WORKSPACE`
+- https://github.com/google-github-actions/run-gemini-cli/blob/main/examples/workflows/gemini-dispatch/gemini-dispatch.yml — `author_association` gate (OWNER/MEMBER/COLLABORATOR)
 
 ## Cloudflare Workers (`cloudflare-workers-security`)
 - https://developers.cloudflare.com/workers/configuration/environment-variables/ — `[vars]` are plaintext; "Do not use plaintext environment variables to store sensitive information"

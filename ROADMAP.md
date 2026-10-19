@@ -40,13 +40,13 @@
 
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.12.0 — 67%
+### [ ] v3.12.0 — 70%
 - [x] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 100% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
 - [x] **#60 Warn that OSV and npm audit miss vendor-only and unpublished advisories** `feature` — 100% ([plan](.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md))
 - [x] **#61 Add a rich-text-security skill for editors, docx import and sanitizers** `feature` — 100% ([plan](.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md))
 - [x] **#68 Deepen fivem-security: server.cfg convars, game-event vetoes, exports** `feature` — 100% ([plan](.roadmap/plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md))
 - [x] **#62 Add a multi-tenant-isolation hub skill** `feature` — 100% ([plan](.roadmap/plans/062-add-a-multi-tenant-isolation-hub-skill.md))
-- [ ] **#63 Audit a target repo's committed AI-agent config and agent CI actions** `feature` — 67% ([plan](.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md))
+- [x] **#63 Audit a target repo's committed AI-agent config and agent CI actions** `feature` — 100% ([plan](.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md))
 - [x] **#64 Audit must vet project agents as untrusted before delegating to them** `bug` — 100% ([plan](.roadmap/plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md))
 - [ ] **#65 Cover Drizzle write-path risks: mass assignment, unscoped writes, races** `feature` — 0% ([plan](.roadmap/plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md))
 - [ ] **#66 Cover modern browser defenses and DOM navigation and postMessage sinks** `feature` — 0% ([plan](.roadmap/plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md))

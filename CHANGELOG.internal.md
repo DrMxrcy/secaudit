@@ -9,7 +9,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - Dependency checks no longer treat an empty advisory lookup as proof a package is safe.
 - New checks for rich-text editors, document import and HTML sanitizing.
 - New checks for keeping each tenant's data separate across caches, jobs, domains and search.
-- (pending) Audits now review the AI-agent settings, hooks and MCP servers a project ships.
+- Audits now review the AI-agent settings, hooks and MCP servers a project ships.
 - (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
 - (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.
 - (pending) New checks for cached per-user data, Server Actions and image settings in modern React apps.

@@ -153,6 +153,8 @@ Detection: `grep -rn "extra-index-url\|extra_index_url\|index-strategy\|unsafe-b
 
 ## Dependency Auditing
 
+MCP stdio servers launched via `npx -y`/`uvx`/`bunx` in `.mcp.json` are dependencies too — unpinned ones run whatever the registry serves; see `secaudit:mcp-agent-security` §9.3.
+
 Run these after every vibe-coding session before deploying:
 
 ```bash

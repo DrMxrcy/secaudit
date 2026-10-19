@@ -16,7 +16,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - Deeper FiveM server checks for server settings, game events and cross-resource calls.
 
 ### 🐛 Fixed
-- (pending) Audits treat a project's bundled helper agents with appropriate caution.
+- Audits treat a project's bundled helper agents with appropriate caution.
 - OWASP Secure Headers project page moved to owasp.org/projects
 
 ## v3.11.0 — 2026-10-16

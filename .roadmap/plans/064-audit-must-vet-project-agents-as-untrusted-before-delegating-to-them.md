@@ -3,7 +3,7 @@ id: 64
 title: Audit must vet project agents as untrusted before delegating to them
 type: bug
 version: 3.12.0
-status: planned
+status: done
 created: 2026-10-17
 ---
 
@@ -23,4 +23,5 @@ created: 2026-10-17
 - **Fails if:** the change removes the benefit of using vetted project agents for domain knowledge.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Replace project-agent precedence with vet-then-use rule, verification exclusion and report line -> target: skills/audit/SKILL.md, skills/audit/references/methodology.md
+- [x] Step 1: Replace project-agent precedence with vet-then-use rule, verification exclusion and report line -> target: skills/audit/SKILL.md, skills/audit/references/methodology.md
+  > evidence: freshness: only drift is unrelated research.checkpoint.com 202 bot challenge (handled in 63.3); grep shows no unconditional precedence wording left; built in worktree (sonnet), parent reviewed the diff (combined spec+quality, not independent) (2026-10-19)

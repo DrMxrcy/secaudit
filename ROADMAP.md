@@ -10,7 +10,7 @@
 - Per-check vulnerable/benign fixtures as regression tests for grep heuristics (UnitOne tests/fixtures, Google expectations.md pattern)
 <!-- Free-form. Drop loose ideas here; scripts never touch this region. -->
 <!-- roadmap:auto:start -->
-**Current version: v3.12.0**
+**Current version: v3.13.0**
 
 ## 📊 Versions
 
@@ -40,16 +40,5 @@
 
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
-### [x] v3.12.0 — 100%
-- [x] **#59 Raise Next.js and React floors for the October 14 2026 advisories** `feature` — 100% ([plan](.roadmap/plans/059-raise-next-js-and-react-floors-for-the-october-14-2026-advisories.md))
-- [x] **#60 Warn that OSV and npm audit miss vendor-only and unpublished advisories** `feature` — 100% ([plan](.roadmap/plans/060-warn-that-osv-and-npm-audit-miss-vendor-only-and-unpublished-advisories.md))
-- [x] **#61 Add a rich-text-security skill for editors, docx import and sanitizers** `feature` — 100% ([plan](.roadmap/plans/061-add-a-rich-text-security-skill-for-editors-docx-import-and-sanitizers.md))
-- [x] **#68 Deepen fivem-security: server.cfg convars, game-event vetoes, exports** `feature` — 100% ([plan](.roadmap/plans/068-deepen-fivem-security-server-cfg-convars-game-event-vetoes-exports.md))
-- [x] **#62 Add a multi-tenant-isolation hub skill** `feature` — 100% ([plan](.roadmap/plans/062-add-a-multi-tenant-isolation-hub-skill.md))
-- [x] **#63 Audit a target repo's committed AI-agent config and agent CI actions** `feature` — 100% ([plan](.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md))
-- [x] **#64 Audit must vet project agents as untrusted before delegating to them** `bug` — 100% ([plan](.roadmap/plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md))
-- [x] **#65 Cover Drizzle write-path risks: mass assignment, unscoped writes, races** `feature` — 100% ([plan](.roadmap/plans/065-cover-drizzle-write-path-risks-mass-assignment-unscoped-writes-races.md))
-- [x] **#66 Cover modern browser defenses and DOM navigation and postMessage sinks** `feature` — 100% ([plan](.roadmap/plans/066-cover-modern-browser-defenses-and-dom-navigation-and-postmessage-sinks.md))
-- [x] **#67 Cover Next.js 16 caching, Server Action key and image config risks** `feature` — 100% ([plan](.roadmap/plans/067-cover-next-js-16-caching-server-action-key-and-image-config-risks.md))
-- [x] **#69 OWASP Secure Headers project page moved to owasp.org/projects** `bug` — 100% ([plan](.roadmap/plans/069-owasp-secure-headers-project-page-moved-to-owasp-org-projects.md))
+### [x] v3.12.0 — 100% · 11 items · shipped 2026-10-19 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

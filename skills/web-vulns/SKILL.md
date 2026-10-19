@@ -211,7 +211,7 @@ G() { grep -rnE --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dis
 OKNAV='safe[A-Za-z]*\(|allowlist|validate|sanitize|isSameOrigin'
 
 # 7 navigation sinks fed by a non-literal (a literal "/word" prefix is skipped: see the triage rule)
-G "(\blocation(\.href)?\s*=\s*|(router|navigate|history)\.(push|replace)\(\s*|location\.(assign|replace)\(\s*|window\.open\(\s*|\bredirect\(\s*)(\`/?\\\$\{|[A-Za-z_\$(])" . | grep -viE "$OKNAV"
+G "(\blocation(\.href)?\s*=\s*|(router|navigate|history)\.(push|replace)\(\s*|\bnavigate\(\s*|location\.(assign|replace)\(\s*|window\.open\(\s*|\bredirect\(\s*)(\`/?\\\$\{|[A-Za-z_\$(])" . | grep -viE "$OKNAV"
 G "(href|action|formAction)=\{\s*(\`/?\\\$\{|[A-Za-z_\$])|<iframe[^>]*src=\{|:href=\"[A-Za-z_]" . | grep -viE "$OKNAV"
 # where the URL comes from: query-string params and fields that name a destination
 G "(get|getAll)\(['\"](next|returnTo|return_to|returnUrl|redirect|redirectTo|redirect_uri|callbackUrl|continue|dest|url|target)['\"]\)|query\.(next|returnTo|redirect|redirectTo|callbackUrl|url)\b" .

@@ -130,7 +130,8 @@ The proxy sets the CSP on both the request and the response and passes the nonce
 request header; Next.js reads `'nonce-…'` from the request's CSP header and stamps it on its own
 framework scripts, so only your own inline `<script>` / `<Script nonce>` needs it. The page must be
 **dynamically rendered**: static pages are built with no request, so no nonce can be injected (call
-`await connection()` to opt a page in), and CDN-cached HTML would freeze one nonce for everyone. The
+`await connection()` to opt a page in), and CDN-cached HTML would freeze one nonce for everyone. The Next.js docs also note that nonce CSP
+is incompatible with Partial Prerendering (PPR) and disables ISR / CDN caching for those pages. The
 Next.js docs derive the nonce as `Buffer.from(crypto.randomUUID()).toString('base64')`, which is
 fine because it runs per request; for static output the docs describe an experimental SRI-hash
 alternative. Copy the exact code from the current guide (Sources). **Hono / Cloudflare Workers:**
@@ -243,7 +244,7 @@ done
 G "'nonce-[A-Za-z0-9+/=_-]{8,}'|nonce[\"']?\s*[:=]\s*[\"'][A-Za-z0-9+/=_-]{8,}[\"']|nonce=[\"'][A-Za-z0-9+/=_-]{8,}[\"']" .
 G -i "^(export )?(const|let|var) +[A-Za-z_]*nonce[A-Za-z_]* *=.*(randomUUID|randomBytes|getRandomValues|Math\.random|Date\.now)" .
 # 2 Trusted Types: pass-through (identity) policy, and enforcement absent everywhere
-G "create(HTML|Script|ScriptURL) *: *(\(? *([A-Za-z_]+) *\)? *=> *\3 *[,}]|function *\( *([A-Za-z_]+) *\) *\{ *return +\4)|create(HTML|Script|ScriptURL) *\( *([A-Za-z_]+) *\) *\{ *return +\6 *;? *\}" .
+G "create(HTML|Script|ScriptURL) *: *(\(? *([A-Za-z_]+)( *: *[][A-Za-z<>| ]+)? *\)? *=> *\3 *[,}]|function *\( *([A-Za-z_]+) *\) *\{ *return +\5)|create(HTML|Script|ScriptURL) *\( *([A-Za-z_]+) *\) *\{ *return +\7 *;? *\}" .
 G -q "require-trusted-types-for" . || echo "ADVISORY: require-trusted-types-for 'script' not set anywhere"
 # 3 Fetch Metadata: header read without Vary, or never read
 G -il "sec-fetch-site" . | while IFS= read -r f; do grep -qiE "vary.*sec-fetch" "$f" || echo "$f: Sec-Fetch-Site used, no Vary"; done

@@ -233,7 +233,7 @@ app.use('/api/*', auth);                       // registered last: protects noth
 ```
 
 ```ts
-// src/index.ts — GOOD: policy first, routes second, origins explicit
+// src/index.ts — GOOD for a JSON-only API Worker: policy first, routes second, origins explicit
 const app = new Hono<{ Bindings: Env; Variables: { user: User } }>();
 
 app.use('*', secureHeaders({                   // CSP is not set by default — set it

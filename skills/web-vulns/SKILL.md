@@ -177,6 +177,165 @@ values starting with a single `/` (reject `//host` and absolute URLs), or match 
 list. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
 `secaudit:react-native-security`, and `secaudit:expo-security` (deep links).
 
+## Next.js Config: Image Optimizer, JSON-LD, Rewrites, Taint
+
+Four Next.js-specific holes that come from `next.config` or one framework idiom rather than from
+application logic. Each is the section 1 or 2 root cause (untrusted input reaching a sink) hidden
+behind configuration. Key names below are checked against the Next.js 16 docs; a project on an
+older major may spell them differently.
+
+### Image optimizer: `images` in `next.config`
+
+**What to look for:** `images.dangerouslyAllowLocalIP: true`; `images.dangerouslyAllowSVG: true`
+without a `contentSecurityPolicy` (or with `contentDispositionType: 'inline'`); `remotePatterns`
+with `hostname: '**'`, or a wildcard (`**.example.com`) over a domain where outsiders can create
+subdomains or host content; the deprecated `images.domains`.
+
+**Why it's exploitable:** `/_next/image` fetches the `src` URL server-side for anyone who can reach
+it, so every allowed pattern is an SSRF surface (section 2). `dangerouslyAllowLocalIP` removes the
+private-address guard; the docs warn it "could allow malicious users to access content on your
+internal network". A wildcard or attacker-influenced host (user-content subdomain, public bucket,
+dangling CNAME) lets the attacker choose what your server requests, which is the shape of
+`CVE-2026-94483` (version floors: `secaudit:framework-versions`, "The shared image pipeline").
+SVG can carry script, so serving user SVG from your origin is stored XSS unless it is forced to
+download and sandboxed. An omitted `protocol`, `port`, `pathname` or `search` in a pattern implies
+`**`, so `{ hostname: 'cdn.example.com' }` allows every path and query on that host.
+
+**Fix:** keep `dangerouslyAllowLocalIP` unset (false); list exact hostnames with `protocol` and a
+narrow `pathname`; never wildcard a domain that hosts user content; leave `dangerouslyAllowSVG` off
+and use the `unoptimized` prop for known first-party SVGs. If SVG optimization is truly needed, set
+all three keys. `contentDispositionType` defaults to `attachment` (since 15.0.0), so `'inline'`
+is the regression to look for.
+
+```ts
+// BAD — any host, any path; private IPs reachable; user SVG served inline with no CSP
+images: {
+  dangerouslyAllowLocalIP: true,
+  dangerouslyAllowSVG: true,
+  contentDispositionType: "inline",
+  remotePatterns: [{ protocol: "https", hostname: "**" }],
+}
+
+// GOOD — one host, one path prefix; defaults for the rest
+images: {
+  remotePatterns: [{ protocol: "https", hostname: "cdn.example.com", pathname: "/img/**" }],
+}
+
+// GOOD (only if user SVG must be optimized) — forced download plus a script-blocking sandbox CSP
+images: {
+  dangerouslyAllowSVG: true,
+  contentDispositionType: "attachment",
+  contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+}
+```
+
+```bash
+# risky image settings, wildcard hosts, and the deprecated domains list
+grep -nE "dangerouslyAllowLocalIP: *true|dangerouslyAllowSVG: *true|contentDispositionType: *['\"]inline|hostname: *['\"]\*+['\"]|hostname: *['\"]\*\*?\.|[^a-zA-Z]domains: *\[" next.config.*
+# files that allow SVG but never set contentSecurityPolicy
+f=$(grep -l "dangerouslyAllowSVG: *true" next.config.*); [ -n "$f" ] && grep -L contentSecurityPolicy $f
+```
+
+### JSON-LD: `JSON.stringify` does not make a `<script>` safe
+
+**What to look for:** `<script type="application/ld+json" dangerouslySetInnerHTML={{ __html:
+JSON.stringify(data) }} />` where `data` includes a title, name, description or any other
+user-controlled field.
+
+**Why it's exploitable:** inside a `<script>` element the HTML parser ends the element at the first
+`</script>`, whatever the JSON quoting around it. A product name of `</script><script>alert(1)</script>`
+breaks out and runs. The Next.js JSON-LD guide says so itself: `JSON.stringify` "does not sanitize
+malicious strings used in XSS injection".
+
+**Fix:** escape `<` in the serialized string (`<` is still valid JSON, so crawlers read the same
+value), as the guide's own snippet does, or serialize with a library built for it
+(`serialize-javascript`). Put it in one helper so no page forgets.
+
+```tsx
+// BAD — a name containing </script> ends the tag early
+<script type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+// GOOD
+<script type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+```
+
+```bash
+# files that emit JSON-LD without any < escape (a file with two scripts needs a manual look)
+grep -rl --null "ld+json" --include='*.tsx' --include='*.jsx' --include='*.ts' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -L 'u003c'
+```
+
+### Rewrites: a destination built from the request is an open proxy
+
+**What to look for:** `NextResponse.rewrite(new URL(x))` in middleware / `proxy.ts` where `x` comes
+from `searchParams`, a header, a cookie or the path; a `rewrites()` entry whose external
+`destination` interpolates a wildcard parameter (`https://api.example.com/:path*`), a `has` capture,
+or a template literal built from request-time data.
+
+**Why it's exploitable:** the docs call a rewrite "a URL proxy": the server fetches the destination
+and returns it under your origin. A request-chosen destination is SSRF (section 2) plus an open
+proxy that serves attacker-chosen content from your domain, and with a wildcard path the caller can
+also reach internal-only routes on the same backend. The backend-for-frontend forms (`:path*`,
+service-token injection, header forwarding) are in `secaudit:api-surface` §5; host-to-tenant rewrites
+are in `secaudit:multi-tenant-isolation` §2.
+
+**Fix:** map a validated key to a fixed origin and build only the path; use exact `source` entries or
+constrained parameters (`:id(\\d{1,})`) in `rewrites()`; refuse anything not in the map.
+
+```ts
+// BAD — the caller picks the upstream
+const target = req.nextUrl.searchParams.get("u")!;
+return NextResponse.rewrite(new URL(target));
+
+// GOOD — the caller picks a key; the origin is yours
+const ORIGINS: Record<string, string> = { a: "https://a.internal" };
+const origin = ORIGINS[req.nextUrl.searchParams.get("t") ?? ""];
+return origin
+  ? NextResponse.rewrite(new URL(req.nextUrl.pathname, origin))
+  : new NextResponse(null, { status: 404 });
+```
+
+```bash
+# external destinations with a host parameter or wildcard path, and template-built destinations
+grep -nE "destination: *[\`'\"]https?://([^/'\"\`]*:[A-Za-z_]|[^'\"\`]*:[A-Za-z_]+[*+])|destination: *\`\\\$\{" next.config.*
+# NextResponse.rewrite fed a request-derived URL
+grep -rl --null "NextResponse\.rewrite" --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next . | xargs -0 -r grep -nE "new URL\((target|url|dest|u|[a-z]+\.nextUrl\.searchParams|[a-z]+\.headers\.get|[a-z]+\.cookies)|NextResponse\.rewrite\(new URL\([a-zA-Z_]+\)\)"
+```
+
+### Taint API: an optional net, checked at runtime, not at build
+
+`experimental: { taint: true }` enables React's `experimental_taintObjectReference` and
+`experimental_taintUniqueValue` (imported from `react`). A tainted object or value that is passed
+into a Client Component makes React throw while rendering, which is the only moment it is checked:
+`next build` and the type checker do not flag it, so a path no test renders stays unchecked. The
+docs list the limits. Tainting follows the object **reference**, so a copy or spread
+(`{ ...user }`) is untainted; a derived value is untainted; and the built-in `process.env` taint
+covers the object only, not `process.env.MY_VAR` passed as a string. Enabling it also switches the
+app directory to React's experimental channel. The docs say not to rely on it as the only
+mechanism: the primary fix is a DTO, which selects the safe fields before data reaches a Client
+Component (`secaudit:secrets` covers `NEXT_PUBLIC_` exposure; `secaudit:api-surface` §8 covers
+whole-row responses).
+
+```tsx
+// BAD — the whole row, password hash and tokens included, becomes client props
+const user = await db.user.findFirst({ where: { id } });
+return <ProfileCard user={user} />;
+
+// GOOD — a DTO, plus taint as a backstop for the next person who forgets
+import { experimental_taintObjectReference } from "react";
+const user = await db.user.findFirst({ where: { id } });
+experimental_taintObjectReference("Do not pass the full user row to the client", user);
+return <ProfileCard name={user.name} avatarUrl={user.avatarUrl} />;
+```
+
+```bash
+# whole user/session/account/token objects passed as props (read each hit; is the component a Client Component?)
+grep -rnE "<[A-Z][A-Za-z]* [^>]*\b(user|session|account|token|profile)=\{[A-Za-z_.]+\}" --include='*.tsx' --include='*.jsx' --exclude-dir=node_modules --exclude-dir=.next .
+# is taint enabled, and where is it applied
+grep -rnE "taint: *true|experimental_taint" --exclude-dir=node_modules --exclude-dir=.next .
+```
+
 ## Sources
 
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html -- XSS prevention (context-correct escaping)
@@ -188,3 +347,10 @@ list. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
 - https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/ -- OWASP API #1 (BOLA)
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP -- Content-Security-Policy as defense-in-depth
 - https://portswigger.net/web-security -- worked examples (XSS, SSRF, file upload, access control)
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/images -- `images` config: remotePatterns, dangerouslyAllowLocalIP, dangerouslyAllowSVG, contentDispositionType, contentSecurityPolicy
+- https://nextjs.org/docs/app/api-reference/components/image -- `next/image`: remotePatterns wildcard rules, omitted fields imply `**`, deprecated `domains`, `unoptimized`, SVG guidance
+- https://nextjs.org/docs/app/guides/json-ld -- JSON-LD: `JSON.stringify` does not sanitize; replace `<` with `\u003c`
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites -- rewrites act as a URL proxy; external destinations; matched params in the destination
+- https://nextjs.org/docs/app/api-reference/functions/next-response -- `NextResponse.rewrite()` proxies the given URL
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/taint -- `experimental.taint`, taint APIs, caveats (reference-only, runtime throw)
+- https://nextjs.org/docs/app/guides/data-security -- Tainting is an additional layer; filter in the DAL first

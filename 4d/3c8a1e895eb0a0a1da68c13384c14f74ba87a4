@@ -1,0 +1,25 @@
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_b38df0e645cb9d 3
+.claude-plugin/marketplace.json
+  s_46f42f15a4ddb4::t_b38df0e645cb9d 12
+ROADMAP.md
+  s_46f42f15a4ddb4::t_b38df0e645cb9d 13,43
+.claude-plugin/plugin.json
+  s_46f42f15a4ddb4::t_b38df0e645cb9d 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4d3c8a1e895eb0a0a1da68c13384c14f74ba87a4",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

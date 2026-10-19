@@ -136,7 +136,7 @@ of multipart overhead (the docs' rule of thumb). Large user files belong in a pr
 experimental: { serverActions: { bodySizeLimit: "100mb" } }
 
 // GOOD — default (1 MB) everywhere; one authenticated import action sized to its 2 MB file cap
-experimental: { serverActions: { bodySizeLimit: "2176kb" } }
+experimental: { serverActions: { bodySizeLimit: "2176kb" } }   // the grep below still lists it: a raised limit is a lead to justify, not a finding
 ```
 
 ```tsx

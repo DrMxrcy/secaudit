@@ -3,7 +3,7 @@ id: 67
 title: Cover Next.js 16 caching, Server Action key and image config risks
 type: feature
 version: 3.12.0
-status: planned
+status: done
 created: 2026-10-17
 ---
 
@@ -30,5 +30,7 @@ created: 2026-10-17
 - **Fails if:** a documented key name is wrong for Next 16.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Server Actions key/closures/bodySizeLimit and cache-key leakage checks -> target: skills/auth/SKILL.md, skills/better-auth-security/SKILL.md, skills/multi-tenant-isolation/SKILL.md
-- [ ] Step 2: images config, JSON-LD, rewrites SSRF, taint note; sources; freshness green -> target: skills/web-vulns/SKILL.md, SOURCES.md
+- [x] Step 1: Server Actions key/closures/bodySizeLimit and cache-key leakage checks -> target: skills/auth/SKILL.md, skills/better-auth-security/SKILL.md, skills/multi-tenant-isolation/SKILL.md
+  > evidence: check-freshness.py: All current; Next 16 keys verified vs nextjs.org docs; 11 heuristics verbatim-tested bad/good; built in worktree (sonnet); combined review PARTIAL -> fixed (rewrite //host + __proto__ guard, wrong images source, bodySizeLimit/cache-hoist/JSON-LD/rewrite greps, inference labels); parent spot-checked rewrite guard (2026-10-19)
+- [x] Step 2: images config, JSON-LD, rewrites SSRF, taint note; sources; freshness green -> target: skills/web-vulns/SKILL.md, SOURCES.md
+  > evidence: check-freshness.py: All current; Next 16 keys verified vs nextjs.org docs; 11 heuristics verbatim-tested bad/good; built in worktree (sonnet); combined review PARTIAL -> fixed (rewrite //host + __proto__ guard, wrong images source, bodySizeLimit/cache-hoist/JSON-LD/rewrite greps, inference labels); parent spot-checked rewrite guard (2026-10-19)

@@ -12,7 +12,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - Audits now review the AI-agent settings, hooks and MCP servers a project ships.
 - (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
 - (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.
-- (pending) New checks for cached per-user data, Server Actions and image settings in modern React apps.
+- New checks for cached per-user data, Server Actions and image settings in modern React apps.
 - Deeper FiveM server checks for server settings, game events and cross-resource calls.
 
 ### 🐛 Fixed

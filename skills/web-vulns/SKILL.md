@@ -1,6 +1,6 @@
 ---
 name: web-vulns
-description: Audits classic web application vulnerabilities that AI assistants generate by omitting the validation or authorization guard - XSS (stored, reflected, DOM-based), SSRF (user-supplied URLs, webhooks, image/preview fetchers), file upload and path traversal, and IDOR / broken object-level authorization. Use when handling untrusted input that is rendered as HTML, used to build an outbound request, used as a file path or upload, or used to look up an object by ID. Covers OWASP A01 and A05 (2025 edition; SSRF is folded into A01 as of 2025).
+description: Audits classic web application vulnerabilities that AI assistants generate by omitting the validation or authorization guard - XSS (stored, reflected, DOM-based, including navigation sinks like location.href and router.push, postMessage origin checks, and Sanitizer API / mutation XSS), SSRF (user-supplied URLs, webhooks, image/preview fetchers), file upload and path traversal, and IDOR / broken object-level authorization. Use when handling untrusted input that is rendered as HTML, used to build an outbound request, used as a file path or upload, or used to look up an object by ID. Covers OWASP A01 and A05 (2025 edition; SSRF is folded into A01 as of 2025).
 license: MIT
 ---
 
@@ -19,8 +19,10 @@ and omitting the guard.
 - Accepting file uploads or using request input as a file path (upload / path traversal).
 - Looking up, updating, or deleting an object by an ID from the request (IDOR).
 
-Review grep heuristics: raw-HTML render sinks, `innerHTML`, server-side `fetch(`/`axios(` on user
-input, `path.join(` with request data, and object lookups `where: { id }` with no user/tenant scope.
+Review grep heuristics: raw-HTML render sinks, `innerHTML`, `location.href =` / `router.push(` /
+`window.open(` with a non-literal argument, `addEventListener("message"` without an `event.origin`
+check, server-side `fetch(`/`axios(` on user input, `path.join(` with request data, and object
+lookups `where: { id }` with no user/tenant scope. The DOM-sink greps are in §1.1-§1.3.
 
 ## 1. XSS (Cross-Site Scripting)
 
@@ -60,6 +62,175 @@ export function safeUrl(raw: string): string {
     return ["http:", "https:", "mailto:"].includes(u.protocol) ? u.href : "#";
   } catch { return "#"; }
 }
+```
+
+`safeUrl` fits a link that may point off-site (a profile "website" field). For a *navigation* target
+that must stay on your site, use the same-origin check in §1.1. The DOM-navigation, `postMessage`
+and Sanitizer API sinks below are the client-side half of XSS; CSP and Trusted Types
+(`secaudit:deployment`) are the backstop when one of them is missed.
+
+### 1.1 Navigation sinks: `javascript:` XSS and open redirect
+
+**What to look for:** `location.href =` / `location =`, `location.assign()` / `location.replace()`,
+`window.open()`, `router.push()` / `router.replace()` / `navigate()`, a server-side `redirect()`,
+`<a href={…}>`, `<Link href={…}>`, `<iframe src={…}>` and `<form action={…}>`, where the value comes
+from the query string (`next`, `returnTo`, `redirect`, `callbackUrl`), `location.hash`,
+`document.referrer`, a `postMessage` payload, or a stored field (profile website, "view original" link).
+
+**Why it's exploitable:** a `javascript:` URL assigned to `location.href` or placed in an `<a href>`
+runs in your origin when navigated or clicked: XSS, with the viewer's session. A user-controlled
+`https://evil.example` is an open redirect, usable for phishing under your domain's trust and for
+stealing OAuth codes or tokens carried on the next hop. Do not count on the framework to strip
+`javascript:`. String checks fail: `startsWith('/')` passes `//evil.example` and `/\evil.example`
+(both resolve to another host), and `startsWith('https://app.example.com')` passes
+`https://app.example.com.evil.example`.
+
+**Triage rule (read this before reporting):** SAST tools flag every navigation call whose argument
+contains a variable and rate it High. A **server-built same-origin path with typed, enum or numeric
+segments is not exploitable**: ``router.push(`/orders/${order.id}`)``,
+`` `/projects/${project.slug}/settings` `` where the id or slug comes from a typed, server-loaded
+record, or a literal `'/dashboard'`. The leading `/` plus a literal first segment fixes scheme and
+host; nothing in a later segment can change them. Mark those as false positives. It **is
+exploitable** when the user controls any part of the scheme, host or the whole URL:
+`location.href = params.get('next')`, `router.push(query.returnTo)`, `window.open(data.url)`,
+`` `${user.baseUrl}/home` ``, `<a href={user.website}>`, and the easy-to-miss `` `/${userPath}` ``
+(the user supplies the second `/`, giving `//evil.example`).
+
+**Fix:** map a key to a route you own (`{ billing: '/settings/billing' }[key]`), or parse and
+compare against your own origin, then use the *parsed* absolute URL. Do not rebuild it from
+`u.pathname`: `/.//evil.example` has the right origin yet a pathname of `//evil.example`, which a
+later `location.href = pathname` would follow to another host. For links that may leave the site,
+allow only `http:` / `https:` / `mailto:` (the `safeUrl` above) and open new windows with
+`rel="noopener noreferrer"` / the `noopener` feature. The server-side form (a `redirect` parameter
+followed by a 302) is the "Open Redirects" section below. Google's origin-validation guide adds the
+`Origin` API (`Origin.from(x).isSameOrigin(...)`) for browsers that have it; `new URL()` plus an
+`origin` comparison works everywhere.
+
+```ts
+// BAD — every one of these takes the destination from the user
+const next = new URLSearchParams(location.search).get("next");
+location.href = next!;                                  // javascript:alert(1) -> XSS; https://evil.example -> redirect
+router.push(searchParams.get("returnTo")!);
+if (next!.startsWith("/")) location.href = next!;       // //evil.example and /\evil.example pass
+
+// GOOD — same-origin only, using the parsed URL; anything else falls back
+export function safeInternalUrl(raw: string | null, fallback = "/"): string {
+  if (!raw) return fallback;
+  try {
+    const u = new URL(raw, location.origin);            // javascript: -> origin "null"; //host -> that host
+    return u.origin === location.origin ? u.href : fallback;
+  } catch { return fallback; }
+}
+location.href = safeInternalUrl(next);
+```
+
+### 1.2 `postMessage`: check the sender, name the receiver
+
+**What to look for:** `addEventListener("message", …)` (or `window.onmessage =`) whose handler does
+not compare `event.origin` to an exact trusted value before acting on `event.data`; origin checks
+written with `includes()`, `startsWith()`, `endsWith()`, `indexOf()` or a regex; accepting the
+string `"null"`; `postMessage(data, "*")` carrying a token, user data or anything else sensitive.
+
+**Why it's exploitable:** any window with a reference to yours (an opener, a parent frame, an iframe
+you embed) can post a message, so `event.data` is attacker input. With no origin check, it flows
+into `innerHTML`, `eval`, `location` or an API call (DOM XSS, forced actions). Substring and prefix
+checks are bypassed by `https://example.com.evil.example` or `https://evil-example.com`, and
+sandboxed iframes and `data:` pages all send the origin `"null"`, which two unrelated pages share.
+On the sending side the target `"*"` delivers the message to whichever page now occupies that
+window, so a navigated or malicious frame receives the token.
+
+**Fix:** compare `event.origin` with `===` against a fixed list of full origins (scheme, host,
+port), then validate the shape of `event.data` before use. Pass the exact receiver origin as the
+second argument of every send that carries anything non-public. For sandboxed senders (`event.origin`
+is `"null"`) pin `event.source` to the expected frame or use a `MessageChannel` port instead of the
+origin string.
+
+```ts
+// BAD
+window.addEventListener("message", (e) => {
+  if (!e.origin.includes("example.com")) return;       // example.com.evil.example, evil-example.com
+  el.innerHTML = e.data.html;
+});
+parent.postMessage({ token: session.token }, "*");     // whoever is in `parent` now gets the token
+
+// GOOD
+const TRUSTED = new Set(["https://app.example.com"]);
+window.addEventListener("message", (e) => {
+  if (!TRUSTED.has(e.origin)) return;                  // exact match; "null" is not in the set
+  if (typeof e.data?.action !== "string") return;      // validate before use
+  handle(e.data);
+});
+parent.postMessage({ action: "ready" }, "https://app.example.com");
+```
+
+### 1.3 Sanitizer API and mutation XSS
+
+**What to look for:** `setHTMLUnsafe()` and `Document.parseHTMLUnsafe()` fed by untrusted input;
+sanitized output that is serialized back to a string and re-parsed with `innerHTML`; a string
+edited (`.replace`, concatenation) between the sanitizer and the sink.
+
+**Why it's exploitable:** `Element.setHTML()` and `Document.parseHTML()` always strip XSS-unsafe
+content. The `*Unsafe` variants are injection sinks: with no `sanitizer` option MDN states that no
+sanitizer is used, and a permissive custom config can allow script-bearing elements. Sanitized DOM
+that is serialized and re-parsed can come out different the second time (mutation XSS, "mXSS"):
+the parser round-trip moves content between HTML, SVG and MathML contexts, so a payload that was
+inert in the first parse becomes active in the second. The same applies to editing the sanitized
+string before assignment.
+
+**Fix:** use `el.setHTML(untrusted)` (add `{ sanitizer: { elements: […], attributes: […] } }` to
+tighten it). To inspect first, `Document.parseHTML()` and move the nodes
+(`target.replaceChildren(...doc.body.childNodes)`), never `innerHTML = doc.body.innerHTML`. Where
+the API is missing, feature-detect with `"setHTML" in Element.prototype` and fall back to DOMPurify,
+sanitizing last, directly before the sink. Treat `setHTMLUnsafe` / `parseHTMLUnsafe` as sinks
+exactly like `innerHTML`, to be enforced with Trusted Types (`secaudit:deployment` §2). Library
+sanitizer configuration is `secaudit:rich-text-security`.
+
+```ts
+// BAD
+el.setHTMLUnsafe(userHtml);                              // no sanitizer unless you pass one
+box.innerHTML = DOMPurify.sanitize(html).replace(/&nbsp;/g, " ");   // edited after sanitizing
+const doc = Document.parseHTML(userHtml);
+target.innerHTML = doc.body.innerHTML;                   // serialize + reparse = mXSS surface
+
+// GOOD
+el.setHTML(userHtml);
+target.replaceChildren(...Document.parseHTML(userHtml).body.childNodes);
+```
+
+### Heuristics (grep)
+
+First-pass leads, not verdicts: apply the §1.1 triage rule to each navigation hit. Tested on a
+scratch fixture with vulnerable and clean files: the vulnerable set prints every check, the clean
+set prints nothing. Lines containing `safe…(`, `allowlist`, `validate`, `sanitize` or
+`isSameOrigin` are filtered from the navigation hits, so name your own guard helpers that way.
+
+```bash
+G() { grep -rnE --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist \
+  --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --include='*.mjs' \
+  --include='*.vue' --include='*.svelte' --include='*.html' "$@"; }
+OKNAV='safe[A-Za-z]*\(|allowlist|validate|sanitize|isSameOrigin'
+
+# 7 navigation sinks fed by a non-literal (a literal "/word" prefix is skipped: see the triage rule)
+G "(\blocation(\.href)?\s*=\s*|(router|navigate|history)\.(push|replace)\(\s*|location\.(assign|replace)\(\s*|window\.open\(\s*|\bredirect\(\s*)(\`/?\\\$\{|[A-Za-z_\$(])" . | grep -viE "$OKNAV"
+G "(href|action|formAction)=\{\s*(\`/?\\\$\{|[A-Za-z_\$])|<iframe[^>]*src=\{|:href=\"[A-Za-z_]" . | grep -viE "$OKNAV"
+# where the URL comes from: query-string params and fields that name a destination
+G "(get|getAll)\(['\"](next|returnTo|return_to|returnUrl|redirect|redirectTo|redirect_uri|callbackUrl|continue|dest|url|target)['\"]\)|query\.(next|returnTo|redirect|redirectTo|callbackUrl|url)\b" .
+
+# 6 postMessage: a listener with no exact origin comparison in its first 8 lines
+G -l "addEventListener\(\s*['\"]message['\"]|\.onmessage\s*=" . | while IFS= read -r f; do
+  awk -v f="$f" '
+    /addEventListener\([ ]*["\x27]message["\x27]|\.onmessage[ ]*=/ { n=NR; hit[n]=1; seen[n]=0 }
+    { for (s in hit) if (NR>=s && NR<=s+8 && $0 ~ /origin[ ]*[!=]==|isSameOrigin|(TRUSTED|ALLOWED|allowed|trusted)[A-Za-z_]*\.(has|includes)\(/) seen[s]=1 }
+    END { for (s in hit) if (!seen[s]) print f ":" s ": message listener with no exact origin check" }' "$f"
+done
+# weak origin checks (substring, prefix, suffix, regex) and wildcard target origins
+G "origin\.(includes|startsWith|endsWith|indexOf|match|search)\(|\.test\(\s*[A-Za-z_.]*origin\b" .
+G "postMessage\([^;]*,\s*['\"]\*['\"]" .
+
+# 8 Sanitizer API / mXSS: *Unsafe sinks, serialize-then-reparse, string edits after the sanitizer
+G "setHTMLUnsafe|parseHTMLUnsafe" .
+G "(innerHTML|outerHTML|setHTMLUnsafe)(\s*=|\()\s*[^=;]*\.(innerHTML|outerHTML)\b|serializeToString" .
+G "(sanitize|purify|clean)[A-Za-z]*\([^)]*\)\)?\s*(\.(replace|concat|slice|trim|split)\(|\+)" .
 ```
 
 ## 2. SSRF (Server-Side Request Forgery)
@@ -174,7 +345,8 @@ webhooks, search indexes, impersonation) is covered by `secaudit:multi-tenant-is
 A `redirect`/`next`/`returnTo` parameter taken from the request and followed without validation lets an
 attacker send users to a phishing page under your domain's trust. Allowlist internal paths: accept only
 values starting with a single `/` (reject `//host` and absolute URLs), or match against a known-safe
-list. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
+list. The client-side form (`location.href = next`, `router.push(returnTo)`, which also carries
+`javascript:` XSS) and its triage rule are §1.1. This also appears in `secaudit:database` (Supabase GoTrue `redirectTo`),
 `secaudit:react-native-security`, and `secaudit:expo-security` (deep links).
 
 ## Next.js Config: Image Optimizer, JSON-LD, Rewrites, Taint
@@ -356,3 +528,10 @@ grep -rnE "taint: *true|experimental_taint" --exclude-dir=node_modules --exclude
 - https://nextjs.org/docs/app/api-reference/functions/next-response -- `NextResponse.rewrite()` proxies the given URL
 - https://nextjs.org/docs/app/api-reference/config/next-config-js/taint -- `experimental.taint`, taint APIs, caveats (reference-only, runtime throw)
 - https://nextjs.org/docs/app/guides/data-security -- Tainting is an additional layer; filter in the DAL first
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/security/guide.md -- dangerous DOM sinks, secure postMessage (exact origin, explicit target origin)
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/validate-origins/guide.md -- exact origin comparison; substring/prefix spoofing; opaque "null" origins
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/sanitize-untrusted-html/guide.md -- setHTML vs setHTMLUnsafe; move parsed nodes instead of reserializing (mXSS)
+- https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage -- postMessage security: check origin, specify targetOrigin
+- https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTMLUnsafe -- setHTMLUnsafe is an injection sink; no sanitizer unless passed
+- https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTML -- setHTML always removes XSS-unsafe content
+- https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API -- Sanitizer API overview

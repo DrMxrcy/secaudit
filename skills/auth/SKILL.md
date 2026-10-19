@@ -1,6 +1,6 @@
 ---
 name: auth
-description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints, session management, the auth-vs-authorization distinction, Clerk specifics (where auth() and clerkMiddleware checks belong, unsafeMetadata as a client-writable role store, Svix webhook verification, Clerk with Convex), and Auth.js/NextAuth specifics (the July 2026 advisory set and its fixed versions, provider-unbound state/nonce/PKCE check cookies, the !!auth fail-open, allowDangerousEmailAccountLinking, trustHost, AUTH_SECRET, JWT-claim roles and callbacks leaking provider tokens, the Credentials provider, adapter Account tables), and multi-host apps (host-only __Host- cookies per host, single-use cross-host session handoff tokens bound to user, target host and browser, verified-host return-URL allowlists, logout across hosts, custom-domain TXT verification and dangling-domain takeover, hashed session tokens). Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, when one app serves several hosts or customer custom domains, when the project uses Clerk (@clerk/nextjs, clerkMiddleware, ClerkProvider) or Auth.js/NextAuth (next-auth, @auth/core, NextAuth(, AUTH_SECRET), or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see secaudit:rate-limiting.
+description: Audits authentication and authorization — JWT verification, why Next.js middleware is not a security boundary, Server Actions as public endpoints (including inline-action closures that ship captured values to the browser, NEXT_SERVER_ACTIONS_ENCRYPTION_KEY across replicas, bodySizeLimit), session management, the auth-vs-authorization distinction, Clerk specifics (where auth() and clerkMiddleware checks belong, unsafeMetadata as a client-writable role store, Svix webhook verification, Clerk with Convex), and Auth.js/NextAuth specifics (the July 2026 advisory set and its fixed versions, provider-unbound state/nonce/PKCE check cookies, the !!auth fail-open, allowDangerousEmailAccountLinking, trustHost, AUTH_SECRET, JWT-claim roles and callbacks leaking provider tokens, the Credentials provider, adapter Account tables), and multi-host apps (host-only __Host- cookies per host, single-use cross-host session handoff tokens bound to user, target host and browser, verified-host return-URL allowlists, logout across hosts, custom-domain TXT verification and dangling-domain takeover, hashed session tokens). Use whenever writing or reviewing login, sessions, JWTs, protected routes, Server Actions, or access-control checks, when one app serves several hosts or customer custom domains, when the project uses Clerk (@clerk/nextjs, clerkMiddleware, ClerkProvider) or Auth.js/NextAuth (next-auth, @auth/core, NextAuth(, AUTH_SECRET), or when auditing whether the app can be accessed without proper authorization. For request throttling on these endpoints, see secaudit:rate-limiting.
 license: MIT
 ---
 
@@ -91,6 +91,84 @@ The framework parses the action request before any of that runs, so a parsing bu
 fully guarded action — `GHSA-p3m5-59mp-jv5r` (2026-10-14, DoS by CPU exhaustion in App Router
 Server Action parsing). The Next.js version is part of the Server Action check; see
 `secaudit:framework-versions`.
+
+### Server Action Config: Closures, the Encryption Key, and the Body-Size Limit
+
+Three Next.js-specific settings decide what a Server Action leaks and what it costs to call. (Cache
+keys for per-user and per-tenant data in `'use cache'` / `unstable_cache` have one home:
+`secaudit:multi-tenant-isolation` §3, with the session-hoisting variant in `secaudit:better-auth-security`
+§12. Cross-origin invocation, `allowedOrigins`, is `secaudit:proxy-trust`.)
+
+**1. An inline action's closed-over values travel through the browser.** A `'use server'` function
+defined inside a component can read the component's variables. Per the Next.js data-security guide,
+"the captured variables are sent to the client and back to the server when the action is invoked",
+encrypted, and the guide itself says not to rely on encryption alone. Two failures follow: a secret
+captured by closure (an API key read from `process.env`, a token) is shipped to every visitor's
+browser as ciphertext, and an authorization decision captured by closure (`isAdmin`, `userId`) is
+a render-time snapshot the client holds and can send back later, not a check made at call time.
+Fix: read secrets inside the action from server-only modules, and re-derive identity and permission
+inside the action from the session (the three steps above). Closing over a harmless snapshot, such as
+a version number to compare, is the intended use.
+
+**2. `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` must be one stable, secret value across instances.** By
+default each build generates its own key. The self-hosting guide: with multiple server instances "all
+instances must use the same encryption key", otherwise an action encrypted by one instance cannot be
+decrypted by another and callers see intermittent "Failed to find Server Action" errors. The fix
+(a base64 value of 16, 24 or 32 bytes, e.g. `openssl rand -base64 32`, set when `next build` runs and
+embedded in the build output) creates the opposite risk: a key that now survives across builds
+decrypts the closure data of every deploy, so a leaked key is a lasting exposure. Keep it in the
+secret store and inject it as a build secret (see `secaudit:docker-security` for `ARG`/`ENV` layer
+leakage), never in a tracked `.env`, and never with a `NEXT_PUBLIC_` prefix, which inlines the value
+into the client bundle. Rotate it on a schedule you can name.
+
+**3. `experimental.serverActions.bodySizeLimit` is a per-request cost cap.** The default is 1 MB. A
+value raised across the board (`'100mb'`) lets any caller, logged in or not, make your server buffer
+and parse that much per request, which multiplies the cost of any parsing bug like the one above. Keep the default,
+and where one authenticated upload action needs more, size it to the file cap plus about 10–20 KB
+of multipart overhead (the docs' rule of thumb). Large user files belong in a presigned upload
+(`secaudit:object-storage-security`), not in a Server Action body. A size cap is not the fix for
+`GHSA-p3m5-59mp-jv5r`: that is the version floor in `secaudit:framework-versions`.
+
+```ts
+// BAD — next.config.ts: every action, including unauthenticated ones, accepts 100 MB bodies
+experimental: { serverActions: { bodySizeLimit: "100mb" } }
+
+// GOOD — default (1 MB) everywhere; one authenticated import action sized to its 2 MB file cap
+experimental: { serverActions: { bodySizeLimit: "2176kb" } }
+```
+
+```tsx
+// BAD — apiKey and isAdmin are captured, serialized to the browser, and replayable
+export default async function Page() {
+  const apiKey = process.env.PARTNER_KEY!;
+  const isAdmin = await checkAdmin();
+  async function sync() {
+    "use server";
+    if (isAdmin) await partner(apiKey);
+  }
+  return <form action={sync} />;
+}
+
+// GOOD — a module-level action: secret read server-side, identity re-derived at call time
+// app/actions.ts
+"use server";
+export async function sync() {
+  const session = await auth();
+  if (!session?.user || !(await canSync(session.user.id))) throw new Error("Forbidden");
+  await partner(process.env.PARTNER_KEY!);
+}
+```
+
+```bash
+# Inline actions (an indented directive): read each one for outer variables it captures
+grep -rnE "^[[:space:]]+['\"]use server['\"]" --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --exclude-dir=node_modules --exclude-dir=.next .
+# Encryption key: NEXT_PUBLIC_ copies, and literal values in tracked files (an env reference like ${VAR} does not match)
+grep -rnE "NEXT_PUBLIC_[A-Z_]*SERVER_ACTIONS_ENCRYPTION|SERVER_ACTIONS_ENCRYPTION_KEY[\"']?[=: ]+[\"']?[A-Za-z0-9+/]{16,}" --exclude-dir=node_modules --exclude-dir=.next .
+# Multi-instance deploy files that never mention the key (check the CI build env too)
+grep -rl --null -E "replicas: *([2-9]|[1-9][0-9])|instances: *[2-9]|DesiredCount|desired_count" --include='*.yml' --include='*.yaml' --include='*.tf' --exclude-dir=node_modules . | xargs -0 -r grep -L SERVER_ACTIONS_ENCRYPTION_KEY
+# bodySizeLimit of 2 MB or more: each hit needs an authenticated action and a named file cap
+grep -rniE "bodySizeLimit: *['\"]?([2-9]|[1-9][0-9]+)(\.[0-9]+)? *(mb|gb)|bodySizeLimit: *['\"]?[0-9]+ *gb|bodySizeLimit: *[0-9]{8,}" --include='next.config.*' --exclude-dir=node_modules .
+```
 
 ## Authentication vs Authorization
 
@@ -1067,6 +1145,9 @@ through a client-side key. `secaudit:database` covers the policy side, and
 - https://nvd.nist.gov/vuln/detail/cve-2025-29927 -- Next.js middleware authorization bypass
 - https://vercel.com/blog/postmortem-on-next-js-middleware-bypass -- middleware bypass mechanism + fixed versions
 - https://nextjs.org/blog/security-nextjs-server-components-actions -- treat Server Actions as public endpoints
+- https://nextjs.org/docs/app/guides/data-security -- Closures and encryption: captured variables are sent to the client and back; do not rely on encryption alone; NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+- https://nextjs.org/docs/app/guides/self-hosting -- Server Functions encryption key: all instances must share one base64 key of 16, 24 or 32 bytes
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions -- `experimental.serverActions.bodySizeLimit` (default 1MB, multipart overhead) and `allowedOrigins`
 - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html -- cookies, timeouts, session fixation
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html -- CSRF defenses
 - https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html -- auth, WebAuthn, generic error messages

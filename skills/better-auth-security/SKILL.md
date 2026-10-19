@@ -446,6 +446,11 @@ is a cross-user data leak with no auth bug anywhere in the auth config.
 **Fix:** either key the cache on a session-derived identifier passed in as an argument, or use
 `'use cache: private'`, which may read cookies and caches per viewer.
 
+This is not specific to Better Auth: the same hoisting happens with Clerk's `auth()`, Auth.js's
+`auth()` or any session helper. The tenant-level cases (Redis keys, `unstable_cache` key parts,
+`cacheTag` / `revalidateTag`, `fetch` cache, CDN headers) live in `secaudit:multi-tenant-isolation` §3;
+keep the detail there, not here.
+
 ```typescript
 // app/lib/data.ts — BAD: session hoisted out; one user's dashboard served to all
 async function getDashboard() {

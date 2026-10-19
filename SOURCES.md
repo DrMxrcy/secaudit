@@ -106,6 +106,9 @@ Last verified: 2026-10-17.
 - https://nvd.nist.gov/vuln/detail/cve-2025-29927 — Next.js middleware authorization bypass
 - https://vercel.com/blog/postmortem-on-next-js-middleware-bypass — bypass mechanism + fixed versions
 - https://nextjs.org/blog/security-nextjs-server-components-actions — Server Actions are public endpoints
+- https://nextjs.org/docs/app/guides/data-security — Closures and encryption: captured variables are sent to the client and back; do not rely on encryption alone; NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+- https://nextjs.org/docs/app/guides/self-hosting — Server Functions encryption key: all instances must share one base64 key of 16, 24 or 32 bytes
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions — `experimental.serverActions.bodySizeLimit` (default 1MB, multipart overhead) and `allowedOrigins`
 - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html — cookies, timeouts, session fixation
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html — CSRF
 - https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html — auth, WebAuthn, error messages

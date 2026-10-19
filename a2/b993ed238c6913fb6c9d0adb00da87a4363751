@@ -1,0 +1,28 @@
+skills/ci-cd-security/SKILL.md
+  s_46f42f15a4ddb4::t_5e7458810927e5 191-193,270,289,309-310
+  s_46f42f15a4ddb4::t_6e7eaa707002a1 3,44-45,150-190,194-269,271-288,290-308,311-313,839-842,865-866,880-886
+scripts/check-freshness.py
+  s_46f42f15a4ddb4::t_3b5a254fa2ec11 75-78
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_2a5778fa964ebd 728
+.roadmap/plans/063-audit-a-target-repo-s-committed-ai-agent-config-and-agent-ci-actions.md
+  s_46f42f15a4ddb4::t_8949e1ee244531 35-36
+ROADMAP.md
+  s_46f42f15a4ddb4::t_5de4f7c0fc2c16 43,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a2b993ed238c6913fb6c9d0adb00da87a4363751",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

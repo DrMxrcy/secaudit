@@ -1,0 +1,25 @@
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_3e9aa176040b4f 728
+.roadmap/plans/064-audit-must-vet-project-agents-as-untrusted-before-delegating-to-them.md
+  s_46f42f15a4ddb4::t_8945943d124ed1 6,26-27
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_29f91e5885bb3f 19
+ROADMAP.md
+  s_46f42f15a4ddb4::t_dc10510a284821 43,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e8e9e92a81c52b9f9fa3c69e75ede8bbfce5e7d3",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "unknown"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

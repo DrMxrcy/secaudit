@@ -32,5 +32,6 @@ created: 2026-10-17
 ## 🚶 Step-by-Step Checklist
 - [x] Step 1: Add "Agent configuration committed to the repo" section with checks 1-6 -> target: skills/mcp-agent-security/SKILL.md
   > evidence: check-freshness.py: All current; CVE-2025-59536/2026-21852/2026-33068, GHSA-ph6w, CVE-2025-6514 and all Claude Code keys verified; §9 blocks extracted and run on bad/good/edge fixtures (macOS + GNU container): all planted cases flagged, good fixture silent; spec MET; quality PARTIAL x2 -> fixed; implementer hit usage limit mid round 3, parent verified the final 4 regex fixes on the edge fixture (2026-10-18)
-- [ ] Step 2: Add AI agent GitHub Actions subsection -> target: skills/ci-cd-security/SKILL.md
+- [x] Step 2: Add AI agent GitHub Actions subsection -> target: skills/ci-cd-security/SKILL.md
+  > evidence: check-freshness.py: All current; action inputs verified vs each action.yml/docs, pinned SHAs dereferenced; check block run on 14 fixtures; combined spec+quality review PARTIAL -> parent fixed workflow_run trigger, github_token in GOOD example, id-token prose, multi-line claude_args caveat; allowlisted research.checkpoint.com 202 bot challenge (2026-10-19)
 - [ ] Step 3: Audit dispatch + OWASP row, supply-chain pointer, SOURCES; freshness green -> target: skills/audit/SKILL.md, skills/supply-chain/SKILL.md, SOURCES.md

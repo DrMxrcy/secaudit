@@ -72,6 +72,10 @@ URL_ALLOWLIST = {
     # An OIDC issuer identifier, cited as a value to configure; it serves discovery
     # documents under /.well-known/, not a page at the root.
     "https://token.actions.githubusercontent.com": "OIDC issuer ID, not a web page",
+    # Bot-challenge front end answers scripted requests with an empty 202; the article loads
+    # in a browser (verified 2026-10-18 at 200).
+    "https://research.checkpoint.com/2026/rce-and-api-token-exfiltration-through-claude-code-project-files-cve-2025-59536/":
+        "bot challenge returns 202 to scripts, alive",
 }
 
 # Advisories a vendor published before OSV ingested them. Each needs the vendor URL that

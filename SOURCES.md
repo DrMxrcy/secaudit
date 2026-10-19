@@ -811,6 +811,7 @@ Last verified: 2026-10-17.
 - https://api.osv.dev/v1/vulns/CVE-2026-55602 — http-proxy-middleware router host+path substring match; fixed 2.0.10 / 3.0.6 / 4.1.0
 - https://api.osv.dev/v1/vulns/CVE-2024-34351 — self-hosted Next.js Server Actions relative redirect + modified Host header SSRF; fixed 14.1.1
 - https://api.osv.dev/v1/vulns/CVE-2025-57822 — Next.js middleware `next()` SSRF when forwarding user headers; fixed 14.2.32 / 15.4.7
+- https://orm.drizzle.team/docs/rqb — relational queries: `with` returns full nested rows; `columns` true/false selection (false ignored when any true is present)
 
 ## Deployment (`deployment`)
 - https://owasp.org/projects/secure-headers-project — security headers (incl. clickjacking / frame-ancestors)
@@ -829,6 +830,17 @@ Last verified: 2026-10-17.
 - https://osv.dev/vulnerability/GHSA-gpj5-g38j-94v9 — affected and fixed versions
 - https://orm.drizzle.team/docs/dynamic-query-building — $dynamic() conditional query building
 - https://orm.drizzle.team/docs/perf-queries — sql.placeholder in prepared statements
+- https://orm.drizzle.team/docs/zod — createInsertSchema / createUpdateSchema generate a schema from the table's columns; Refinements
+- https://zod.dev/api — .pick() / .omit() / .strict() on the Zod object the generator returns
+- https://orm.drizzle.team/docs/delete — db.delete(table) with no where deletes all rows
+- https://orm.drizzle.team/docs/update — update().set().where() and returning()
+- https://orm.drizzle.team/docs/transactions — db.transaction(async (tx) => ...), tx.rollback(), isolationLevel config
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts — .for(strength, { of, noWait, skipLocked }) row locking (not on the docs site; verified in the 0.45 types)
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/sqlite-core/session.ts — SQLite transaction config `behavior: 'deferred' | 'immediate' | 'exclusive'`
+- https://www.postgresql.org/docs/current/transaction-iso.html — READ COMMITTED default; lost updates and serialization failures (40001)
+- https://www.postgresql.org/docs/current/explicit-locking.html — SELECT FOR UPDATE row-level locks
+- https://github.com/honra-io/drizzle-best-practices/blob/main/references/types-validators.md — teaches createInsertSchema(table) parsed straight into values() (the anti-pattern)
+- https://github.com/honra-io/drizzle-best-practices/blob/main/references/query-error-handling.md — read-then-decrement inventory transaction without a lock (the race)
 - https://sqlite.org/wal.html — the -wal and -shm sibling files
 - https://sqlite.org/backup.html — file-copy backups can be corrupt
 - https://sqlite.org/uri.html — mode=ro and immutable=1
@@ -961,6 +973,8 @@ Last verified: 2026-10-17.
 - https://github.com/open-telemetry/opentelemetry-js-contrib/security/advisories/GHSA-qqmp-wf37-98f9 — CVE-2026-104872 db.user span attribute in 8 OTel DB instrumentations; fixed-version table
 - https://github.com/open-telemetry/opentelemetry-js-contrib/pull/3585 — fix: only emit stable http, network and database attributes (breaking)
 - https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/attributesprocessor — Collector attributes processor (delete action)
+- https://orm.drizzle.team/docs/goodies — Logging: `logger: true`, `DefaultLogger`, custom `LogWriter`, and the `Logger` interface `logQuery(query, params)`
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/logger.ts — DefaultLogger formats `Query: <sql> -- params: [...]` from every bound param
 
 ## Dynamic verification (`dynamic-verification`)
 - https://owasp.github.io/www-project-web-security-testing-guide/latest/ — OWASP Web Security Testing Guide (WSTG)

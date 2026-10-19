@@ -3,7 +3,7 @@ id: 66
 title: Cover modern browser defenses and DOM navigation and postMessage sinks
 type: feature
 version: 3.12.0
-status: planned
+status: done
 created: 2026-10-17
 ---
 
@@ -32,6 +32,9 @@ created: 2026-10-17
 - **Fails if:** Next.js-specific nonce wiring contradicts current Next docs (proxy.ts in 16), or Cloudflare skill now contradicts deployment.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: deployment: strict CSP, Trusted Types, Fetch Metadata, COOP/CORP, SRI, rollout order -> target: skills/deployment/SKILL.md
-- [ ] Step 2: web-vulns: postMessage, navigation sinks + triage rule, Sanitizer API -> target: skills/web-vulns/SKILL.md
-- [ ] Step 3: Cross-links + sources; freshness green -> target: skills/cloudflare-workers-security/SKILL.md, SOURCES.md
+- [x] Step 1: deployment: strict CSP, Trusted Types, Fetch Metadata, COOP/CORP, SRI, rollout order -> target: skills/deployment/SKILL.md
+  > evidence: check-freshness.py: All current; strict CSP/Trusted Types/Fetch Metadata/COOP/Next 16 nonce wiring verified vs Google guide, MDN, nextjs.org; safeInternalUrl tested in node vs //, /\, /.//, javascript:, data:, lookalike hosts; built in worktree (sonnet); combined review PARTIAL -> parent fixed TT typed-param grep (BSD-tested), navigate() sink, PPR caveat, Cloudflare sample label (2026-10-19)
+- [x] Step 2: web-vulns: postMessage, navigation sinks + triage rule, Sanitizer API -> target: skills/web-vulns/SKILL.md
+  > evidence: check-freshness.py: All current; strict CSP/Trusted Types/Fetch Metadata/COOP/Next 16 nonce wiring verified vs Google guide, MDN, nextjs.org; safeInternalUrl tested in node vs //, /\, /.//, javascript:, data:, lookalike hosts; built in worktree (sonnet); combined review PARTIAL -> parent fixed TT typed-param grep (BSD-tested), navigate() sink, PPR caveat, Cloudflare sample label (2026-10-19)
+- [x] Step 3: Cross-links + sources; freshness green -> target: skills/cloudflare-workers-security/SKILL.md, SOURCES.md
+  > evidence: check-freshness.py: All current; strict CSP/Trusted Types/Fetch Metadata/COOP/Next 16 nonce wiring verified vs Google guide, MDN, nextjs.org; safeInternalUrl tested in node vs //, /\, /.//, javascript:, data:, lookalike hosts; built in worktree (sonnet); combined review PARTIAL -> parent fixed TT typed-param grep (BSD-tested), navigate() sink, PPR caveat, Cloudflare sample label (2026-10-19)

@@ -3,7 +3,7 @@ id: 65
 title: Cover Drizzle write-path risks: mass assignment, unscoped writes, races
 type: feature
 version: 3.12.0
-status: planned
+status: done
 created: 2026-10-17
 ---
 
@@ -30,6 +30,9 @@ created: 2026-10-17
 - **Fails if:** snippets use non-existent APIs (verify `.for('update')`, `sql.join`, `createInsertSchema(...).pick` against installed docs/source), or existing Prisma content is removed.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: data-access: Drizzle mass assignment, unscoped writes, races, sql.raw provenance triage -> target: skills/data-access/SKILL.md
-- [ ] Step 2: api-surface relational columns, logging-monitoring logger params, postgres-security owner-role runtime pool -> target: skills/api-surface/SKILL.md, skills/logging-monitoring/SKILL.md, skills/postgres-security/SKILL.md
-- [ ] Step 3: Cite sources; freshness green -> target: SOURCES.md
+- [x] Step 1: data-access: Drizzle mass assignment, unscoped writes, races, sql.raw provenance triage -> target: skills/data-access/SKILL.md
+  > evidence: check-freshness.py: All current; snippets tsc --strict vs drizzle-orm 0.45.2 / drizzle-zod 0.8.3; and(undefined) unscoped delete confirmed via toSQL(); built in worktree (sonnet); combined review PARTIAL (heuristic false negatives) -> fixed by follow-up agent, re-tested on reviewer fixtures (2026-10-19)
+- [x] Step 2: api-surface relational columns, logging-monitoring logger params, postgres-security owner-role runtime pool -> target: skills/api-surface/SKILL.md, skills/logging-monitoring/SKILL.md, skills/postgres-security/SKILL.md
+  > evidence: check-freshness.py: All current; snippets tsc --strict vs drizzle-orm 0.45.2 / drizzle-zod 0.8.3; and(undefined) unscoped delete confirmed via toSQL(); built in worktree (sonnet); combined review PARTIAL (heuristic false negatives) -> fixed by follow-up agent, re-tested on reviewer fixtures (2026-10-19)
+- [x] Step 3: Cite sources; freshness green -> target: SOURCES.md
+  > evidence: check-freshness.py: All current; snippets tsc --strict vs drizzle-orm 0.45.2 / drizzle-zod 0.8.3; and(undefined) unscoped delete confirmed via toSQL(); built in worktree (sonnet); combined review PARTIAL (heuristic false negatives) -> fixed by follow-up agent, re-tested on reviewer fixtures (2026-10-19)

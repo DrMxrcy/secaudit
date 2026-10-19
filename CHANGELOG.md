@@ -1,13 +1,13 @@
 # Changelog
 
-## v3.12.0 — (in progress)
+## v3.12.0 — 2026-10-19
 
 ### ✨ New
 - New checks for rich-text editors, document import and HTML sanitizing.
 - New checks for keeping each tenant's data separate across caches, jobs, domains and search.
 - Audits now review the AI-agent settings, hooks and MCP servers a project ships.
-- (pending) Deeper Drizzle ORM checks for unsafe writes and race conditions.
-- (pending) New browser-side checks for content security policy, Trusted Types and cross-window messaging.
+- Deeper Drizzle ORM checks for unsafe writes and race conditions.
+- New browser-side checks for content security policy, Trusted Types and cross-window messaging.
 - New checks for cached per-user data, Server Actions and image settings in modern React apps.
 - Deeper FiveM server checks for server settings, game events and cross-resource calls.
 

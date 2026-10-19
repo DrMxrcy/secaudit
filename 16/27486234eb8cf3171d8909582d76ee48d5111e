@@ -1,0 +1,30 @@
+skills/api-surface/SKILL.md
+  s_46f42f15a4ddb4::t_0d0739f32024ab 485-487
+skills/data-access/SKILL.md
+  s_46f42f15a4ddb4::t_30db0dbcd356c7 280-284
+  s_46f42f15a4ddb4::t_05159525f96265 285,290
+  s_46f42f15a4ddb4::t_1d3c77c8b67486 275-277,286-289,292-294,297-299
+  s_46f42f15a4ddb4::t_d1436c1a1bd4b2 351-352,368-377,564-567,612
+  s_46f42f15a4ddb4::t_b8e6eb160d3028 291,300
+skills/logging-monitoring/SKILL.md
+  s_46f42f15a4ddb4::t_f647e9a25e4b82 97-99
+  s_46f42f15a4ddb4::t_0d0739f32024ab 96
+skills/postgres-security/SKILL.md
+  s_46f42f15a4ddb4::t_f647e9a25e4b82 234-236
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1627486234eb8cf3171d8909582d76ee48d5111e",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

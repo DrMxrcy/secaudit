@@ -198,7 +198,7 @@ isolation (`COEP`, `Document-Isolation-Policy`) is only for `SharedArrayBuffer`;
 
 ### 5. Subresource Integrity
 
-**What to look for:** a `<script src="https://…">` (or `<Script src>`) pointing at a third-party host
+**What to look for:** a cross-origin `<script src>` (or `<Script src>`) pointing at a third-party host
 with no `integrity`; `integrity` without `crossorigin="anonymous"` (the browser cannot hash a
 cross-origin response without CORS, so the script simply fails to load).
 
@@ -213,7 +213,7 @@ assets that update in place (analytics and tag loaders): a changing file breaks 
 
 1. Ship the low-risk headers now: HSTS (short `max-age` first, ramp to a year), `nosniff`,
    `Referrer-Policy`, `Permissions-Policy`, `frame-ancestors` / `X-Frame-Options`.
-2. Add `Reporting-Endpoints: csp="https://…"` and the strict CSP, including
+2. Add `Reporting-Endpoints: csp="https://reports.example.com/csp"` and the strict CSP, including
    `require-trusted-types-for 'script'`, as `Content-Security-Policy-Report-Only` with
    `report-to csp`. Run on real traffic for days to weeks and triage the reports, discarding noise
    from extensions and very old browsers.

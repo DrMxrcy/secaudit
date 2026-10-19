@@ -215,7 +215,8 @@ once. Three middleware defaults deserve their own lines:
   (`application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`) — not a token scheme,
   no cover for a JSON body, and it misbehaves where proxies strip `Origin`.
 - **`secureHeaders()`** — a useful default pack (HSTS, `X-Content-Type-Options`, `X-Frame-Options`,
-  `Referrer-Policy`, COOP/CORP), but `Content-Security-Policy` is "No Setting" by default.
+  `Referrer-Policy`, COOP/CORP), but `Content-Security-Policy` is "No Setting" by default. What a
+  strict CSP, Trusted Types and Fetch Metadata should look like is `secaudit:deployment` §1-§3.
 
 **Fix:** register global middleware at the top of the file, before any route or sub-app mount;
 mount protected routers under a prefix that already carries auth; pin `cors()` to an explicit
@@ -237,8 +238,11 @@ const app = new Hono<{ Bindings: Env; Variables: { user: User } }>();
 
 app.use('*', secureHeaders({                   // CSP is not set by default — set it
   contentSecurityPolicy: { defaultSrc: ["'self'"], objectSrc: ["'none'"],
-                           frameAncestors: ["'none'"] },
+                           baseUri: ["'none'"], frameAncestors: ["'none'"] },
 }));
+// A Worker that serves HTML (not just JSON) needs the strict form instead of the 'self' allowlist
+// above, which is bypassable: scriptSrc: [NONCE, "'strict-dynamic'"], with the nonce read from
+// c.get('secureHeadersNonce') and set on each <script>. See secaudit:deployment §1.
 app.use('*', cors({
   origin: ['https://app.example.com'],         // never '*' alongside credentials
   credentials: true, allowMethods: ['GET', 'POST'],

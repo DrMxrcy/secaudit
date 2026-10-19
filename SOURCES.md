@@ -819,6 +819,17 @@ Last verified: 2026-10-17.
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security — HSTS
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS — CORS
 - https://vercel.com/docs/deployment-protection — preview deployment protection
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/security/guide.md — Google web-security guide: strict CSP, Trusted Types, COOP/CORP, Fetch Metadata, SRI, report-only rollout; allowlists bypassable
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/trusted-types/guide.md — Trusted Types policies, `trusted-types` allowlist, no pass-through policy
+- https://web.dev/articles/strict-csp — nonce/hash plus `'strict-dynamic'`
+- https://web.dev/articles/trusted-types — Trusted Types rollout
+- https://web.dev/articles/fetch-metadata — Fetch Metadata resource isolation
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Reporting-Endpoints — Reporting-Endpoints / report-to
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Opener-Policy — COOP values
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Resource-Policy — CORP values
+- https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity — SRI and crossorigin
+- https://nextjs.org/docs/app/guides/content-security-policy — Next.js nonce CSP (dynamic rendering, proxy, x-nonce)
+- https://nextjs.org/docs/app/api-reference/file-conventions/proxy — middleware renamed proxy in Next.js 16
 
 ## Data access (`data-access`)
 - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html — parameterized queries
@@ -835,7 +846,7 @@ Last verified: 2026-10-17.
 - https://orm.drizzle.team/docs/delete — db.delete(table) with no where deletes all rows
 - https://orm.drizzle.team/docs/update — update().set().where() and returning()
 - https://orm.drizzle.team/docs/transactions — db.transaction(async (tx) => ...), tx.rollback(), isolationLevel config
-- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts — .for(strength, { of, noWait, skipLocked }) row locking (not on the docs site; verified in the 0.45 types)
+- https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/pg-core/query-builders/select.ts — .for(strength, { of, noWait, skipLocked }) row locking (not found in the docs' llms-full.txt; documented in the source and verified in the 0.45 types)
 - https://github.com/drizzle-team/drizzle-orm/blob/main/drizzle-orm/src/sqlite-core/session.ts — SQLite transaction config `behavior: 'deferred' | 'immediate' | 'exclusive'`
 - https://www.postgresql.org/docs/current/transaction-iso.html — READ COMMITTED default; lost updates and serialization failures (40001)
 - https://www.postgresql.org/docs/current/explicit-locking.html — SELECT FOR UPDATE row-level locks
@@ -864,6 +875,13 @@ Last verified: 2026-10-17.
 - https://nextjs.org/docs/app/api-reference/functions/next-response — `NextResponse.rewrite()` proxies the given URL
 - https://nextjs.org/docs/app/api-reference/config/next-config-js/taint — `experimental.taint`, taint APIs, caveats (reference-only, runtime throw)
 - https://nextjs.org/docs/app/guides/data-security — Tainting is an additional layer; filter in the DAL first
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/security/guide.md — dangerous DOM sinks, secure postMessage
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/validate-origins/guide.md — exact origin comparison, opaque "null" origins
+- https://github.com/GoogleChrome/modern-web-guidance-src/blob/main/guides/security/sanitize-untrusted-html/guide.md — setHTML vs setHTMLUnsafe, avoid reserializing (mXSS)
+- https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage — postMessage origin and targetOrigin
+- https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTMLUnsafe — setHTMLUnsafe is an injection sink
+- https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTML — setHTML removes XSS-unsafe content
+- https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API — Sanitizer API
 
 ## Rich text, document import & sanitizers (`rich-text-security`)
 - https://tiptap.dev/docs/editor/extensions/marks/link — `isAllowedUri`, `protocols`, `shouldAutoLink`, `validate` deprecated

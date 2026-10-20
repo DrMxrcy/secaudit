@@ -1,0 +1,33 @@
+.claude-plugin/marketplace.json
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 11-12
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 4,707-716
+  s_46f42f15a4ddb4::t_65435cd7bc7fb4 737-738,740
+CHANGELOG.md
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 3-7
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 5-9
+.claude-plugin/plugin.json
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 3-4
+ROADMAP.md
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 44-45
+.roadmap/plans/070-shorten-the-plugin-description-so-the-plugin-manager-stays-usable.md
+  s_46f42f15a4ddb4::t_1e6b966776ec6e 1-25
+  s_46f42f15a4ddb4::t_e2d700193d90b7 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "865779fe1876965c2dd0f8bee16e76f79c820267",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

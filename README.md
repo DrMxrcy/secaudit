@@ -26,6 +26,17 @@ In Claude Code:
 
 That registers the marketplace from this repo and installs the plugin. All skills auto-load.
 
+In Codex CLI:
+
+```
+codex plugin marketplace add DrMxrcy/secaudit
+codex plugin add secaudit@secaudit
+```
+
+Same repo, same skills: Codex reads `.codex-plugin/plugin.json`, which points at the shared
+`skills/` directory. Update later with `codex plugin marketplace upgrade secaudit` and re-run the
+`add`. In Claude Code, update with `claude plugin update secaudit@secaudit` (restart to apply).
+
 ## Using it
 
 Ask naturally and the right skill fires:

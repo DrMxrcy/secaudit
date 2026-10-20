@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.13.0 — 2026-10-20
+
+### ✨ New
+- Secaudit can now be installed in Codex as well as Claude Code.
+
 ## v3.12.1 — 2026-10-20
 
 ### ⚡ Improved

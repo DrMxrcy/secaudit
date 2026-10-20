@@ -1,0 +1,20 @@
+{
+  "name": "secaudit",
+  "interface": {
+    "displayName": "Secaudit"
+  },
+  "plugins": [
+    {
+      "name": "secaudit",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

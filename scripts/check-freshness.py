@@ -747,6 +747,18 @@ def check_manifests() -> list[dict]:
         except Exception as e:
             add(".claude-plugin/marketplace.json", "marketplace.json", f"unreadable: {e}")
 
+    # the Codex manifest ships the same skills dir and must describe the same release
+    cpath = ROOT / ".codex-plugin/plugin.json"
+    if cpath.exists():
+        try:
+            codex = json.loads(cpath.read_text())
+            for key in ("version", "description", "keywords"):
+                if codex.get(key) != plugin.get(key):
+                    add(".codex-plugin/plugin.json", key,
+                        f"disagrees with .claude-plugin/plugin.json (codex={codex.get(key)!r:.60})")
+        except Exception as e:
+            add(".codex-plugin/plugin.json", "plugin.json", f"unreadable: {e}")
+
     # every skill on disk must be discoverable: named in README and dispatched by audit
     on_disk = {d.name for d in (ROOT / "skills").iterdir() if (d / "SKILL.md").is_file()}
     readme = (ROOT / "README.md").read_text()

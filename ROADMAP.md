@@ -43,4 +43,7 @@
 ### [x] v3.12.0 — 100% · 11 items · shipped 2026-10-19 ([history](CHANGELOG.internal.md))
 
 ### [x] v3.12.1 — 100% · 1 item · shipped 2026-10-20 ([history](CHANGELOG.internal.md))
+
+### [x] v3.13.0 — 100%
+- [x] **#71 Ship secaudit as an installable Codex plugin** `feature` — 100% ([plan](.roadmap/plans/071-ship-secaudit-as-an-installable-codex-plugin.md))
 <!-- roadmap:auto:end -->

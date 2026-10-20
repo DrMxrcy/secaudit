@@ -2,6 +2,11 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.13.0 — 2026-10-20
+
+### ✨ New
+- Secaudit can now be installed in Codex as well as Claude Code.
+
 ## v3.12.1 — 2026-10-20
 
 ### ⚡ Improved

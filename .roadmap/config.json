@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.13.0",
-  "nextId": 71,
+  "nextId": 72,
   "items": [
     {
       "id": 1,
@@ -714,6 +714,16 @@
       "file": "plans/070-shorten-the-plugin-description-so-the-plugin-manager-stays-usable.md",
       "note": "A shorter plugin description so the plugin manager's update and disable options stay on screen.",
       "audience": "public"
+    },
+    {
+      "id": 71,
+      "slug": "ship-secaudit-as-an-installable-codex-plugin",
+      "title": "Ship secaudit as an installable Codex plugin",
+      "type": "feature",
+      "version": "3.13.0",
+      "file": "plans/071-ship-secaudit-as-an-installable-codex-plugin.md",
+      "note": "Secaudit can now be installed in Codex as well as Claude Code.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -735,7 +745,8 @@
     "3.10.0": "2026-10-16",
     "3.11.0": "2026-10-16",
     "3.12.0": "2026-10-19",
-    "3.12.1": "2026-10-20"
+    "3.12.1": "2026-10-20",
+    "3.13.0": "2026-10-20"
   },
-  "last_seen_sha": "4d3c8a1e895eb0a0a1da68c13384c14f74ba87a4"
+  "last_seen_sha": "865779fe1876965c2dd0f8bee16e76f79c820267"
 }

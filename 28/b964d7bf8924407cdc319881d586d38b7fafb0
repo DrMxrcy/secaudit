@@ -1,0 +1,37 @@
+CHANGELOG.internal.md
+  s_46f42f15a4ddb4::t_669a55c93049ed 5-9
+scripts/check-freshness.py
+  s_46f42f15a4ddb4::t_458bd63c632018 750-761
+.codex-plugin/plugin.json
+  s_46f42f15a4ddb4::t_669a55c93049ed 1-165
+.roadmap/plans/071-ship-secaudit-as-an-installable-codex-plugin.md
+  s_46f42f15a4ddb4::t_669a55c93049ed 1-28
+  s_46f42f15a4ddb4::t_f019f7176f82c6 29-30
+README.md
+  s_46f42f15a4ddb4::t_00900f150b61a7 29-39
+.roadmap/config.json
+  s_46f42f15a4ddb4::t_669a55c93049ed 4,717-725
+  s_46f42f15a4ddb4::t_955d01d5ae415f 726,748-749,751
+ROADMAP.md
+  s_46f42f15a4ddb4::t_669a55c93049ed 46-48
+.agents/plugins/marketplace.json
+  s_46f42f15a4ddb4::t_669a55c93049ed 1-20
+CHANGELOG.md
+  s_46f42f15a4ddb4::t_669a55c93049ed 3-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "28b964d7bf8924407cdc319881d586d38b7fafb0",
+  "prompts": {},
+  "sessions": {
+    "s_46f42f15a4ddb4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "323a95b2-53d5-4929-9a81-dfdfe8920f79",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

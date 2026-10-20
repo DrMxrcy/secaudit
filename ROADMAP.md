@@ -10,7 +10,7 @@
 - Per-check vulnerable/benign fixtures as regression tests for grep heuristics (UnitOne tests/fixtures, Google expectations.md pattern)
 <!-- Free-form. Drop loose ideas here; scripts never touch this region. -->
 <!-- roadmap:auto:start -->
-**Current version: v3.13.0**
+**Current version: v3.14.0**
 
 ## 📊 Versions
 
@@ -44,6 +44,5 @@
 
 ### [x] v3.12.1 — 100% · 1 item · shipped 2026-10-20 ([history](CHANGELOG.internal.md))
 
-### [x] v3.13.0 — 100%
-- [x] **#71 Ship secaudit as an installable Codex plugin** `feature` — 100% ([plan](.roadmap/plans/071-ship-secaudit-as-an-installable-codex-plugin.md))
+### [x] v3.13.0 — 100% · 1 item · shipped 2026-10-20 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

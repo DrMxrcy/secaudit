@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.13.0",
-  "nextId": 70,
+  "nextId": 71,
   "items": [
     {
       "id": 1,
@@ -704,6 +704,16 @@
       "type": "bug",
       "version": "3.12.0",
       "file": "plans/069-owasp-secure-headers-project-page-moved-to-owasp-org-projects.md"
+    },
+    {
+      "id": 70,
+      "slug": "shorten-the-plugin-description-so-the-plugin-manager-stays-usable",
+      "title": "Shorten the plugin description so the plugin manager stays usable",
+      "type": "chore",
+      "version": "3.12.1",
+      "file": "plans/070-shorten-the-plugin-description-so-the-plugin-manager-stays-usable.md",
+      "note": "A shorter plugin description so the plugin manager's update and disable options stay on screen.",
+      "audience": "public"
     }
   ],
   "settings": {
@@ -724,7 +734,8 @@
     "3.9.0": "2026-09-16",
     "3.10.0": "2026-10-16",
     "3.11.0": "2026-10-16",
-    "3.12.0": "2026-10-19"
+    "3.12.0": "2026-10-19",
+    "3.12.1": "2026-10-20"
   },
-  "last_seen_sha": "8597ccd6fc7d0a4dcc22678e657de088af62eb07"
+  "last_seen_sha": "4d3c8a1e895eb0a0a1da68c13384c14f74ba87a4"
 }

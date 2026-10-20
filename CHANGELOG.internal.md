@@ -2,6 +2,11 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.12.1 — 2026-10-20
+
+### ⚡ Improved
+- A shorter plugin description so the plugin manager's update and disable options stay on screen.
+
 ## v3.12.0 — 2026-10-19
 
 ### ✨ New

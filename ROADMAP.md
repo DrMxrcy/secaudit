@@ -41,4 +41,6 @@
 ### [x] v3.11.0 — 100% · 3 items · shipped 2026-10-16 ([history](CHANGELOG.internal.md))
 
 ### [x] v3.12.0 — 100% · 11 items · shipped 2026-10-19 ([history](CHANGELOG.internal.md))
+
+### [x] v3.12.1 — 100% · 1 item · shipped 2026-10-20 ([history](CHANGELOG.internal.md))
 <!-- roadmap:auto:end -->

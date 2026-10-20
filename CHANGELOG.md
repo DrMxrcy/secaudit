@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.12.1 — 2026-10-20
+
+### ⚡ Improved
+- A shorter plugin description so the plugin manager's update and disable options stay on screen.
+
 ## v3.12.0 — 2026-10-19
 
 ### ✨ New

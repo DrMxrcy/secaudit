@@ -266,6 +266,14 @@ export async function fetchUrl(userUrl: string): Promise<Response> {
 }
 ```
 
+The response is attacker input too. Any Node HTTP client that auto-decodes responses (built-in
+fetch/undici, axios, node-fetch, got, superagent) decodes a `br` response body, whatever `Accept-Encoding` the request sent, so on a Node.js runtime below the
+Node2Shell (`CVE-2026-111497`) floors a fetcher pointed at a hostile host hands it the vulnerable
+Brotli decoder: the URL and allowlist checks run before the request, but the decoder runs when the
+response (or request) body is read or a redirect is followed, before any body-level handling. The allowlist narrows who can answer;
+only the runtime upgrade closes it. Floors, EOL lines and the request-body (`Content-Encoding: br`)
+side: `secaudit:framework-versions`, *Node.js (the runtime)*.
+
 A user-configurable "outgoing webhook" or "custom notification URL" feature is this same SSRF
 problem, not a signature-verification one — see `secaudit:webhook-security` §9 for the hand-off
 from that skill's *inbound* verification recipes to this section's *outbound* fix.

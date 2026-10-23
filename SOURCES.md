@@ -32,6 +32,16 @@ Last verified: 2026-10-17.
 - https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json — CISA KEV feed (machine-readable; check dateAdded)
 - https://github.com/advisories/GHSA-qwww-vcr4-c8h2 — React Router RSC-mode CSRF bypass
 - https://nodejs.org/en/blog/vulnerability/ — Node.js security releases (the runtime is not OSV-indexed)
+- https://nodejs.org/en/blog/vulnerability/october-2026-security-releases — CVE-2026-111497 (named Node2Shell by Imperva) Brotli decoder out-of-bounds write plus nine more CVEs; 26.12.1 / 24.22.1 / 22.23.4; EOL lines always affected (vendor; the runtime is not OSV-indexed)
+- https://nodejs.org/en/blog/release/v26.12.1 — release notes: Brotli cherry-pick, NSS root certificates update, c-ares 1.34.9
+- https://nvd.nist.gov/vuln/detail/cve-2026-111497 — Google CNA CVSS 4.0 9.2; root bug in Google Brotli 1.0.3 through 1.2.0, upstream releases 1.0.10 / 1.1.1 / 1.2.1
+- https://www.imperva.com/blog/node2shell-from-brotli-data-to-remote-code-execution/ — Node2Shell write-up: code execution on the official 24.22.0 image via fetch() and Express 5 / body-parser 2.x
+- https://bun.com/blog/bun-v1.4.4 — Bun 1.4.4 (2026-10-22) security fixes include Brotli
+- https://github.com/expressjs/body-parser — 2.x parsers inflate gzip, br, deflate and zstd; `inflate: false` rejects compressed bodies with 415
+- https://github.com/axios/axios/blob/v1.x/lib/adapters/http.js — axios on Node decodes `br` responses with zlib.createBrotliDecompress
+- https://nodejs.org/api/webstreams.html — DecompressionStream accepts 'brotli' from v24.7.0 / v22.20.0
+- https://nginx.org/en/docs/http/ngx_http_rewrite_module.html — `if` / `return` used for the `Content-Encoding: br` refusal
+- https://caddyserver.com/docs/caddyfile/directives — directive order: `respond` sorts ahead of `reverse_proxy`
 - https://nuxt.com/updates — Nuxt release and security announcements
 - https://github.com/remix-run/react-router/security — React Router / Remix advisories
 - https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)

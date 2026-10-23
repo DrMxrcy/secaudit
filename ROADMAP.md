@@ -46,10 +46,10 @@
 
 ### [x] v3.13.0 — 100% · 1 item · shipped 2026-10-20 ([history](CHANGELOG.internal.md))
 
-### [ ] v3.14.0 — 50%
+### [ ] v3.14.0 — 67%
 - [x] **#76 Watch pwn.watch for new advisories and hand capped fixes to Copilot** `feature` — 100% ([plan](.roadmap/plans/076-watch-pwn-watch-for-new-advisories-and-hand-capped-fixes-to-copilot.md))
 - [x] **#72 Add a php-security skill covering PHP2Shell and PHP runtime floors** `feature` — 100% ([plan](.roadmap/plans/072-add-a-php-security-skill-covering-php2shell-and-php-runtime-floors.md))
-- [ ] **#73 Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines** `feature` — 0% ([plan](.roadmap/plans/073-flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines.md))
+- [x] **#73 Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines** `feature` — 100% ([plan](.roadmap/plans/073-flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines.md))
 - [ ] **#74 Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)** `feature` — 0% ([plan](.roadmap/plans/074-cover-the-storybook-dev-server-code-injection-advisory-cve-2026-114125.md))
 - [ ] **#75 Add pwn.watch as an optional live-incident source in monitor-deps.py** `feature` — 0% ([plan](.roadmap/plans/075-add-pwn-watch-as-an-optional-live-incident-source-in-monitor-deps-py.md))
 <!-- roadmap:auto:end -->

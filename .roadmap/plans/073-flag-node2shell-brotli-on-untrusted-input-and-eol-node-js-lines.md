@@ -3,7 +3,7 @@ id: 73
 title: "Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines"
 type: feature
 version: 3.14.0
-status: planned
+status: done
 created: 2026-10-23
 ---
 
@@ -23,5 +23,7 @@ created: 2026-10-23
 - **Fails if:** a Node runtime version becomes a policed floor, or the advice says only "upgrade" without the EOL-line caveat.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Add the Node2Shell runtime note, reachability grep and `br` mitigation; sources -> target: skills/framework-versions/SKILL.md, SOURCES.md
-- [ ] Step 2: Cross-reference from the body-parsing skill; freshness green -> target: skills/web-vulns/SKILL.md
+- [x] Step 1: Add the Node2Shell runtime note, reachability grep and `br` mitigation; sources -> target: skills/framework-versions/SKILL.md, SOURCES.md
+  > evidence: freshness --self-check OK; --only manifests current; --only links current; Express middleware/inflate:false/nginx/Caddy snippets run locally; greps tested on sample files; verifier: PARTIAL, 8 findings, 8 acted on; check-freshness.py untouched (no Node floor policed) (2026-10-23)
+- [x] Step 2: Cross-reference from the body-parsing skill; freshness green -> target: skills/web-vulns/SKILL.md
+  > evidence: web-vulns SSRF section points to framework-versions Node2Shell entry; spec scout: all criteria MET (2026-10-23)

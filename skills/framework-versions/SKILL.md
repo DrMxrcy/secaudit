@@ -308,12 +308,85 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   `CVE-2026-39365` is a path traversal in optimized-deps `.map` handling. Current clean floors
   **`vite@7.3.5`** or **`vite@8.0.16`** (8.0.5 still carries 2). Treat a project relying on
   `server.fs.deny` to protect anything sensitive as a design problem, not a patching problem.
-- **Node.js (the runtime, not a package):** check `node --version` against the official security
-  releases. **No version is named here on purpose** — OSV indexes npm packages, not the Node.js
-  runtime (an `ecosystem: "Node.js"` query returns HTTP 400), so the automated freshness check
-  cannot police a hardcoded Node version and it would silently rot. Read the current advisory
-  from <https://nodejs.org/en/blog/vulnerability/> and confirm the running major is still
-  supported; an EOL major receives no patches at all, which is the more common finding.
+- **Node.js (the runtime, not a package) — Node2Shell:** `CVE-2026-111497`, an out-of-bounds
+  write in the Brotli decoder bundled with Node.js: an attacker who supplies Brotli data that the
+  app decompresses with `node:zlib` can corrupt process memory, up to remote code execution.
+  Node.js rates it High; NVD carries the Google CNA's CVSS 4.0 9.2 (Critical); Imperva's write-up
+  ran code on the official 24.22.0 image through `fetch()` and through Express 5 / body-parser 2.x
+  request bodies. Release floors (2026-10-21): **26.12.1 / 24.22.1 / 22.23.4**. **EOL lines get
+  nothing:** 20.x, 23.x, 25.x and older are affected and get no release from the Node.js project
+  ("End-of-Life versions are always affected when a security release occurs"), so an EOL major is
+  **Critical on its own** — the same rule `scripts/monitor-deps.py` applies — and the only remedy
+  is moving to a supported line; re-derive which majors are EOL from endoflife.date `nodejs` (see
+  *Runtime end-of-life*), do not trust this list. Bun 1.4.4 (2026-10-22) lists Brotli among its
+  security fixes (the vendor does not name the CVE); run 1.4.4 or later. The root bug is in Google Brotli 1.0.3 through 1.2.0
+  (upstream releases 1.0.10 / 1.1.1 / 1.2.1), so anything else that bundles that decoder needs its
+  own update. The same Node.js release carries nine more CVEs — TLS hostname checks accepting
+  non-canonical or fullwidth IP spellings, `dns.resolve*()` truncating names at a NUL byte,
+  keep-alive response confusion, Permission Model bypasses and others — plus a root-store update
+  for the eMudhra intermediate CA compromise; the same three releases cover all of them. **Not
+  machine-policed:** OSV indexes npm packages, not the Node.js runtime (an `ecosystem: "Node.js"`
+  query returns HTTP 400), so the freshness check cannot tell when these floors go stale; re-read
+  <https://nodejs.org/en/blog/vulnerability/> at audit time (this release:
+  <https://nodejs.org/en/blog/vulnerability/october-2026-security-releases>).
+
+  **Read the version that actually runs**, not the one declared (`engines.node`, `.nvmrc` say what
+  was intended): `node --version` / `bun --version` inside the deployed image
+  (`docker run --rm <image> node --version`), not on a laptop. A floating base tag
+  (`FROM node:24`, `node:lts`, `node:24-alpine`, `oven/bun:1`) moves only when the image is rebuilt
+  and re-pulled, so an image built before the release still ships the old binary; a digest is the
+  only immutable reference (a version tag such as `node:24.22.0` can be rebuilt for base-OS
+  updates, though the Node version in it cannot change). A distro or vendor build (`apt` / `apk` / `dnf` `nodejs`, a
+  platform-managed runtime) is safe when that vendor's tracker says so — a backport can keep an
+  older `node --version` number.
+
+  **Reachability — where attacker Brotli meets the decoder.** Request bodies: body-parser 2.x (and
+  so Express 5's `express.json()` / `raw()` / `text()` / `urlencoded()`) inflates `br` by default
+  on every parser; body-parser 1.x / Express 4 inflate only gzip and deflate. Responses: the
+  built-in `fetch()` decodes a `br` response even when the request sent
+  `Accept-Encoding: identity` (tested), and so does any Node HTTP client that auto-decodes
+  responses (built-in fetch/undici, axios, node-fetch, got, superagent), so any server-side
+  fetch of a URL the user can steer feeds the decoder (find those with the SSRF heuristics in
+  `secaudit:web-vulns`). Direct calls: zlib or `DecompressionStream('brotli')` (Node 24.7 / 22.20+)
+  on uploads, queue messages or cached blobs.
+
+  ```bash
+  # Direct Brotli decoding: for each hit, trace where the bytes come from (request, upload, queue, fetched URL).
+  # A starting point: it misses a variable format in `new DecompressionStream(fmt)` and calls split across lines.
+  grep -rnE 'brotliDecompress|createBrotliDecompress|brotliDecompressSync|BrotliDecompress|zlib\.brotli|DecompressionStream\(.brotli' \
+    --include='*.js' --include='*.ts' --include='*.mjs' --include='*.cjs' --include='*.mts' --include='*.cts' --include='*.tsx' --exclude-dir=node_modules .
+  # Express 5 / body-parser 2.x resolved? Then every body parser without `inflate: false` decodes br
+  npm ls express body-parser
+  grep -rnE '(express|bodyParser)\.(json|raw|text|urlencoded)\(' \
+    --include='*.js' --include='*.ts' --include='*.mjs' --include='*.cjs' --include='*.mts' --include='*.cts' --include='*.tsx' --exclude-dir=node_modules .
+  ```
+
+  **Until every runtime is upgraded**, refuse `Content-Encoding: br` on request bodies before
+  anything parses them — at the reverse proxy, or as the first middleware. `inflate: false` on each
+  body parser refuses every compressed body (body-parser answers 415 `encoding.unsupported`); to
+  refuse only `br` (each tested on Express 5.3.0 / body-parser 2.4.0, nginx 1.27, Caddy 2.11):
+
+  ```js
+  // First middleware: ahead of express.json()/raw()/text()/urlencoded() and any handler reading req
+  app.use((req, res, next) => {
+    if (/\bbr\b/i.test(req.headers["content-encoding"] ?? "")) return res.status(415).end();
+    next();
+  });
+  ```
+
+  ```nginx
+  # nginx, in the server block that proxies to the app
+  if ($http_content_encoding ~* "\bbr\b") { return 415; }
+  ```
+
+  ```caddy
+  # Caddyfile, in the site block (respond sorts ahead of reverse_proxy)
+  @brbody header_regexp Content-Encoding (?i)\bbr\b
+  respond @brbody 415
+  ```
+
+  None of this covers the response side: no request header stops a hostile server from sending
+  `br` to `fetch()`, so for server-side fetches the runtime upgrade is the only fix.
 - **PHP (the runtime, not a Composer package) — PHP2Shell:** `CVE-2026-109618` and
   `CVE-2026-109619`, unauthenticated RCE in PHP core, CVSS 4.0 9.2 each, exploitation attempts in
   the wild; fixed 8.5.12 / 8.4.27 / 8.3.36 / 8.2.35 (php.net, 2026-10-21). PHP 8.1 and older are
@@ -576,6 +649,17 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-qx66-fv34-fjm8 -- CVE-2026-102989 TanStack Start server-function reflected XSS; sets the 1.168.60 floor
 - https://react.dev/blog -- official React blog, where React security releases are posted
 - https://nodejs.org/en/blog/vulnerability/ -- Node.js security releases (the runtime is not OSV-indexed)
+- https://nodejs.org/en/blog/vulnerability/october-2026-security-releases -- Node2Shell (CVE-2026-111497) Brotli decoder out-of-bounds write plus nine more CVEs; 26.12.1 / 24.22.1 / 22.23.4; EOL lines always affected
+- https://nodejs.org/en/blog/release/v26.12.1 -- release notes: Brotli cherry-pick, NSS root certificates update, c-ares 1.34.9
+- https://nvd.nist.gov/vuln/detail/cve-2026-111497 -- Google CNA CVSS 4.0 9.2; root bug in Google Brotli 1.0.3 through 1.2.0, upstream releases 1.0.10 / 1.1.1 / 1.2.1
+- https://www.imperva.com/blog/node2shell-from-brotli-data-to-remote-code-execution/ -- Node2Shell write-up: code execution on the official 24.22.0 image via fetch() and Express 5 / body-parser 2.x
+- https://bun.com/blog/bun-v1.4.4 -- Bun 1.4.4 (2026-10-22) security fixes include Brotli
+- https://endoflife.date/api/nodejs.json -- Node.js majors and EOL dates (20, 23, 25 EOL)
+- https://github.com/expressjs/body-parser -- 2.x parsers inflate gzip, br, deflate and zstd; `inflate: false` rejects compressed bodies with 415
+- https://github.com/axios/axios/blob/v1.x/lib/adapters/http.js -- axios on Node decodes `br` responses with zlib.createBrotliDecompress
+- https://nodejs.org/api/webstreams.html -- DecompressionStream accepts 'brotli' from v24.7.0 / v22.20.0
+- https://nginx.org/en/docs/http/ngx_http_rewrite_module.html -- `if` / `return` used for the `Content-Encoding: br` refusal
+- https://caddyserver.com/docs/caddyfile/directives -- directive order: `respond` sorts ahead of `reverse_proxy`
 - https://www.php.net/archive/2026.php -- PHP2Shell (CVE-2026-109618 / CVE-2026-109619) fixed 8.5.12 / 8.4.27 / 8.3.36 / 8.2.35; the runtime is not OSV-indexed
 - https://www.csa.gov.sg/alerts-and-advisories/alerts/al-2026-151/ -- CSA Singapore PHP2Shell alert: CVSS 4.0 9.2, widespread exploitation attempts
 - https://isc.sans.edu/diary/33450 -- SANS ISC PHP2Shell wrap-up

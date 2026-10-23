@@ -1,0 +1,59 @@
+README.md
+  s_fbc496dffa0e96::t_3986b11ab1667a 101-104
+.github/workflows/advisory-watch.yml
+  s_fbc496dffa0e96::t_42e94b8be64b4c 8-13,35-36,91,117-120,133,138,141-161
+  s_fbc496dffa0e96::t_7ea9230a5794f3 1-7,14-34,37-59,64-90,92-116,121-132,134-137,139-140,162-164
+  s_fbc496dffa0e96::t_b7ee8a1608747a 60-63,165-181
+.github/workflows/copilot-dispatch.yml
+  s_fbc496dffa0e96::t_fbf56c282ec859 1-12,17,22-45,48-67,73-79,83-84,88,91-93,104-113,116-118,134-148,152-160,166
+  s_fbc496dffa0e96::t_3c746537286416 13-16,18-21,46-47,68-72,80-82,85-87,89-90,94-103,114-115,119-133,149-151,161-165
+ROADMAP.md
+  s_fbc496dffa0e96::t_498dd07c1bff6a 50
+  s_fbc496dffa0e96::t_1589e3bc4a8f4b 49
+.github/workflows/freshness.yml
+  s_fbc496dffa0e96::t_42e94b8be64b4c 98,102-104
+scripts/watch-advisories.py
+  s_fbc496dffa0e96::t_e3c5d0fd82224e 1-37,39-94,123,126,132-133,135-138,140-141,145,151-153,155-160,185,193,196-198,205-206,215-218,232-242,248-249,251,253,255-256,258,260,264-265,268,273,278-287,293-295,297-313,329-330,332-334,336-340,345-360
+  s_fbc496dffa0e96::t_c5cf95c8e567e1 38,95-97,99-104,109-122,124,127-131,134,139,142-144,146-150,154,161-184,186-192,194-195,199-203,207-214,243-247,250,252,254,257,259,261-263,266-267,269-270,274-277,288-292,296,314-328,331,335,341-344
+  s_fbc496dffa0e96::t_76b2ef374633ca 98,105-108,125
+  s_fbc496dffa0e96::t_114ba425db9df7 204,219-231,271-272
+.github/copilot-instructions.md
+  s_fbc496dffa0e96::t_c11c29eb348184 1-45
+.github/CODEOWNERS
+  s_fbc496dffa0e96::t_708095a0e87b32 1-10
+CHANGELOG.internal.md
+  s_fbc496dffa0e96::t_782d1a01fd20eb 12
+.github/workflows/copilot-pr-scope.yml
+  s_fbc496dffa0e96::t_708095a0e87b32 1-39
+.roadmap/config.json
+  s_fbc496dffa0e96::t_498dd07c1bff6a 734-735,743-744,752-753,761-762,770-771
+  s_fbc496dffa0e96::t_782d1a01fd20eb 4,763-769
+  s_fbc496dffa0e96::t_455292c315439b 796
+.github/workflows/copilot-setup-steps.yml
+  s_fbc496dffa0e96::t_f24e35a7891117 1-30
+.roadmap/plans/076-watch-pwn-watch-for-new-advisories-and-hand-capped-fixes-to-copilot.md
+  s_fbc496dffa0e96::t_498dd07c1bff6a 14-17,20-23,26-27,30-33
+  s_fbc496dffa0e96::t_782d1a01fd20eb 1-13,18-19,24-25,28-29
+  s_fbc496dffa0e96::t_b4c66a15023c5b 34-37
+CHANGELOG.md
+  s_fbc496dffa0e96::t_782d1a01fd20eb 3-6,119
+docs/monitoring.md
+  s_fbc496dffa0e96::t_3986b11ab1667a 94-104,118-119,123-136,141-150,160-168
+  s_fbc496dffa0e96::t_6f975ed1a0f01e 105-117,120-122,137-140,151-159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4be3a3ea374f6fd902d3cf15eea19563735e8547",
+  "prompts": {},
+  "sessions": {
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

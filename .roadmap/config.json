@@ -768,7 +768,9 @@
       "type": "feature",
       "version": "3.14.0",
       "file": "plans/076-watch-pwn-watch-for-new-advisories-and-hand-capped-fixes-to-copilot.md",
-      "order": 0
+      "order": 0,
+      "audience": "internal",
+      "note": "Maintainer automation: pwn.watch advisory watcher opens locked issues per incident; a capped Copilot dispatcher turns eligible ones into reviewed PRs at zero Actions minutes."
     }
   ],
   "settings": {

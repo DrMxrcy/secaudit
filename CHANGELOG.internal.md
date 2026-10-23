@@ -9,7 +9,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 - (pending) Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines
 - (pending) Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)
 - (pending) Add pwn.watch as an optional live-incident source in monitor-deps.py
-- Watch pwn.watch for new advisories and hand capped fixes to Copilot
+- Maintainer automation: pwn.watch advisory watcher opens locked issues per incident; a capped Copilot dispatcher turns eligible ones into reviewed PRs at zero Actions minutes.
 
 ## v3.13.0 — 2026-10-20
 

@@ -45,6 +45,12 @@ Last verified: 2026-10-17.
 - https://nuxt.com/updates — Nuxt release and security announcements
 - https://github.com/remix-run/react-router/security — React Router / Remix advisories
 - https://github.com/vitejs/vite/security — Vite advisories (server.fs.deny is a repeat-offender control)
+- https://github.com/storybookjs/storybook/security/advisories/GHSA-f2ph-cmg5-wxc8 — Storybook vendor advisory: dev-server preview framed by any site and accepting any-origin postMessage; fixed 8.6.19 / 9.1.21 / 10.6.2 / 11.0.0-alpha.6; the security.insecureIframeMessaging / insecureRemoteIframeEmbed opt-outs
+- https://github.com/advisories/GHSA-f2ph-cmg5-wxc8 — CVE-2026-114125 per-package ranges (storybook, @storybook/core, @storybook/core-server, @storybook/experimental-addon-test, @storybook/addon-vitest, @storybook/addon-mcp)
+- https://www.cve.org/CVERecord?id=CVE-2026-114125 — CVE record (CWE-94, CWE-346, CWE-1021), published 2026-10-21
+- https://github.com/advisories/GHSA-px85-f4q5-jh77 — CVE-2026-114126 Storybook dev-server WebSocket token readable from the LAN; same fixed releases
+- https://github.com/storybookjs/storybook/releases/tag/v10.6.2 — 10.6.2 (2026-10-12) patches GHSA-f2ph-cmg5-wxc8 and GHSA-px85-f4q5-jh77
+- https://github.com/storybookjs/storybook/blob/v10.6.2/code/core/src/core-server/utils/server-address.ts — getListenHost: binds 127.0.0.1 unless --host is given
 - https://nextjs.org/blog — official Next.js security releases
 - https://react.dev/blog — official React blog, where React security releases are posted
 - https://github.com/advisories/GHSA-crvj-82cr-hjcx — CVE-2026-84363 Hono query parser reads past the URL fragment; the 2026-09-08 trio sets the 4.13.5 floor

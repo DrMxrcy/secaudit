@@ -1,6 +1,6 @@
 ---
 name: framework-versions
-description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, the rich-text and sanitizer libraries — TipTap/ProseMirror, mammoth, DOMPurify, sanitize-html — and the Traefik proxy in front of them, plus the PHP runtime's PHP2Shell floors) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
+description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, the Storybook dev server, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, the rich-text and sanitizer libraries — TipTap/ProseMirror, mammoth, DOMPurify, sanitize-html — and the Traefik proxy in front of them, plus the PHP runtime's PHP2Shell floors) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
 license: MIT
 ---
 
@@ -308,6 +308,71 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   `CVE-2026-39365` is a path traversal in optimized-deps `.map` handling. Current clean floors
   **`vite@7.3.5`** or **`vite@8.0.16`** (8.0.5 still carries 2). Treat a project relying on
   `server.fs.deny` to protect anything sensitive as a design problem, not a patching problem.
+- **Storybook (`storybook dev`):** `CVE-2026-114125` (`GHSA-f2ph-cmg5-wxc8`, Critical): the dev
+  server's preview iframe could be embedded by any website and accepted `postMessage` events from
+  any origin, so a malicious page open in the same browser could, with some user interaction, make
+  the running dev server change story files in the project; a changed file that a local runtime
+  then executes runs with the developer's privileges. Per the advisory, a built (static) Storybook
+  and a dev server never opened in a browser are out of scope. Clean floors:
+  **`storybook@8.6.19`**, **`storybook@9.1.21`**, **`storybook@10.6.2`** or
+  **`storybook@11.0.0-alpha.6`** (all released 2026-10-12; CVE and GitHub Advisory Database entry
+  2026-10-21). Ranges: `storybook` `>= 8.0.0, < 8.6.19`, `>= 9.0.0, < 9.1.21`,
+  `>= 10.0.0, < 10.6.2`, `>= 11.0.0-alpha.0, < 11.0.0-alpha.6`. Other packages the advisory lists:
+  `@storybook/core`, `@storybook/core-server` and `@storybook/experimental-addon-test` (8.x range
+  only, floor 8.6.19); `@storybook/addon-vitest` (the 9.x, 10.x and 11 alpha ranges, floors 9.1.21
+  / 10.6.2 / 11.0.0-alpha.6); `@storybook/addon-mcp` (`>= 10.6.0, < 10.6.2` and the 11 alpha range,
+  floors 10.6.2 / 11.0.0-alpha.6). The advisories list no 7.x or older range and ship no patch for
+  them; treat `storybook` 7.x and older as unsupported, not as clean (the vendor does not state
+  whether the 7.x dev server is exposed to these two CVEs).
+
+  Registry trap: `@storybook/core`, `@storybook/core-server` and
+  `@storybook/experimental-addon-test` stopped at 8.x. When this was written (2026-10-23) their
+  `latest` dist-tag was still 8.6.14, so a resolver that follows `latest` installs an unpatched
+  copy. Check `npm view <pkg> dist-tags` and pin 8.6.19 (the `v8` tag) rather than trusting
+  `latest`. A 9.x or 10.x project should not pull these three packages at all.
+
+  The same releases also close `CVE-2026-114126` (`GHSA-px85-f4q5-jh77`, High): the dev server
+  handed its WebSocket authentication token to any client that could load its pages, and a host on
+  the same LAN could open it by IP address and use the WebSocket to inject code into story files or
+  create new ones. Up to 8.6.18 / 9.1.20 / 10.6.1, `storybook dev` without `--host` listened on
+  every interface; 8.6.19, 9.1.21 and 10.6.2 bind `127.0.0.1` unless `--host` is given
+  (`getListenHost` in `code/core/src/core-server/utils/server-address.ts`). Per the advisory you are
+  not affected when the port is unreachable from the network (a container with the port
+  unpublished or published only on `127.0.0.1`) or on a trusted LAN. The impact is worse with the
+  Vitest addon on an old Vitest, which is why the new releases also turn off
+  `browser.api.allowWrite` and `browser.api.allowExec` in it.
+
+  **Read the version that actually runs.** `npm ls storybook @storybook/core @storybook/core-server
+  @storybook/experimental-addon-test @storybook/addon-vitest @storybook/addon-mcp` (`pnpm why`, or
+  `yarn why` run once per package, on those package managers), run in the package whose script starts `storybook dev`: in
+  a monorepo each workspace can resolve its own copy. A `storybook dev` process started before the
+  upgrade keeps serving the old code until it is restarted. Then check the config for switches that
+  undo part of the fix: `security: { insecureIframeMessaging: true }` or
+  `insecureRemoteIframeEmbed: true` in `.storybook/main.*` (the new releases added these to restore
+  the old cross-origin behaviour), and a non-loopback `--host` (or `-h`) in `package.json`
+  scripts, which puts the dev server back on the LAN (the grep below also matches loopback hosts,
+  so read each hit), and `--host 0.0.0.0` with no `core.allowedHosts`, because without it host and
+  origin validation is off.
+
+  ```bash
+  # Every Storybook package the lockfile resolved (eslint-plugin-storybook and similar are not matched)
+  grep -nE -A1 '"([^"]*/)?node_modules/(.+/)?(storybook|@storybook/[a-z0-9-]+)"' package-lock.json   # version on the next line
+  grep -nE "^  '?/?(storybook|@storybook/[a-z0-9-]+)@" pnpm-lock.yaml
+  grep -nE -A1 '^"?(storybook|@storybook/[a-z0-9-]+)@' yarn.lock                           # version on the next line
+  grep -nE '\["(storybook|@storybook/[a-z0-9-]+)@' bun.lock
+  # Settings that re-open what the fix closed
+  grep -rnE 'insecureIframeMessaging|insecureRemoteIframeEmbed' .storybook/
+  grep -nE 'storybook dev[^"]*(--host|-h ?)' package.json
+  ```
+
+  **The lesson is the dev server, not Storybook.** A dev server is reachable from every website
+  open in the developer's browser: a page can frame it and post messages to it, and with a
+  non-loopback bind it is reachable from the LAN as well. Storybook joins the `next dev` MCP
+  endpoint (`CVE-2026-94486`, Next.js above) and the Metro server (`CVE-2025-11953`, CISA KEV
+  above) in this class. Hold dev tooling to the same upgrade standard as production dependencies,
+  bind dev servers to `127.0.0.1`, and do not run them while browsing untrusted sites. The
+  local-network permission prompt in recent Chrome and Firefox reduces the risk but does not remove
+  it (advisory); do not grant it to sites you do not trust.
 - **Node.js (the runtime, not a package) — Node2Shell:** `CVE-2026-111497`, an out-of-bounds
   write in the Brotli decoder bundled with Node.js: an attacker who supplies Brotli data that the
   app decompresses with `node:zlib` can corrupt process memory, up to remote code execution.
@@ -637,6 +702,12 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-f87g-xv8r-7p7x -- CVE-2026-94485 Next.js metadata image routes ignore dynamicParams
 - https://github.com/advisories/GHSA-3w37-wq28-93x7 -- CVE-2026-94544 Next.js `use cache` leaks Draft Mode content
 - https://github.com/advisories/GHSA-39w2-rjm5-chcv -- CVE-2026-94486 Next.js dev-server MCP endpoint disclosure
+- https://github.com/storybookjs/storybook/security/advisories/GHSA-f2ph-cmg5-wxc8 -- Storybook vendor advisory: dev-server preview framed by any site and accepting any-origin postMessage; fixed 8.6.19 / 9.1.21 / 10.6.2 / 11.0.0-alpha.6; the security.insecureIframeMessaging / insecureRemoteIframeEmbed opt-outs
+- https://github.com/advisories/GHSA-f2ph-cmg5-wxc8 -- CVE-2026-114125 per-package ranges (storybook, @storybook/core, @storybook/core-server, @storybook/experimental-addon-test, @storybook/addon-vitest, @storybook/addon-mcp)
+- https://www.cve.org/CVERecord?id=CVE-2026-114125 -- CVE record (CWE-94, CWE-346, CWE-1021), published 2026-10-21
+- https://github.com/advisories/GHSA-px85-f4q5-jh77 -- CVE-2026-114126 Storybook dev-server WebSocket token readable from the LAN; same fixed releases
+- https://github.com/storybookjs/storybook/releases/tag/v10.6.2 -- 10.6.2 (2026-10-12) patches GHSA-f2ph-cmg5-wxc8 and GHSA-px85-f4q5-jh77
+- https://github.com/storybookjs/storybook/blob/v10.6.2/code/core/src/core-server/utils/server-address.ts -- getListenHost: binds 127.0.0.1 unless --host is given
 - https://nextjs.org/blog/nextjs-security-update-october-14-2026 -- Next.js 2026-10-14 out-of-band release: GHSA-673q-mjm6-r5xr, CVE-2026-96889 / GHSA-2464-fhr4-w9xw, GHSA-p3m5-59mp-jv5r; sets the 15.5.28 / 16.4.1 floors; the only source until OSV ingests them
 - https://rustsec.org/advisories/RUSTSEC-2026-0305.html -- librsvg XInclude entity use-after-free behind CVE-2026-96889; lists the safe librsvg releases
 - https://github.com/advisories/GHSA-hxh3-vqpv-xpqv -- CVE-2026-93981 hono/jsx unescaped strings in boundary components; sets the 4.13.7 floor

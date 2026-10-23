@@ -7,7 +7,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ### ✨ New
 - Add a php-security skill covering PHP2Shell and PHP runtime floors
 - Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines
-- (pending) Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)
+- Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)
 - (pending) Add pwn.watch as an optional live-incident source in monitor-deps.py
 - Maintainer automation: pwn.watch advisory watcher opens locked issues per incident; a capped Copilot dispatcher turns eligible ones into reviewed PRs at zero Actions minutes.
 

@@ -137,7 +137,10 @@ into `innerHTML`, `eval`, `location` or an API call (DOM XSS, forced actions). S
 checks are bypassed by `https://example.com.evil.example` or `https://evil-example.com`, and
 sandboxed iframes and `data:` pages all send the origin `"null"`, which two unrelated pages share.
 On the sending side the target `"*"` delivers the message to whichever page now occupies that
-window, so a navigated or malicious frame receives the token.
+window, so a navigated or malicious frame receives the token. Local dev tools are in scope too:
+the Storybook dev server's preview accepted messages from any origin and could be framed by any
+site, which let a malicious page, with some user interaction, make the dev server change story files
+(`CVE-2026-114125`; floors in `secaudit:framework-versions`).
 
 **Fix:** compare `event.origin` with `===` against a fixed list of full origins (scheme, host,
 port), then validate the shape of `event.data` before use. Pass the exact receiver origin as the

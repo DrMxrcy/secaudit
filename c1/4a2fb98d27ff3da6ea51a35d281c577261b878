@@ -1,0 +1,37 @@
+skills/web-vulns/SKILL.md
+  s_fbc496dffa0e96::t_60e70111962e72 269-270,272-273
+  s_fbc496dffa0e96::t_3b4d18ba5b849c 271,274-276
+SOURCES.md
+  s_fbc496dffa0e96::t_60e70111962e72 35
+  s_fbc496dffa0e96::t_e5dd4535f1500c 36,38-44
+  s_fbc496dffa0e96::t_938ab511423cf0 37
+.roadmap/plans/073-flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines.md
+  s_fbc496dffa0e96::t_e57d3f41bfe530 6,26-29
+CHANGELOG.internal.md
+  s_fbc496dffa0e96::t_e57d3f41bfe530 9
+.roadmap/config.json
+  s_fbc496dffa0e96::t_e57d3f41bfe530 798
+ROADMAP.md
+  s_fbc496dffa0e96::t_e57d3f41bfe530 49,52
+skills/framework-versions/SKILL.md
+  s_fbc496dffa0e96::t_60e70111962e72 322,337-339,347-348,354-357,361
+  s_fbc496dffa0e96::t_826b52bad39640 311-321,323-336,340-346,349-353,358-360,362-389
+  s_fbc496dffa0e96::t_e5dd4535f1500c 652-653,655-662
+  s_fbc496dffa0e96::t_938ab511423cf0 654
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c14a2fb98d27ff3da6ea51a35d281c577261b878",
+  "prompts": {},
+  "sessions": {
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

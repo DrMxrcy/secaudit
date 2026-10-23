@@ -95,8 +95,11 @@ jobs:
                 owner, repo, issue_number: existing.data[0].number, body,
               });
             } else {
-              await github.rest.issues.create({
+              const created = await github.rest.issues.create({
                 owner, repo, title: 'Freshness check: cited facts have drifted',
                 body, labels: ['freshness'],
               });
+              // Locked so only collaborators can comment: a maintainer may hand this issue to
+              // the Copilot coding agent, which reads every comment (copilot-dispatch.yml).
+              await github.rest.issues.lock({ owner, repo, issue_number: created.data.number, lock_reason: 'resolved' });
             }

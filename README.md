@@ -98,6 +98,10 @@ An audit is point-in-time. `docs/monitoring.md` adds a scheduled check to an app
 the same OSV → EPSS → CISA KEV → end-of-life pass against its own lockfile and opens an issue
 when something is actually being exploited — the prioritisation layer Dependabot lacks.
 
+For this repo itself, `advisory-watch.yml` opens an issue for each new incident pwn.watch tracks
+in a covered stack, and `copilot-dispatch.yml` hands a capped number of them to the Copilot
+coding agent for a reviewed PR (see the maintainers section of `docs/monitoring.md`).
+
 ## Why a security plugin for AI-generated code
 
 AI assistants reliably get a recurring set of security patterns wrong, which leads to real breaches: stolen API keys, drained billing accounts, and fully exposed databases. The core principle running through every skill: **never trust the client.** Every price, user ID, role, subscription status, and rate-limit counter must be validated or enforced server-side.

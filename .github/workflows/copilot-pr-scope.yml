@@ -1,0 +1,39 @@
+name: Copilot PR Scope
+
+# copilot-instructions.md tells the agent to edit only skills/**, SOURCES.md and
+# scripts/check-freshness.py. An instruction is not a control; this check is. Make it a
+# required status check in a branch ruleset for main so a Copilot PR that strays (for
+# example, after a prompt injection) cannot be merged by accident.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    # No checkout: the PR's code is never run here, only its file list is read.
+    steps:
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!/^copilot(-swe-agent)?(\[bot\])?$/i.test(pr.user.login)) {
+              core.info(`Not a Copilot PR (${pr.user.login}); nothing to check.`);
+              return;
+            }
+            const allowed = (f) => f.startsWith('skills/') || f === 'SOURCES.md' || f === 'scripts/check-freshness.py';
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner, repo: context.repo.repo, pull_number: pr.number, per_page: 100,
+            });
+            // A rename out of an allowed path is as much a change to that path as an edit.
+            const outside = files.filter((f) => !allowed(f.filename) || (f.previous_filename && !allowed(f.previous_filename)));
+            if (outside.length) {
+              core.setFailed(`Copilot PR touches files outside its allowed scope:\n${outside.map((f) => `- ${f.filename}`).join('\n')}`);
+            } else {
+              core.info(`All ${files.length} changed file(s) are in scope.`);
+            }

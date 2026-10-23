@@ -1,0 +1,181 @@
+name: Advisory Watch
+
+# Notices advisories the skills have never cited. check-freshness.py re-verifies facts the
+# skills already assert; it cannot see a new incident — least of all the ones OSV never
+# indexes (PHP core, the Node.js runtime) or ingests days late (vendor-only advisories).
+#
+# Polls pwn.watch tag feeds for the stacks the skills cover and opens one issue per new
+# live incident. The script marks an incident `copilotOk` only when it is a critical/high
+# `patch`, no field had to be altered by sanitising, and a source is on a trusted vendor
+# host; those are labelled `copilot-ok`, which makes them eligible for copilot-dispatch.yml.
+#
+# Every issue is locked as soon as it is opened. The repo is public, Copilot reads issue
+# comments, and a lock is what keeps strangers' comments out of the agent's context.
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 h; the publisher asks for no more than hourly
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: advisory-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      count: ${{ steps.watch.outputs.count }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # ETags and the cursor survive between runs in the Actions cache. Cache keys are
+      # immutable, so each run saves under its own key and restores the newest by prefix.
+      - name: Restore state
+        uses: actions/cache/restore@v4
+        with:
+          path: .pwnwatch-state.json
+          key: pwnwatch-state-${{ github.run_id }}
+          restore-keys: pwnwatch-state-
+
+      - name: Poll pwn.watch
+        id: watch
+        run: |
+          python3 scripts/watch-advisories.py --state .pwnwatch-state.json --out advisories.json
+          echo "count=$(python3 -c 'import json;print(json.load(open("advisories.json"))["count"])')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: advisories
+          path: |
+            advisories.json
+            .pwnwatch-state.json
+          include-hidden-files: true
+
+  # Separate job so `issues: write` is never held while running repository code — this job
+  # downloads the sanitised JSON as an artifact and does not check out the repo.
+  report:
+    needs: watch
+    if: needs.watch.outputs.count != '0'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: advisories
+
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const crypto = require('crypto');
+            const { owner, repo } = context.repo;
+            const data = JSON.parse(fs.readFileSync('advisories.json', 'utf8'));
+
+            // Every feed string was sanitised by the script (no backticks, no markup) and is
+            // rendered inside a code span here, where @mentions and links do not fire.
+            const code = (s) => '`' + String(s).replace(/`/g, '') + '`';
+            const list = (xs) => xs.length ? xs.map((x) => `- ${code(x)}`).join('\n') : '- (none listed)';
+            const fingerprint = (a) => crypto.createHash('sha256')
+              .update(JSON.stringify([a.patchStatus, a.severity, a.affected, a.fixed, a.cves, a.sources, a.copilotOk]))
+              .digest('hex').slice(0, 16);
+
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, labels: 'advisory', state: 'all', per_page: 100,
+            });
+            const markerRe = /<!-- pwnwatch:([a-z0-9-]+):([0-9a-f]{16}) -->/;
+            const bySlug = new Map();
+            for (const issue of existing) {
+              const m = markerRe.exec(issue.body || '');
+              if (m) bySlug.set(m[1], { issue, fp: m[2] });
+            }
+
+            for (const a of data.advisories) {
+              const fp = fingerprint(a);
+              const urgent = a.patchStatus === 'partial' || a.patchStatus === 'unpatched';
+              const body = [
+                `<!-- pwnwatch:${a.slug}:${fp} -->`,
+                `**${code(a.severity)} · ${code(a.category)} · patch status ${code(a.patchStatus)}**${urgent ? ' — no fix for every affected line yet' : ''}`,
+                '',
+                `Product: ${code(a.product || '(not given)')}`,
+                `CVEs: ${a.cves.length ? a.cves.map(code).join(', ') : '(none assigned)'}`,
+                `Tags: ${a.tags.map(code).join(' ')}`,
+                '', '### Affected', list(a.affected),
+                '', '### Fixed', list(a.fixed),
+                '', '### Vendor sources (cite these, not the tracker)',
+                a.sources.length
+                  ? a.sources.map((s) => s.trusted ? `- <${s.url}>` : `- ${code(s.url)} (unverified host ${code(s.host)}: do not cite without checking who runs it)`).join('\n')
+                  : '- (none listed — find the vendor advisory before citing anything)',
+                ...(a.clean ? [] : ['', '_Some feed text was altered or truncated while sanitising; read the tracker and vendor pages directly._']),
+                '', `Tracker: <${a.tracker}>`,
+                '', '### What to do',
+                '1. Decide whether a secaudit skill should cover this (framework-versions floors, a stack skill, supply-chain).',
+                '2. Verify every version above against the vendor source. The tracker can be wrong or early.',
+                '3. Update the skill and SOURCES.md, then run `python3 scripts/check-freshness.py`.',
+                '', 'Close as not planned if no skill should cover it.',
+                '', `Run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              ].join('\n');
+
+              const prior = bySlug.get(a.slug);
+              if (!prior) {
+                const labels = ['advisory'];
+                if (a.copilotOk) labels.push('copilot-ok');
+                const created = await github.rest.issues.create({
+                  owner, repo, labels, body,
+                  title: `Advisory: ${a.title}`.slice(0, 200),
+                });
+                await github.rest.issues.lock({ owner, repo, issue_number: created.data.number, lock_reason: 'resolved' });
+                core.info(`opened #${created.data.number} for ${a.slug}`);
+              } else if (prior.fp !== fp && prior.issue.state === 'open') {
+                const n = prior.issue.number;
+                const names = (prior.issue.labels || []).map((l) => typeof l === 'string' ? l : l.name);
+                if (names.includes('copilot-assigned')) {
+                  // Copilot may be working from this body: do not change it under the agent.
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: n,
+                    body: `pwn.watch updated this incident after it was assigned (patch status now ${code(a.patchStatus)}). Re-check the vendor sources before merging.`,
+                  });
+                } else {
+                  await github.rest.issues.update({ owner, repo, issue_number: n, body });
+                  if (a.copilotOk && !names.includes('copilot-ok')) {
+                    await github.rest.issues.addLabels({ owner, repo, issue_number: n, labels: ['copilot-ok'] });
+                  } else if (!a.copilotOk && names.includes('copilot-ok')) {
+                    await github.rest.issues.removeLabel({ owner, repo, issue_number: n, name: 'copilot-ok' });
+                  }
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: n,
+                    body: `pwn.watch updated this incident (patch status now ${code(a.patchStatus)}); the description above has been refreshed.`,
+                  });
+                }
+                core.info(`updated #${n} for ${a.slug}`);
+              }
+              // Unchanged, or closed by a maintainer: stay quiet.
+            }
+
+  # The cursor only advances once the issues exist. Saving state in the watch job would
+  # lose incidents whenever the report job failed: the next run would see them as old.
+  save-state:
+    needs: [watch, report]
+    if: always() && needs.watch.result == 'success' && (needs.report.result == 'success' || needs.report.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: advisories
+
+      - uses: actions/cache/save@v4
+        with:
+          path: .pwnwatch-state.json
+          key: pwnwatch-state-${{ github.run_id }}

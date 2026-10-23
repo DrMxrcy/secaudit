@@ -91,3 +91,78 @@ The monitor is built to fail **loud**, never clean:
 - A lockfile it cannot parse → reported as UNCHECKED and the job fails.
 - 429 and 5xx responses are retried before anything is believed. A transient error is never
   reported as a finding, and never as a pass.
+
+## Keeping secaudit itself current (maintainers)
+
+This section is about **this** repo, not an app repo. Three workflows turn a new advisory into
+a reviewed PR:
+
+1. **`advisory-watch.yml`** (every 6 hours) runs `scripts/watch-advisories.py` against the
+   pwn.watch tag feeds for the stacks the skills cover. It sends each feed's ETag back as
+   `If-None-Match`, so an unchanged feed costs a 304. It opens one `advisory` issue per new
+   live `patch` or `supply-chain` incident, with affected and fixed versions and the vendor
+   sources. A later material change (patch status, versions, CVEs) updates the same issue. It
+   never opens a second one. An issue gets the `copilot-ok` label only when all three of
+   these hold: it is a critical or high `patch` incident, sanitising did not have to alter
+   any field, and at least one source is on a known vendor host (NVD, GitHub advisories,
+   nodejs.org, php.net and similar). Sources on other hosts are listed as unverified. Every
+   issue is locked as soon as it is opened.
+2. **`copilot-dispatch.yml`** runs daily, and also when a person adds `copilot-ok`. Labels
+   that a workflow adds do not trigger it, so those issues wait for the daily run. It
+   assigns the oldest eligible issue to the Copilot coding agent. An issue is eligible
+   when it has the `copilot-ok` label and an `advisory` or `freshness` label, was opened
+   by `github-actions[bot]`, is locked, has nobody assigned, and has no comment from
+   anyone other than an owner, member or collaborator. Copilot reads issue comments, and
+   this repo is public. Copilot opens a PR. A maintainer reviews and merges it. Nothing is
+   ever auto-merged.
+3. **`copilot-setup-steps.yml`** gives the agent Python 3.12 on the standard
+   `ubuntu-latest` runner, with a 30-minute limit.
+4. **`copilot-pr-scope.yml`** fails any Copilot PR that touches anything outside
+   `skills/**`, `SOURCES.md` and `scripts/check-freshness.py`. The written instructions
+   ask for the same thing. This check is what actually enforces it.
+
+pwn.watch is a tracker, not the vendor. Issues list the vendor sources, and both the
+issue text and `.github/copilot-instructions.md` require every version to be verified there
+before it is written into a skill.
+
+### Spend
+
+- **Actions minutes: zero.** The agent runs on GitHub Actions. Actions is free for public
+  repos on standard GitHub-hosted runners. The dispatcher checks that the repo is public
+  before every assignment and does nothing if it is private. Do not move
+  `copilot-setup-steps.yml` to a larger runner, because larger runners are billed even on
+  public repos.
+- **Copilot premium requests: one per session.** These are capped at `COPILOT_WEEKLY_CAP`
+  assignments (a repo variable, default 2, at most 10) in any rolling 7 days. The dispatcher
+  also waits while any Copilot PR is open, or while an issue it handed over in the last
+  24 hours has no PR yet, so only one session runs at a time. Sessions you start yourself
+  (a manual assignment, or `@copilot` on a PR) also cost premium requests. Only issue
+  assignments count towards the cap.
+
+### Setup
+
+1. Enable the Copilot coding agent for this repository in your Copilot settings.
+2. Create a fine-grained personal access token scoped to this repository only, with these
+   permissions: Metadata read; Actions, Contents, Issues and Pull requests read/write. The
+   assignment API accepts only user tokens. `GITHUB_TOKEN` and app installation tokens are
+   rejected.
+3. Save it as the repository secret `COPILOT_ASSIGN_TOKEN`. Without it, the dispatcher logs
+   a notice and does nothing. Advisory issues are still opened.
+4. Add a branch ruleset for `main` with these settings: require a pull request; require
+   review from Code Owners (`.github/CODEOWNERS` covers `.github/`, `scripts/`,
+   `.roadmap/` and the plugin manifests); and require the `Copilot PR Scope / scope`
+   status check. Also keep the repo setting that requires approval before workflows run on
+   Copilot's PRs.
+5. Give the PAT an expiry date, and rotate it when it expires.
+6. Optional: set the repository variable `COPILOT_WEEKLY_CAP`.
+7. To hand over a `freshness` drift issue, add `copilot-ok` to it yourself. The dispatcher
+   applies the same lock and comment-author checks to it.
+
+Copilot cannot run the roadmap CLI. After merging one of its PRs, run `/roadmap:catchup`.
+
+Run the watcher locally:
+
+```bash
+python3 scripts/watch-advisories.py                        # last 7 days
+python3 scripts/watch-advisories.py --tags php,node --since 2026-10-01
+```

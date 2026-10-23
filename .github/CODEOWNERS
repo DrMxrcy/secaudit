@@ -1,0 +1,10 @@
+# Changes here alter what runs with secrets, what agents are told, or what users install.
+# With "Require review from Code Owners" on in the main branch ruleset, a PR touching them
+# needs the owner's approval, which Copilot PRs cannot give themselves.
+/.github/            @DrMxrcy
+/.roadmap/           @DrMxrcy
+/ROADMAP.md          @DrMxrcy
+/.claude-plugin/     @DrMxrcy
+/.codex-plugin/      @DrMxrcy
+/.agents/            @DrMxrcy
+/scripts/            @DrMxrcy

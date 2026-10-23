@@ -1,0 +1,36 @@
+SOURCES.md
+  s_fbc496dffa0e96::t_7f12347a39b083 48-53
+skills/framework-versions/SKILL.md
+  s_fbc496dffa0e96::t_c8a74aaf80a214 311-323,327,334-336,344-345,348-350,356-358,360-364,366-371,373-375
+  s_fbc496dffa0e96::t_7f12347a39b083 3,705-710
+  s_fbc496dffa0e96::t_f7726435956f2a 324-326,328-333,339-343,346-347,352-355,359,365
+  s_fbc496dffa0e96::t_4e31ea0990cdac 337-338,351
+  s_fbc496dffa0e96::t_1b64e239c1311d 372
+skills/web-vulns/SKILL.md
+  s_fbc496dffa0e96::t_4316f93d82c5d7 140-141
+  s_fbc496dffa0e96::t_f7726435956f2a 142-143
+.roadmap/config.json
+  s_fbc496dffa0e96::t_e2a17fd9d8205d 798
+.roadmap/plans/074-cover-the-storybook-dev-server-code-injection-advisory-cve-2026-114125.md
+  s_fbc496dffa0e96::t_04bfa3925882bd 6,26-27
+CHANGELOG.internal.md
+  s_fbc496dffa0e96::t_1700ba92de714c 10
+ROADMAP.md
+  s_fbc496dffa0e96::t_8b36e9b9be1e2f 49,53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c3810b296446cfb87d5668540fb156b66e5bd556",
+  "prompts": {},
+  "sessions": {
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

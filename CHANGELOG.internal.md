@@ -2,6 +2,14 @@
 
 _Full work log — every item, including internal/dev work. The curated public changelog is CHANGELOG.md._
 
+## v3.14.0 — (in progress)
+
+### ✨ New
+- (pending) Add a php-security skill covering PHP2Shell and PHP runtime floors
+- (pending) Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines
+- (pending) Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)
+- (pending) Add pwn.watch as an optional live-incident source in monitor-deps.py
+
 ## v3.13.0 — 2026-10-20
 
 ### ✨ New

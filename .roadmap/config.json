@@ -1,7 +1,7 @@
 {
   "project": "Secaudit",
   "currentVersion": "3.14.0",
-  "nextId": 72,
+  "nextId": 76,
   "items": [
     {
       "id": 1,
@@ -724,6 +724,38 @@
       "file": "plans/071-ship-secaudit-as-an-installable-codex-plugin.md",
       "note": "Secaudit can now be installed in Codex as well as Claude Code.",
       "audience": "public"
+    },
+    {
+      "id": 72,
+      "slug": "add-a-php-security-skill-covering-php2shell-and-php-runtime-floors",
+      "title": "Add a php-security skill covering PHP2Shell and PHP runtime floors",
+      "type": "feature",
+      "version": "3.14.0",
+      "file": "plans/072-add-a-php-security-skill-covering-php2shell-and-php-runtime-floors.md"
+    },
+    {
+      "id": 73,
+      "slug": "flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines",
+      "title": "Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines",
+      "type": "feature",
+      "version": "3.14.0",
+      "file": "plans/073-flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines.md"
+    },
+    {
+      "id": 74,
+      "slug": "cover-the-storybook-dev-server-code-injection-advisory-cve-2026-114125",
+      "title": "Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)",
+      "type": "feature",
+      "version": "3.14.0",
+      "file": "plans/074-cover-the-storybook-dev-server-code-injection-advisory-cve-2026-114125.md"
+    },
+    {
+      "id": 75,
+      "slug": "add-pwn-watch-as-an-optional-live-incident-source-in-monitor-deps-py",
+      "title": "Add pwn.watch as an optional live-incident source in monitor-deps.py",
+      "type": "feature",
+      "version": "3.14.0",
+      "file": "plans/075-add-pwn-watch-as-an-optional-live-incident-source-in-monitor-deps-py.md"
     }
   ],
   "settings": {

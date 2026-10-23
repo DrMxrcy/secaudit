@@ -1,0 +1,38 @@
+.roadmap/plans/074-cover-the-storybook-dev-server-code-injection-advisory-cve-2026-114125.md
+  s_fbc496dffa0e96::t_3eab73ef277072 1-13,16-17,20,25
+  s_fbc496dffa0e96::t_e54cd9ba1a1893 14-15,18-19,21-24,26
+.roadmap/plans/075-add-pwn-watch-as-an-optional-live-incident-source-in-monitor-deps-py.md
+  s_fbc496dffa0e96::t_e54cd9ba1a1893 14-16,19-21,23-26,28-30
+  s_fbc496dffa0e96::t_3eab73ef277072 1-13,17-18,22,27
+.roadmap/plans/072-add-a-php-security-skill-covering-php2shell-and-php-runtime-floors.md
+  s_fbc496dffa0e96::t_3eab73ef277072 1-13,18-19,23,28
+  s_fbc496dffa0e96::t_e54cd9ba1a1893 14-17,20-22,24-27,29-30
+CHANGELOG.md
+  s_fbc496dffa0e96::t_3eab73ef277072 115-116,121,123,130,133-134
+  s_fbc496dffa0e96::t_9c2cd67a106be9 135
+.roadmap/config.json
+  s_fbc496dffa0e96::t_3eab73ef277072 4,727-758
+.roadmap/plans/073-flag-node2shell-brotli-on-untrusted-input-and-eol-node-js-lines.md
+  s_fbc496dffa0e96::t_e54cd9ba1a1893 3,14-15,18-19,21-24,26-27
+  s_fbc496dffa0e96::t_3eab73ef277072 1-2,4-13,16-17,20,25
+CHANGELOG.internal.md
+  s_fbc496dffa0e96::t_3eab73ef277072 5-12
+ROADMAP.md
+  s_fbc496dffa0e96::t_3eab73ef277072 48-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "43f3c9aa3b1bc4174e6c837516ff5f102ae253aa",
+  "prompts": {},
+  "sessions": {
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

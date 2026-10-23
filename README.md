@@ -6,7 +6,7 @@ A security plugin that audits "vibe-coded" apps (projects built rapidly with AI 
 
 ## What changed
 
-v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 38 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
+v2.0 was a single monolithic skill. v3.x is a proper plugin: **one orchestrator skill plus 39 focused domain skills**, each with a precise trigger so the right one fires on its own during targeted work and code generation, while the orchestrator still runs the full sweep.
 
 - **Installable as a plugin** via `/plugin marketplace add` (no more copying a folder).
 - **Focused skills** that trigger independently: ask "check my Supabase RLS" and only the database skill loads.
@@ -89,6 +89,7 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 | `secaudit:cryptography` | Password hashing, secure randomness, weak algorithms/modes, hardcoded keys, JWT alg confusion, API-key/join-code/session-token storage by entropy, encrypted stored secrets (webhook URLs) |
 | `secaudit:logging-monitoring` | Error info disclosure, secrets in logs, audit logging, insecure deserialization, command injection |
 | `secaudit:python-web-security` | FastAPI/Django: per-route auth gaps, response_model leakage, production settings, TLS verification |
+| `secaudit:php-security` | PHP runtime first (PHP2Shell floors, reading the version that actually serves requests, EOL branches), then `unserialize()`, `include` paths, `eval`/shell exec, PDO interpolation, `display_errors`/`expose_php`, web-root exposure and uploads, Laravel `APP_DEBUG`/`APP_KEY`/mass assignment, WordPress plugin supply chain, Composer hygiene |
 | `secaudit:dynamic-verification` | Optional runtime pass: browser probes (headers, CORS, unauth routes, IDOR, XSS) and read-only container probes confirm or refute findings |
 
 

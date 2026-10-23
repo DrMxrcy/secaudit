@@ -400,6 +400,35 @@ Last verified: 2026-10-17.
 - https://requests.readthedocs.io/en/latest/user/advanced/ — certificate verification
 - https://cheatsheetseries.owasp.org/cheatsheets/Django_Security_Cheat_Sheet.html — Django hardening
 
+## PHP (`php-security`)
+Section added and sourced 2026-10-23; the file-wide "Last verified" date above predates it and does not cover it.
+- https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w — CVE-2026-109618 advisory: per-SAPI exposure (mod_php validated; FPM by source analysis; FrankenPHP/LSAPI likely, unvalidated); no RLIMIT_AS / RLIMIT_DATA
+- https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp — CVE-2026-109619 advisory: session upload progress RCE validated on mod_php and FPM
+- https://github.com/php/php-src/issues/24488 — bug tracker only: 8.4.27 / 8.5.12 SimpleXML GC crash, fixed in f963484, unreleased as of 2026-10-23
+- https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json — CISA KEV feed (PHP2Shell CVEs absent as of catalog 2026.10.23)
+- https://www.php.net/archive/2026.php — PHP2Shell advisory (vendor): fixed 8.5.12 / 8.4.27 / 8.3.36 / 8.2.35, interim mitigations, CVE-2026-115560 session.upload_progress note
+- https://www.csa.gov.sg/alerts-and-advisories/alerts/al-2026-151/ — CSA Singapore alert: CVSS 4.0 9.2, widespread exploitation attempts
+- https://isc.sans.edu/diary/33450 — SANS ISC PHP2Shell wrap-up
+- https://pwn.watch/i/php2shell-cve-2026-109618-109619 — tracker only, not an authority: downstream vendor timeline
+- https://pwn.watch/t/php.json — tracker only: live PHP incident feed
+- https://security-tracker.debian.org/tracker/CVE-2026-109618 — Debian fixed package versions
+- https://ubuntu.com/security/CVE-2026-109618 — Ubuntu fixed package versions (backports keep old upstream numbers)
+- https://endoflife.date/php — PHP branch EOL dates
+- https://github.com/docker-library/docs/blob/master/php/README.md — official image tags, -apache = mod_php, php.ini-production
+- https://www.php.net/manual/en/function.unserialize.php — untrusted input, regardless of allowed_classes
+- https://www.php.net/manual/en/filesystem.configuration.php — allow_url_include
+- https://www.php.net/manual/en/function.assert.php — string assertions removed in PHP 8
+- https://github.com/php/php-src/blob/PHP-7.0/UPGRADING — preg_replace /e removed
+- https://www.php.net/manual/en/pdo.prepared-statements.php — prepared statements
+- https://www.php.net/manual/en/errorfunc.configuration.php — display_errors in production
+- https://www.php.net/manual/en/ini.core.php — expose_php / X-Powered-By
+- https://laravel.com/framework/docs/13.x/configuration — APP_DEBUG
+- https://laravel.com/framework/docs/13.x/encryption — APP_KEY, APP_PREVIOUS_KEYS
+- https://laravel.com/framework/docs/13.x/eloquent — mass assignment, unguarded models
+- https://github.com/advisories/GHSA-4qwp-7c67-jmcc — CVE-2021-3129 Ignition debug-mode RCE (CISA KEV)
+- https://patchstack.com/articles/updraftcentral-key-compromise-wordpress-backdoors/ — stolen UpdraftCentral keys and Patchstack's remediation
+- https://getcomposer.org/doc/03-cli.md — composer audit
+
 ## Python language-level (in `data-access`, `logging-monitoring`, `supply-chain`)
 - https://docs.sqlalchemy.org/en/20/core/sqlelement.html — text(), bindparam()
 - https://pydantic.dev/docs/validation/latest/concepts/models/ — extra='forbid'

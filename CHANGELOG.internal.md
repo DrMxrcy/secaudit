@@ -5,7 +5,7 @@ _Full work log — every item, including internal/dev work. The curated public c
 ## v3.14.0 — (in progress)
 
 ### ✨ New
-- (pending) Add a php-security skill covering PHP2Shell and PHP runtime floors
+- Add a php-security skill covering PHP2Shell and PHP runtime floors
 - (pending) Flag Node2Shell: Brotli on untrusted input and EOL Node.js lines
 - (pending) Cover the Storybook dev-server code-injection advisory (CVE-2026-114125)
 - (pending) Add pwn.watch as an optional live-incident source in monitor-deps.py

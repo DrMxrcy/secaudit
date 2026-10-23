@@ -1,6 +1,6 @@
 ---
 name: framework-versions
-description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, the rich-text and sanitizer libraries — TipTap/ProseMirror, mammoth, DOMPurify, sanitize-html — and the Traefik proxy in front of them) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
+description: Checks package.json and lock files for known-vulnerable framework versions (Next.js, React, Astro, Nuxt, Vite, Express, Hono, Fastify, Koa, Elysia, TanStack Start, Auth.js/next-auth, Drizzle ORM, the rich-text and sanitizer libraries — TipTap/ProseMirror, mammoth, DOMPurify, sanitize-html — and the Traefik proxy in front of them, plus the PHP runtime's PHP2Shell floors) and cross-references them against critical CVEs. Use when reviewing dependencies, upgrading a framework, setting up a project, or auditing for vulnerable versions — and whenever you see a package.json with a pinned framework version. A vulnerable framework version is often the single highest-impact issue in an audit.
 license: MIT
 ---
 
@@ -26,7 +26,8 @@ templates. A vulnerable framework version is often the single highest-impact iss
    Then check each framework's own security posts (vendor blog, or the repo's GitHub Security tab)
    for releases newer than the OSV data, because vendor post → GHSA → OSV takes days (the
    2026-10-14 Next.js advisories were still missing from OSV on 2026-10-17) — for example <https://nextjs.org/blog>, <https://react.dev/blog>, and
-   <https://nodejs.org/en/blog/vulnerability/> for the runtime. When a floor comes from a vendor
+   <https://nodejs.org/en/blog/vulnerability/> for the runtime (<https://www.php.net/archive/2026.php>
+   for PHP). When a floor comes from a vendor
    post that OSV doesn't have yet, say so in the finding ("source: vendor post, not yet in OSV").
    Background: `secaudit:supply-chain`, *An empty OSV / `npm audit` result is not a clean bill*.
 3. **Check whether the runtime itself is EOL** (see *Runtime end-of-life* below). An EOL runtime
@@ -313,6 +314,14 @@ Cache poisoning of HTTP 204 responses can serve blank pages (denial of service).
   cannot police a hardcoded Node version and it would silently rot. Read the current advisory
   from <https://nodejs.org/en/blog/vulnerability/> and confirm the running major is still
   supported; an EOL major receives no patches at all, which is the more common finding.
+- **PHP (the runtime, not a Composer package) — PHP2Shell:** `CVE-2026-109618` and
+  `CVE-2026-109619`, unauthenticated RCE in PHP core, CVSS 4.0 9.2 each, exploitation attempts in
+  the wild; fixed 8.5.12 / 8.4.27 / 8.3.36 / 8.2.35 (php.net, 2026-10-21). PHP 8.1 and older are
+  EOL and get no release from the PHP project — upgrade, or confirm a distro / LTS vendor backport
+  in that vendor's tracker (distro backports keep the old `php -v` number). **Not
+  machine-policed:** OSV does not index the PHP runtime, so the freshness check cannot tell when
+  these floors go stale; re-read <https://www.php.net/archive/2026.php> at audit time. Version
+  discovery, interim mitigations and the PHP app-level checks: `secaudit:php-security`.
 
 ## Server frameworks and libraries (verify against live advisories)
 
@@ -567,3 +576,6 @@ every room inside must still have its own lock. See `secaudit:auth`.
 - https://github.com/advisories/GHSA-qx66-fv34-fjm8 -- CVE-2026-102989 TanStack Start server-function reflected XSS; sets the 1.168.60 floor
 - https://react.dev/blog -- official React blog, where React security releases are posted
 - https://nodejs.org/en/blog/vulnerability/ -- Node.js security releases (the runtime is not OSV-indexed)
+- https://www.php.net/archive/2026.php -- PHP2Shell (CVE-2026-109618 / CVE-2026-109619) fixed 8.5.12 / 8.4.27 / 8.3.36 / 8.2.35; the runtime is not OSV-indexed
+- https://www.csa.gov.sg/alerts-and-advisories/alerts/al-2026-151/ -- CSA Singapore PHP2Shell alert: CVSS 4.0 9.2, widespread exploitation attempts
+- https://isc.sans.edu/diary/33450 -- SANS ISC PHP2Shell wrap-up

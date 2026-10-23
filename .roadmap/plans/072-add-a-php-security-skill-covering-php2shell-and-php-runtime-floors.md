@@ -3,7 +3,7 @@ id: 72
 title: Add a php-security skill covering PHP2Shell and PHP runtime floors
 type: feature
 version: 3.14.0
-status: planned
+status: done
 created: 2026-10-23
 ---
 
@@ -26,5 +26,7 @@ created: 2026-10-23
 - **Fails if:** a floor is stated without a vendor source, or pwn.watch is cited as the authority.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Write skills/php-security/SKILL.md (runtime floors + PHP2Shell, app-level checks, sources) -> target: skills/php-security/SKILL.md
-- [ ] Step 2: Wire it in: audit routing, framework-versions entry, README, SOURCES, manifests; freshness green -> target: skills/audit/SKILL.md, skills/framework-versions/SKILL.md, README.md, SOURCES.md
+- [x] Step 1: Write skills/php-security/SKILL.md (runtime floors + PHP2Shell, app-level checks, sources) -> target: skills/php-security/SKILL.md
+  > evidence: freshness --self-check: OK; --only manifests: All current; php-security snippets/greps run in php:8.4-cli (8.4.27) + BSD grep; verifier: PARTIAL, 12 findings, 12 acted on; scoped re-review verifier: CONFIRMED, 0 blocking (lows noted) (2026-10-23)
+- [x] Step 2: Wire it in: audit routing, framework-versions entry, README, SOURCES, manifests; freshness green -> target: skills/audit/SKILL.md, skills/framework-versions/SKILL.md, README.md, SOURCES.md
+  > evidence: audit item 34 + OWASP rows, framework-versions PHP entry, README (39 domain skills = 40 dirs), SOURCES, 3 manifests in sync; full freshness run: 10 drifted both with and without this change (pre-existing, none PHP); spec scout: all MET except 'all current' = pre-existing drift (2026-10-23)

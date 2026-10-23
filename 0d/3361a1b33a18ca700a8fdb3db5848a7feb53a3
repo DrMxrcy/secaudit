@@ -1,0 +1,69 @@
+SOURCES.md
+  s_fbc496dffa0e96::t_8d14ce9c26672c 405-429
+  s_fbc496dffa0e96::t_cbc39e708e8aab 404
+  s_fbc496dffa0e96::t_706e8d7fa1e817 403,430-431
+skills/php-security/SKILL.md
+  s_fbc496dffa0e96::t_b2696799100b78 419-420
+  s_fbc496dffa0e96::t_3057d5a774c7e4 341,454-457,468,482,486
+  s_fbc496dffa0e96::t_543ec54dc24734 1-37,47-49,52-53,64-68,72-77,80-183,186,188-194,196-218,220-266,270-271,275-280,284-299,304-338,347-354,356-367,387-394,396-405,410-411,416-418,422-436,439-453,458-465,469-481,483-485,487-488
+  s_fbc496dffa0e96::t_dc11f4957ba11f 466-467
+  s_fbc496dffa0e96::t_95be264467a4b9 412-415,421
+  s_fbc496dffa0e96::t_92c6d0c18b7235 300-303
+  s_fbc496dffa0e96::t_41de5d7af7dd4e 272-274
+  s_fbc496dffa0e96::t_ff3782835e6f38 267-269
+  s_fbc496dffa0e96::t_fabfc2ff56cca1 406-409
+  s_fbc496dffa0e96::t_b967c421cc2bb6 69-71
+  s_fbc496dffa0e96::t_1e7065c0c9b93e 368-386
+  s_fbc496dffa0e96::t_fcd3a7cbb33bf6 38-46,50-51,54-63
+  s_fbc496dffa0e96::t_795b9298bc01e6 437-438
+  s_fbc496dffa0e96::t_faa566880b85e7 339-340,342-346
+  s_fbc496dffa0e96::t_83c19ee83e9079 78-79
+  s_fbc496dffa0e96::t_89ce66fad1e007 184-185,187
+  s_fbc496dffa0e96::t_d0321630f2a86c 195,219,281-283,355
+  s_fbc496dffa0e96::t_9a8b2aa8d787af 395
+README.md
+  s_fbc496dffa0e96::t_8d14ce9c26672c 9
+  s_fbc496dffa0e96::t_14df04c2afbfce 92
+.claude-plugin/marketplace.json
+  s_0d994e3368ddf8::t_54d2bff527acc6 42-46
+.claude-plugin/plugin.json
+  s_0d994e3368ddf8::t_0201ad750fc4a5 35-39
+.codex-plugin/plugin.json
+  s_0d994e3368ddf8::t_302642284c6a22 36-40
+.roadmap/config.json
+  s_fbc496dffa0e96::t_3c4706705f8165 798
+.roadmap/plans/072-add-a-php-security-skill-covering-php2shell-and-php-runtime-floors.md
+  s_fbc496dffa0e96::t_403ec9fe2f1cda 6,29-32
+CHANGELOG.internal.md
+  s_fbc496dffa0e96::t_15ad36ab25ca25 8
+ROADMAP.md
+  s_fbc496dffa0e96::t_17831fbf235592 49,51
+skills/audit/SKILL.md
+  s_0d994e3368ddf8::t_d60a3c6b700fc6 3,440-445,468-470,472,475
+skills/framework-versions/SKILL.md
+  s_0d994e3368ddf8::t_cb6c2427ff6aa2 3,29-30,317-324,579-581
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0d3361a1b33a18ca700a8fdb3db5848a7feb53a3",
+  "prompts": {},
+  "sessions": {
+    "s_0d994e3368ddf8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1e59e42f-734a-4197-96a1-8f7a72731de8",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    },
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}

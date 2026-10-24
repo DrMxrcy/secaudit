@@ -3,7 +3,7 @@ id: 75
 title: Add pwn.watch as an optional live-incident source in monitor-deps.py
 type: feature
 version: 3.14.0
-status: planned
+status: done
 created: 2026-10-23
 ---
 
@@ -25,6 +25,9 @@ created: 2026-10-23
 - **Fails if:** the script polls in a loop, drops the vendor link, or makes pwn.watch mandatory.
 
 ## 🚶 Step-by-Step Checklist
-- [ ] Step 1: Tag mapping, ETag-cached fetch and incident filter behind --pwnwatch -> target: scripts/monitor-deps.py
-- [ ] Step 2: Version matcher, report/JSON output, fail-on wiring; fixture tests (match, 304, offline) -> target: scripts/monitor-deps.py
-- [ ] Step 3: Document the flag and pwn.watch's role as a tracker -> target: README.md, skills/framework-versions/references/live-advisory-lookup.md, SOURCES.md
+- [x] Step 1: Tag mapping, ETag-cached fetch and incident filter behind --pwnwatch -> target: scripts/monitor-deps.py
+  > evidence: unittest discover -s scripts/tests: 50 tests OK; live run (temp state, XDG override): next 16.4.0 AFFECTED w/ GitHub advisory link, state 0600; 304 path tested w/ cached list; py_compile OK; no-flag output byte-identical (cmp.sh 40/40); verifier: REFUTED then REFUTED, loop cap spent, parent verified fix round 2 (2026-10-23)
+- [x] Step 2: Version matcher, report/JSON output, fail-on wiring; fixture tests (match, 304, offline) -> target: scripts/monitor-deps.py
+  > evidence: single not-affected choke point (_pw_candidate/_pw_conclude, 1 verdict literal); reviewer repro scripts p1,p2,p4,p7,p9 now 0 not-affected; seeded differential test in suite; sanitiser test OK; fuzz leftovers = 'only' suffix + bounded '>=X, <Y' reads (kept, documented) (2026-10-23)
+- [x] Step 3: Document the flag and pwn.watch's role as a tracker -> target: README.md, skills/framework-versions/references/live-advisory-lookup.md, SOURCES.md
+  > evidence: README flag lines, docs/monitoring.md --pwnwatch section, live-advisory-lookup.md tracker section, SOURCES.md; freshness --self-check OK, --only manifests/links current (2026-10-23)

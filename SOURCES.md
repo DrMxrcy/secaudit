@@ -12,6 +12,8 @@ Last verified: 2026-10-17.
 - https://api.first.org/data/v1/epss — EPSS exploitation-probability API (no key, batched)
 - https://www.first.org/epss/ — EPSS model documentation
 - https://endoflife.date/ — runtime and framework end-of-life dates (no key)
+- https://pwn.watch/llms.txt — tracker only, not an authority: pwn.watch feed index (per-tag JSON, ETag, categories) used by `monitor-deps.py --pwnwatch` for runtime and vendor-only gaps
+- https://pwn.watch/t/node.json — tracker only: live Node.js incident feed (runtime lines, Bun)
 - https://www.cisa.gov/known-exploited-vulnerabilities-catalog — CISA KEV (React2Shell actively exploited)
 - https://github.com/advisories/GHSA-f82v-jwr5-mffw — CVE-2025-29927 middleware bypass; ranges start at 12.0.0, confirming 11.x has no patched release
 - https://github.com/advisories/GHSA-67rr-84xm-4c7r — CVE-2025-49826 cache-poisoning DoS; range is `>=15.0.4-canary.51 <15.1.8`

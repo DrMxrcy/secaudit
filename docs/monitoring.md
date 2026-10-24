@@ -92,6 +92,152 @@ The monitor is built to fail **loud**, never clean:
 - 429 and 5xx responses are retried before anything is believed. A transient error is never
   reported as a finding, and never as a pass.
 
+## Optional: live incidents from pwn.watch (`--pwnwatch`)
+
+OSV indexes packages. It does not index language runtimes, and a vendor-only advisory can take
+days to reach it. In October 2026 both of those mattered: PHP2Shell and Node2Shell were runtime
+bugs that no OSV query for a package can return. pwn.watch tracks incidents like these, with affected and fixed versions and links to the vendor
+sources. `--pwnwatch` adds it as a second source:
+
+```bash
+python3 scripts/monitor-deps.py --path ../myapp --pwnwatch
+python3 scripts/monitor-deps.py --path ../myapp --pwnwatch --json      # adds a "pwnwatch" array
+python3 scripts/monitor-deps.py --pwnwatch --pwnwatch-state ./pwnwatch-state.json
+```
+
+The flag is opt-in. Without it, the script makes no pwn.watch request and its output is
+unchanged. The pwn.watch client and sanitiser are loaded from `scripts/watch-advisories.py`, so
+keep the two files together. If that file is missing, the script stops with exit 2 and says so.
+
+**Which feeds it reads.** It reads `https://pwn.watch/t/<tag>.json` for each stack it finds under
+`--path` (`node_modules`, `vendor`, `.git` and virtualenvs are skipped):
+
+| Found | Tags |
+|---|---|
+| `package-lock.json`, `package.json`, `yarn.lock`, `pnpm-lock.yaml`, `.nvmrc`, `.node-version` | `node`, `npm` (the version files map to `node` only) |
+| `uv.lock`, `requirements.txt`, `pyproject.toml`, `.python-version` | `python`, `pypi` (`.python-version` maps to `python` only) |
+| `composer.json`, `composer.lock`, `.php-version` | `php` |
+| `Dockerfile`, `Containerfile`, `Dockerfile.*`, `*.Dockerfile`, `docker-compose*.yml`, `compose.yml` | `docker`, plus `php`, `node` or `python` when a `FROM` line or `image:` uses that image (`oven/bun` maps to `node`) |
+| `.tool-versions`, `package.json` `volta` / `packageManager: bun@...` | the runtime they name |
+| `.github/workflows/*.yml` | `github-actions` |
+| `Gemfile.lock`, `go.sum` | `ruby`, `go` |
+
+Lockfiles the monitor cannot parse, such as `composer.lock`, still choose a tag. That matters for
+PHP in particular, because a PHP runtime incident needs no lockfile to apply.
+
+It keeps only incidents with status `live` in the `patch` or `supply-chain` category.
+
+**How it matches.** `affectedVersions` is free text, so matching is best effort. It is
+conservative where it cannot be sure:
+
+- **Packages.** An incident matches when a package from a parsed lockfile is named in its product
+  or affected text. The match is whole-word and case-insensitive. Scoped names (`@x402/fetch`,
+  or `nestjs/core` for `@nestjs/core`), slash lists (`next/react`), brand forms (`Next.js`,
+  `Express.js`) and PyPI names with `_`, `-` or `.` all match. Package names that are also everyday
+  words (`is`, `next`, `node`...) count only when a version follows them. Once they do, an
+  unreadable range is reported as **check manually**, not dropped.
+- **Strict grammar.** The text after a package name runs to the next installed or scoped package
+  name, never to a `;` or `,` on its own, so `express 4.x before 4.19.2; 5.x before 5.0.1` is read
+  as two ranges. A following line that has no package name and is only versions belongs to the
+  package before it. Each clause must be consumed completely by a known form: `< X`, `<= X`, `> X`,
+  `>= X, < Y`, `before X`, `prior to X`, `less than X`, `under X`, `until X`, `pre-X`, `up to X`,
+  `through X`, `X and earlier`, `X or later`, `X and above`, `X+`, `X onwards`, `from X`,
+  `since X`, `after X`, `X to Y`, `X - Y`, `X..Y`, `X -> Y`, `from X to Y`, `between X and Y`,
+  `X.x before Y` (or `8.3 before 8.3.36`), `== X`, or a bare version list (`1.2.3, 1.2.4 and 1.2.5`). Clauses join with `,`,
+  `;`, `/`, `&`, `and`, `or` or `plus`. `^X`, `~X` and `~> X` prove "affected" from inside but
+  only "check manually" from outside. `fixed in X` / `(fixed X)` phrases are removed first,
+  because a fixed version is not an affected one. One leftover word, number or operator in any
+  clause makes the whole incident **check manually** for that package, never "not affected".
+- **"Not affected" needs every line read.** It is issued in one place, and only when all of
+  these hold: the sanitiser did not have to alter or truncate any of the incident's text (more
+  than 12 entries, an over-long entry or a dropped character all count, so a PyPI name written with
+  `_` is check); every affected line was either read for that package or runtime, or is attributed
+  to something else the script recognises (an installed package, a scoped or `vendor/name` form,
+  `name@<range>`, a runtime name, or an item of the incident's product field); and no clause was
+  left unread. A line such as `Canary <= 14.3.0`, `Self-hosted: 14.x before 14.2.25` or
+  `Windows builds: 8.4 before 8.4.10` names nothing it recognises, so the verdict is **check
+  manually**. A parenthetical is dropped only when it is a bare ecosystem label (`(npm)`,
+  `(PHP)`), a `(fixed X)` note, or a vulnerability label carrying a CVE/GHSA id. Anything else,
+  `(including canary releases)`, `(Windows only)`, is unread text. Pre-releases are ordered
+  numerically (`rc9 < rc10`, `3.0.0-rc.1` = `3.0.0rc1`), and a pre- or post-release of a version
+  the incident names as a boundary (`8.3.0rc1` against `8.3.x`) is check.
+- **Runtimes.** It reads the versions of PHP, Node.js, Bun and Python from Dockerfile `FROM`
+  tags, compose `image:` lines, `.nvmrc`, `.node-version`, `.php-version`, `.python-version`,
+  `.tool-versions`, `package.json` `volta` and `packageManager: bun@...`. Each is compared with
+  the fixed version on the same release line: major.minor for PHP, Python and Bun, and the major
+  for Node.js. Fixed versions are read with the same strict rules: `8.2.29 is not fixed` or
+  `8.3.36 (Windows only)` is unread text, never a fix. An exact version below its line's fix
+  (`php:8.3.35-cli`) is affected. At or above the fix it is "not affected" only under the rules
+  above and only if no parsed affected range still contains it; otherwise it is check. A
+  `FROM` tag suffix must be a known variant (`-cli`, `-fpm`, `-alpine3.20`...) or a pre-release
+  (`-RC1`); any other suffix leaves the version unread. A clause like `Node.js 22 before 22.12.0,
+  Bun before 1.1.38` is split at the second runtime name. A release line with no fix
+  that the affected text covers (an EOL branch, for example) is a hit. A floating tag like
+  `php:8.3-apache` does not pin a patch release: if its line has a fix the result is **check the
+  tag/digest**, and if its line has no fix it is a hit.
+- **Constraints are not deployed versions.** `composer.json` `require.php` and
+  `config.platform.php`, and `package.json` `engines.node` / `engines.bun`, admit a range of patch
+  levels. They are always reported as **check manually**, never as a hit and never as urgent, with
+  a line saying a constraint does not identify the deployed patch level. When the constraint
+  admits a line that has no fixed release for the incident (`^8.1` and an unpatched 8.1 branch),
+  that is added as a one-line note.
+- **Unreadable declarations are loud.** `.nvmrc` values such as `lts/*`, `lts/iron` or `node`, a
+  `FROM node:lts` or build-argument tag, a non-official or mirrored image (`mirror.example.com/php`,
+  `bitnami/node`), a non-string `engines` entry, or a `package.json` / `composer.json` that does not
+  parse each become a runtime with no version. That runtime matches every incident for it as
+  **check manually**, and the report prints a `runtime version not read` line for it. A `FROM` whose
+  image cannot be resolved at all (`FROM ${BASE}`) is listed as **UNCHECKED**.
+- A live **critical** or **high** incident for a detected stack that matched nothing is listed as
+  **check manually**, one line each, critical first, up to 10.
+
+Each hit shows the severity, patch status, the matched package or runtime, the affected and fixed
+text, the vendor sources and the tracker link. Sources on a known vendor host (NVD, GitHub
+advisories, nodejs.org, php.net and similar) are shown as `vendor:`. Any other host is shown as
+`source (unverified host):`. pwn.watch is a tracker, not the vendor. Read and cite the vendor
+source before acting, never the tracker page. Feed text goes through the same sanitiser as the
+advisory watcher. Only printable ASCII is kept, backticks are stripped, and prose fields are
+dropped.
+
+**Ranking and exit code.** A hit is **urgent** when its patch status is `partial` or `unpatched`,
+or when it matched a runtime line that has no fixed release. `partial` means the incident is not
+fully patched across every affected product or line, so the hit is urgent even when a fix exists
+for your own line (`php:8.3.35` with 8.3.36 released, during PHP2Shell). Urgent hits are listed
+first. pwn.watch has no KEV or EPSS data, so it is combined with `--fail-on` like this:
+
+| `--fail-on` | Fails on a pwn.watch hit when |
+|---|---|
+| `any` | any hit (affected) |
+| `kev` / `epss` | an urgent hit: affected while the incident is not fully patched, or on a runtime line with no fixed release |
+
+"Check manually" items never change the exit code.
+
+**State file.** The script stores each tag's ETag together with the last incident list it kept.
+It sends the ETag back as `If-None-Match`, so an unchanged feed costs a 304. A 304 has no body,
+so the script matches the stored list again, and a lockfile that changed since the last run is
+still checked. The ETag is sent only when that list is stored too. Vendor sources are cached per
+incident until its `updatedAt` changes. The default location is a user cache directory, so a
+scan never writes into the repository it scans: `$XDG_CACHE_HOME/secaudit/pwnwatch-state.json`,
+or `~/.cache/secaudit/pwnwatch-state.json`. Pass `--pwnwatch-state PATH` to choose another
+location, for example one a CI cache step restores. A missing or corrupt state file, a state file
+written by a different version of the script, or an ETag that is not a quoted printable-ASCII
+token only means a full fetch. The file is written atomically with mode `0600`. If a feed lists
+more than 300 live incidents, only the first 300 are matched and the report says so. After two
+vendor-source lookups fail in a row, the rest are skipped and those incidents say their vendor
+sources could not be fetched.
+
+**Run it hourly at most.** The feeds are edge-cached for 60 seconds and the publisher asks for
+no more than that. The script never polls in a loop. Each run is one pass, so put the schedule in
+cron or CI. Requests send a descriptive `User-Agent`.
+
+**When pwn.watch is down.** That stack is reported as **UNCHECKED** for pwn.watch, with a
+warning, and never as clean. The exit code does not change: a pwn.watch outage alone never
+causes exit 2. If a cached list exists, it is still matched, and the UNCHECKED line says how old
+it is. After two feeds fail in a row, the remaining feeds are skipped rather than retried one by
+one. OSV, EPSS and KEV failures still exit 2, as before.
+
+The reusable `dependency-monitor.yml` workflow does not pass `--pwnwatch`. To use it in CI, run
+the script in your own workflow step.
+
 ## Keeping secaudit itself current (maintainers)
 
 This section is about **this** repo, not an app repo. Three workflows turn a new advisory into

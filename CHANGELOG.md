@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.14.0 — (in progress)
+## v3.14.0 — 2026-10-23
 
 _Plus behind-the-scenes performance and reliability work._
 

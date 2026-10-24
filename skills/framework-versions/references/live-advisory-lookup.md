@@ -117,6 +117,43 @@ Products available include `nodejs`, `python`, `django`, `postgresql`, `php`, `r
 `dotnet`. Check the language runtime *and* the framework — a supported framework on an EOL
 runtime is still unpatched underneath.
 
+## Runtime and vendor-only gaps: pwn.watch (tracker)
+
+OSV cannot answer two questions: is the **runtime** affected (PHP, Node.js, Bun, Python), and has
+the vendor published an advisory that the databases have not ingested yet? pwn.watch tracks both
+as incidents, with free-text affected and fixed versions and links to the vendor sources. Use it
+to find out that something exists. Do not cite it as the authority.
+
+```bash
+# Live incidents for one stack. Tags include node, npm, php, python, pypi, docker, github-actions.
+curl -s https://pwn.watch/t/php.json | python3 -c "
+import json,sys
+for i in json.load(sys.stdin)['incidents']:
+    if i['status']=='live' and i['category'] in ('patch','supply-chain'):
+        print(i['severity'], i['patchStatus'], i['slug'])
+        print('  affected:', i['affectedVersions']); print('  fixed:', i['fixedVersions'])
+"
+```
+
+Rules:
+
+- **pwn.watch is a tracker.** Open the incident (`https://pwn.watch/i/<slug>.json`) only to get
+  its `sources`. Then read the vendor advisory (php.net, nodejs.org, the GitHub advisory, NVD) and
+  take the fixed version from there.
+- **Compare against the version that serves requests**, not a constraint. `require.php: ^8.1` or a
+  floating `php:8.3-apache` tag does not show the patch level. Check the image digest, or run
+  `php -v` / `node -v` in the deployed container. A deployed release line with no fixed release
+  (an EOL branch) is affected, whatever the patch level. A constraint that merely admits such a
+  line (`^8.1` during an unpatched 8.1 incident) is worth a one-line note, not a finding.
+- `affectedVersions` is prose. If you cannot read it as a range, report "check manually", not
+  clean.
+- Send `If-None-Match` with the last ETag, and poll no more than hourly. Every feed is listed in
+  `https://pwn.watch/llms.txt`.
+
+`scripts/monitor-deps.py --pwnwatch` does this for a whole repo. It maps the stacks it finds to
+tags, matches lockfile packages and declared runtime versions, and reports what it could not
+decide, including every version constraint, as "check manually" (see `docs/monitoring.md`).
+
 ## Sources
 
 - https://google.github.io/osv.dev/api/ — OSV.dev API overview (endpoints, no key, ecosystems)
@@ -129,3 +166,5 @@ runtime is still unpatched underneath.
 - https://api.first.org/data/v1/epss — EPSS exploitation-probability API (FIRST.org, no key)
 - https://www.first.org/epss/ — EPSS model and how to read the score
 - https://endoflife.date/ — runtime and framework end-of-life dates (no key)
+- https://pwn.watch/llms.txt — tracker only, not an authority: pwn.watch feed index (per-tag JSON, incident JSON, ETag)
+- https://pwn.watch/t/php.json — tracker only: live PHP incident feed

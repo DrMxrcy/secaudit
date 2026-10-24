@@ -88,7 +88,13 @@ def _get(url: str, etag: str | None = None, attempts: int = 3) -> tuple[int, dic
         except Exception as e:
             last = e
         time.sleep(1.5 * (i + 1))
-    raise Unreachable(f"{url}: {last}")
+    raise Unreachable(f"{url}: {_err_text(last)}")
+
+
+def _err_text(e) -> str:
+    """An exception's text (it can carry a server's HTTP reason phrase) as short printable ASCII."""
+    t = re.sub(r"\s+", " ", re.sub(r"[^\x20-\x7e]", "?", str(e))).replace("`", "'").strip()
+    return t if len(t) <= 300 else t[:297] + "..."
 
 
 # --- Sanitisation -------------------------------------------------------------
@@ -104,7 +110,10 @@ def _get(url: str, etag: str | None = None, attempts: int = 3) -> tuple[int, dic
 # Characters plausible in a product name or a version range. Anything else is dropped.
 TEXT_RE = re.compile(r"[^A-Za-z0-9 .,:;=!^~+\-/()@'\"%&?<>*]")
 # Typographic punctuation that is common in vendor text and safe to fold to ASCII.
-FOLD = str.maketrans({"\u2013": "-", "\u2014": "-", "\u2018": "'", "\u2019": "'",
+# Every Unicode hyphen and the minus sign fold to '-' BEFORE TEXT_RE runs: dropping them would
+# glue "4.0.0\u20114.17.20" into the meaningless "4.0.04.17.20" instead of a range.
+FOLD = str.maketrans({"\u2010": "-", "\u2011": "-", "\u2012": "-", "\u2013": "-", "\u2014": "-",
+                      "\u2015": "-", "\u2212": "-", "\u2018": "'", "\u2019": "'",
                       "\u201c": '"', "\u201d": '"', "\u2264": "<=", "\u2265": ">=", "\u2026": "..."})
 
 # Hosts a fix may cite as the vendor source. pwn.watch can list any https URL; an
@@ -158,22 +167,22 @@ def sanitise(inc: dict, detail: dict | None) -> dict | None:
     slug = inc.get("slug")
     if not isinstance(slug, str) or not SLUG_RE.match(slug):
         return None
-    clean = True
+    altered: set[str] = set()   # fields whose text was changed, cut short or dropped
 
-    def text(value, limit):
-        nonlocal clean
+    def text(value, limit, field):
         t, ok = clean_text(value, limit)
-        clean = clean and ok
+        if not ok:
+            altered.add(field)
         return t
 
-    def texts(values, limit, n=12):
-        nonlocal clean
+    def texts(values, limit, field, n=12):
         if not isinstance(values, list):
-            clean = clean and values is None
+            if values is not None:
+                altered.add(field)
             return []
         if len(values) > n:
-            clean = False
-        out = [text(v, limit) for v in values[:n]]
+            altered.add(field)
+        out = [text(v, limit, field) for v in values[:n]]
         return list(dict.fromkeys(v for v in out if v))
 
     def ids(values, pattern, n=20):
@@ -191,20 +200,23 @@ def sanitise(inc: dict, detail: dict | None) -> dict | None:
 
     item = {
         "slug": slug,
-        "title": text(inc.get("title"), 140) or slug,
-        "product": text(inc.get("product"), 120),
+        "title": text(inc.get("title"), 140, "title") or slug,
+        "product": text(inc.get("product"), 120, "product"),
         "category": clean_enum("category", inc.get("category")),
         "severity": clean_enum("severity", inc.get("severity")),
         "patchStatus": clean_enum("patchStatus", inc.get("patchStatus")),
         "cves": ids(inc.get("cveIds"), CVE_RE),
         "tags": ids(inc.get("tags"), TAG_RE),
-        "affected": texts(inc.get("affectedVersions"), 200),
-        "fixed": texts(inc.get("fixedVersions"), 120),
+        "affected": texts(inc.get("affectedVersions"), 200, "affected"),
+        "fixed": texts(inc.get("fixedVersions"), 120, "fixed"),
         "sources": sources,
         "updatedAt": norm_time(inc.get("updatedAt")) or "",
         "tracker": f"{BASE}/i/{slug}",
     }
+    clean = not altered
     item["clean"] = clean
+    # Which fields were altered or truncated (an added key; `clean` keeps its meaning).
+    item["altered"] = sorted(altered)
     # Offered to Copilot only when it is an actionable patch, nothing had to be altered,
     # and at least one source is a host a fix can actually cite.
     item["copilotOk"] = (

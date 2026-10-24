@@ -98,6 +98,8 @@ The orchestrator skips areas whose technology you do not use. If you have no Str
 An audit is point-in-time. `docs/monitoring.md` adds a scheduled check to an app repo that runs
 the same OSV → EPSS → CISA KEV → end-of-life pass against its own lockfile and opens an issue
 when something is actually being exploited — the prioritisation layer Dependabot lacks.
+Add `--pwnwatch` to also match live pwn.watch incidents, which cover what OSV misses (language
+runtimes and vendor-only advisories); it is opt-in and documented in `docs/monitoring.md`.
 
 For this repo itself, `advisory-watch.yml` opens an issue for each new incident pwn.watch tracks
 in a covered stack, and `copilot-dispatch.yml` hands a capped number of them to the Copilot

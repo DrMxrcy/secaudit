@@ -2,7 +2,7 @@
 
 ## v3.14.0 — 2026-10-23
 
-_Plus behind-the-scenes performance and reliability work._
+New PHP security checks, including the PHP2Shell remote code execution flaw. New checks for the Node2Shell Brotli flaw and for Node versions that no longer get security fixes. Storybook development servers are now checked for the code-injection flaw disclosed this week. The dependency monitor can optionally cross-check live security incidents too, including ones that vulnerability databases haven't picked up yet.
 
 ## v3.13.0 — 2026-10-20
 

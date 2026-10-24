@@ -1,0 +1,27 @@
+CHANGELOG.md
+  s_fbc496dffa0e96::t_fe0392c0c61466 5
+.claude-plugin/plugin.json
+  s_fbc496dffa0e96::t_7e8935f93903c6 3
+.claude-plugin/marketplace.json
+  s_fbc496dffa0e96::t_7e8935f93903c6 12
+.roadmap/config.json
+  s_fbc496dffa0e96::t_fe0392c0c61466 799-802
+.codex-plugin/plugin.json
+  s_fbc496dffa0e96::t_7e8935f93903c6 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4cef40f867071adf5039c1340ed46fc9030ed230",
+  "prompts": {},
+  "sessions": {
+    "s_fbc496dffa0e96": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "652f2b9d-5a18-4cca-8f56-9faf34444282",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "DrMxrcy <drmxrcy@gmail.com>"
+    }
+  }
+}
